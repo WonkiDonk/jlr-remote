@@ -92,7 +92,12 @@ const queryVehicleInformationService: QueryVehicleInformationService = {
         return response.data
     },
 
-    getVehicleTariffs: async (accessToken: string, deviceId: string, vin: string): Promise<VehicleTariffs> => { throw new Error('Not implemented.') },
+    getVehicleTariffs: async (accessToken: string, deviceId: string, vin: string): Promise<VehicleTariffs> => {
+        const headers = getHeaders(accessToken, deviceId, {'Accept': 'application/vnd.wirelesscar.ngtp.if9.TariffSettings-v1+json'})
+        const response = await axios.get<VehicleTariffs>(`${IF9_BASE_URL}/vehicles/${vin}/tariffs`, {headers})
+        
+        return response.data
+    },
 
     getVehicleTrip: async (accessToken: string, deviceId: string, vin: string, tripId: string): Promise<VehicleTrip> => { throw new Error('Not implemented.') },
 
