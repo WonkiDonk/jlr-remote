@@ -37,7 +37,12 @@ const queryVehicleInformationService: QueryVehicleInformationService = {
         return response.data
     },
 
-    getVehicleContactInformation: async (accessToken: string, deviceId: string, vin: string): Promise<VehicleContactInformation> => { throw new Error('Not implemented.') },
+    getVehicleContactInformation: async (accessToken: string, deviceId: string, vin: string): Promise<VehicleContactInformation> => {
+        const headers = getHeaders(accessToken, deviceId)
+        const response = await axios.get<VehicleContactInformation>(`${IF9_BASE_URL}/vehicles/${vin}/contactinfo/310`, {headers})
+        
+        return response.data
+    },
 
     getVehicleDepartureTimers: async (accessToken: string, deviceId: string, vin: string): Promise<VehicleDepartureTimers> => { throw new Error('Not implemented.') },
 
