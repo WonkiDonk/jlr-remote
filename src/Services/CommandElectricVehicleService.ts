@@ -114,6 +114,45 @@ const commandElectricVehicleService: CommandElectricVehicleService = {
         return response.data
     },
 
+    addChargingPeriod: async (accessToken: string, deviceId: string, vin: string, cpToken: string, startCharging: Date, stopCharging: Date, repeatSchedule: RepeatSchedule): Promise<ServiceStatus | ServiceError> => {
+        const command = {
+            token: cpToken,
+            tariffSettings: {
+                tariffs: [
+                    {
+                        tariffIndex: 0,
+                        tariffDefinition: {
+                            enabled: true,
+                            repeatSchedule,
+                            tariffZone: [
+                                {
+                                    zoneName: 'TARIFF_ZONE_A',
+                                    bandType: 'OFFPEAK',
+                                    endTime: {
+                                        hour: startCharging.getHours(),
+                                        minute: startCharging.getMinutes()
+                                    }
+                                },
+                                {
+                                    zoneName: 'TARIFF_ZONE_B',
+                                    bandType: 'PEAK',
+                                    endTime: {
+                                        hour: stopCharging.getHours(),
+                                        minute: stopCharging.getMinutes()
+                                    }
+                                }
+                            ]
+                        }
+                    }
+                ]
+            }
+        }
+        const headers = getHeaders(accessToken, deviceId, { 'Accept': 'application/vnd.wirelesscar.ngtp.if9.ServiceStatus-v5+json', 'Content-Type': 'application/vnd.wirelesscar.ngtp.if9.PhevService-v1+json; charset=utf' })
+        const response = await axios.post(`${baseUrl}/vehicles/${vin}/chargeProfile`, command, { headers })
+
+        return response.data
+    },
+
     setPriority: async (accessToken: string, deviceId: string, vin: string, eccToken: string, priority: 'PRIORITIZE_RANGE' | 'PRIORITIZE_COMFORT'): Promise<ServiceStatus | ServiceError> => {
         const command = { token: eccToken, serviceParameters: [{ key: 'PRIORITY_SETTING', value: priority }] }
         const headers = getHeaders(accessToken, deviceId, { 'Accept': 'application/vnd.wirelesscar.ngtp.if9.ServiceStatus-v5+json', 'Content-Type': 'application/vnd.wirelesscar.ngtp.if9.PhevService-v1+json; charset=utf' })
