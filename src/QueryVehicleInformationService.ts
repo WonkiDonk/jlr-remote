@@ -23,7 +23,12 @@ const queryVehicleInformationService: QueryVehicleInformationService = {
         return response.data
     },
 
-    getServiceStatus: async (accessToken: string, deviceId: string, vin: string, customerServiceId: string): Promise<ServiceStatus> => { throw new Error('Not implemented.') },
+    getServiceStatus: async (accessToken: string, deviceId: string, vin: string, customerServiceId: string): Promise<ServiceStatus> => { 
+        const headers = getHeaders(accessToken, deviceId, {'Accept': 'application/vnd.wirelesscar.ngtp.if9.ServiceStatus-v4+json'})
+        const response = await axios.get<ServiceStatus>(`${IF9_BASE_URL}/vehicles/${vin}/services/${customerServiceId}`, {headers})
+        
+        return response.data
+    },
 
     getVehicleAttributes: async (accessToken: string, deviceId: string, vin: string): Promise<VehicleAttributes> => {
         const headers = getHeaders(accessToken, deviceId, {'Accept': 'application/vnd.ngtp.org.VehicleAttributes-v3+json'})
