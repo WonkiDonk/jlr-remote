@@ -464,8 +464,11 @@ export interface CommandElectricVehicleService {
      * @param deviceId UUID4 Device Identifier
      * @param vin Vehicle Identification Number
      * @param cpToken CP Token
+     * @param startCharging Time to Start Charging
+     * @param stopCharging Time to Stop Charging
+     * @param repeatSchedule Charging Schedule
      */
-    //addChargingPeriod: (accessToken: string, deviceId: string, vin: string, cpToken: string, chargingPeriod: ChargingPeriod) => Promise<ServiceStatus | ServiceError>
+    addChargingPeriod: (accessToken: string, deviceId: string, vin: string, cpToken: string, startCharging: Date, stopCharging: Date, repeatSchedule: RepeatSchedule) => Promise<ServiceStatus | ServiceError>
 
     /**
      * Prioritize climate controls for either range or comfort.
