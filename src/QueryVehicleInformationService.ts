@@ -78,7 +78,12 @@ const queryVehicleInformationService: QueryVehicleInformationService = {
         return response.data
     },
 
-    getVehicleStatusV3: async (accessToken: string, deviceId: string, vin: string): Promise<CurrentVehicleResponseV3> => { throw new Error('Not implemented.') },
+    getVehicleStatusV3: async (accessToken: string, deviceId: string, vin: string): Promise<CurrentVehicleResponseV3> => {
+        const headers = getHeaders(accessToken, deviceId, {'Accept': 'application/vnd.ngtp.org.if9.healthstatus-v3+json'})
+        const response = await axios.get<CurrentVehicleResponseV3>(`${IF9_BASE_URL}/vehicles/${vin}/status?includeInactive=true`, {headers})
+        
+        return response.data
+    },
 
     getVehicleSubscriptionPackages: async (accessToken: string, deviceId: string, vin: string): Promise<VehicleSubscriptionPackages> => { throw new Error('Not implemented.') },
 
