@@ -6,14 +6,6 @@ import { ServiceStatus, ServiceError, RepeatSchedule } from './ServiceTypes'
 const baseUrl = baseUrls.IF9_BASE_URL
 
 const commandElectricVehicleService: CommandElectricVehicleService = {
-    stopClimatePreconditioning: async (accessToken: string, deviceId: string, vin: string, eccToken: string): Promise<ServiceStatus | ServiceError> => {
-        const command = { token: eccToken, serviceParameters: [{ 'key': 'PRECONDITIONING', 'value': 'STOP' }] }
-        const headers = getHeaders(accessToken, deviceId, { 'Accept': 'application/vnd.wirelesscar.ngtp.if9.ServiceStatus-v5+json', 'Content-Type': 'application/vnd.wirelesscar.ngtp.if9.PhevService-v1+json; charset=utf' })
-        const response = await axios.post(`${baseUrl}/vehicles/${vin}/preconditioning`, command, { headers })
-
-        return response.data
-    },
-
     startClimatePrecdonditioning: async (accessToken: string, deviceId: string, vin: string, eccToken: string, targetTemperatureCelcius: number = 210): Promise<ServiceStatus | ServiceError> => {
         const command = { token: eccToken, serviceParameters: [{ key: 'PRECONDITIONING', value: 'START' }, { key: 'TARGET_TEMPERATURE_CELSIUS', value: targetTemperatureCelcius }] }
         const headers = getHeaders(accessToken, deviceId, { 'Accept': 'application/vnd.wirelesscar.ngtp.if9.ServiceStatus-v5+json', 'Content-Type': 'application/vnd.wirelesscar.ngtp.if9.PhevService-v1+json; charset=utf' })
@@ -22,9 +14,23 @@ const commandElectricVehicleService: CommandElectricVehicleService = {
         return response.data
     },
 
-    startCharging: (accessToken: string, deviceId: string, vin: string, eccToken: string): Promise<ServiceStatus | ServiceError> => { throw new Error('Not implemented') },
+    stopClimatePreconditioning: async (accessToken: string, deviceId: string, vin: string, eccToken: string): Promise<ServiceStatus | ServiceError> => {
+        const command = { token: eccToken, serviceParameters: [{ 'key': 'PRECONDITIONING', 'value': 'STOP' }] }
+        const headers = getHeaders(accessToken, deviceId, { 'Accept': 'application/vnd.wirelesscar.ngtp.if9.ServiceStatus-v5+json', 'Content-Type': 'application/vnd.wirelesscar.ngtp.if9.PhevService-v1+json; charset=utf' })
+        const response = await axios.post(`${baseUrl}/vehicles/${vin}/preconditioning`, command, { headers })
 
-    stopCharging: (accessToken: string, deviceId: string, vin: string, eccToken: string): Promise<ServiceStatus | ServiceError> => { throw new Error('Not implemented') },
+        return response.data
+    },
+
+    startCharging: async (accessToken: string, deviceId: string, vin: string, cpToken: string): Promise<ServiceStatus | ServiceError> => {
+        const command = { token: cpToken, serviceParameters: [{ key: 'CHARGE_NOW_SETTING', value: 'FORCE_ON' }] }
+        const headers = getHeaders(accessToken, deviceId, { 'Accept': 'application/vnd.wirelesscar.ngtp.if9.ServiceStatus-v5+json', 'Content-Type': 'application/vnd.wirelesscar.ngtp.if9.PhevService-v1+json; charset=utf' })
+        const response = await axios.post(`${baseUrl}/vehicles/${vin}/chargeProfile`, command, { headers })
+
+        return response.data
+    },
+
+    stopCharging: (accessToken: string, deviceId: string, vin: string, cpToken: string): Promise<ServiceStatus | ServiceError> => { throw new Error('Not implemented') },
 
     setMaxStateOfCharge: (accessToken: string, deviceId: string, vin: string, cpToken: string, maxStateOfCharge: number): Promise<ServiceStatus | ServiceError> => { throw new Error('Not implemented') },
 

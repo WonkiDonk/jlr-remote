@@ -188,7 +188,7 @@ export interface QueryUserInformationService {
      * @param userId User Identifier
      */
     getUserInfoFromId: (accessToken: string, deviceId: string, userId: string) => Promise<UserInfo>
-    
+
     /**
      * Lists the vehicles associated with the specified user id. It is unclear at this time what
      * the `primaryOnly` parameter does as all vehicles associated with the user id will be
@@ -217,7 +217,7 @@ export interface CommandVehicleService {
      * @param provToken PROV Token
      */
     disablePrivacySwitch: (accessToken: string, deviceId: string, vin: string, provToken: string) => Promise<ServiceStatus | ServiceError>
-    
+
     /**
      * The vehicle will not log journey information as long as privacy mode is enabled. The API
      * seems to support specifying a start and stop time with this request but the mobile app
@@ -232,7 +232,7 @@ export interface CommandVehicleService {
      * @param provToken PROV Token
      */
     enablePrivacySwitch: (accessToken: string, deviceId: string, vin: string, provToken: string) => Promise<ServiceStatus | ServiceError>
-    
+
     /**
      * The vehicle will enter service mode which will allow the vehicle to be serviced without
      * InControl triggering a vehicle theft alarm.
@@ -249,7 +249,7 @@ export interface CommandVehicleService {
      * @param provToken PROV Token
      */
     enableServiceMode: (accessToken: string, deviceId: string, vin: string, provToken: string) => Promise<ServiceStatus | ServiceError>
-    
+
     /**
      * The vehicle will enter service mode which will allow the vehicle to be transported on a
      * ferry, train, etc without InControl triggering a vehicle theft alarm.
@@ -266,7 +266,7 @@ export interface CommandVehicleService {
      * @param provToken PROV Token.
      */
     enableTransportMode: (accessToken: string, deviceId: string, vin: string, provToken: string) => Promise<ServiceStatus | ServiceError>
-    
+
     /**
      * Honk the horn and flash the lights associated with the specified vehicle. Requires you to
      * pass a HBLF service auth token.
@@ -276,7 +276,7 @@ export interface CommandVehicleService {
      * @param hblfToken HBLF Token
      */
     honkHorn: (accessToken: string, deviceId: string, vin: string, hblfToken: string) => Promise<ServiceStatus | ServiceError>
-    
+
     /**
      * Lock the vehicle remotely. Requires a valid RDL service authentication token.
      * 
@@ -286,7 +286,7 @@ export interface CommandVehicleService {
      * @param rdlToken RDL Token
      */
     lockVehicle: (accessToken: string, deviceId: string, vin: string, rdlToken: string) => Promise<ServiceStatus | ServiceError>
-    
+
     /**
      * Set the vehicle nick name and registration number.
      * 
@@ -297,7 +297,7 @@ export interface CommandVehicleService {
      * @param registrationNumber Registration Number
      */
     setVehicleNicknameAndRegistration: (accessToken: string, deviceId: string, vin: string, nickname: string, registrationNumber: string) => Promise<ServiceStatus | ServiceError>
-    
+
     /**
      * Reset the vehicle alarm. Requires a valid ALOFF service authentication token.
      * 
@@ -307,7 +307,7 @@ export interface CommandVehicleService {
      * @param aloffToken ALOFF Token
      */
     stopAlarm: (accessToken: string, deviceId: string, vin: string, aloffToken: string) => Promise<ServiceStatus | ServiceError>
-    
+
     /**
      * Unlock the vehicle remotely. Requires a valid RDU service authentication token.
      * 
@@ -325,18 +325,6 @@ export interface CommandVehicleService {
  */
 export interface CommandElectricVehicleService {
     /**
-     * Stop the climate preconditioning immediately.
-     * 
-     * This operation requires a valid ECC service authentication token.
-     * 
-     * @param accessToken Access Token
-     * @param deviceId UUID4 Device Identifier
-     * @param vin Vehicle Identification Number
-     * @param eccToken ECC Token
-     */
-    stopClimatePreconditioning: (accessToken: string, deviceId: string, vin: string, eccToken: string) => Promise<ServiceStatus | ServiceError>
-    
-    /**
      * Start the climate preconditioning at the specified tempareture. Note the absense of the
      * decimal sign. 210 equals 21.0C.
      * 
@@ -351,27 +339,39 @@ export interface CommandElectricVehicleService {
      * @param targetTemperatureCelcius Target Temperature in Degrees Celcius
      */
     startClimatePrecdonditioning: (accessToken: string, deviceId: string, vin: string, eccToken: string, targetTemperatureCelcius?: number) => Promise<ServiceStatus | ServiceError>
-    
+
+    /**
+     * Stop the climate preconditioning immediately.
+     * 
+     * This operation requires a valid ECC service authentication token.
+     * 
+     * @param accessToken Access Token
+     * @param deviceId UUID4 Device Identifier
+     * @param vin Vehicle Identification Number
+     * @param eccToken ECC Token
+     */
+    stopClimatePreconditioning: (accessToken: string, deviceId: string, vin: string, eccToken: string) => Promise<ServiceStatus | ServiceError>
+
     /**
      * Start charging the EV. Requires a valid cp service token.
      * 
      * @param accessToken Access Token
      * @param deviceId UUID4 Device Identifier
      * @param vin Vehicle Identification Number
-     * @param eccToken ECC Token
+     * @param cpToken CP Token
      */
-    startCharging: (accessToken: string, deviceId: string, vin: string, eccToken: string) => Promise<ServiceStatus | ServiceError>
-    
+    startCharging: (accessToken: string, deviceId: string, vin: string, cpToken: string) => Promise<ServiceStatus | ServiceError>
+
     /**
      * Stop charging the EV. Requires a valid cp service token.
      * 
      * @param accessToken Access Token
      * @param deviceId UUID4 Device Identifier
      * @param vin Vehicle Identification Number
-     * @param eccToken ECC Token
+     * @param cpToken CP Token
      */
-    stopCharging: (accessToken: string, deviceId: string, vin: string, eccToken: string) => Promise<ServiceStatus | ServiceError>
-    
+    stopCharging: (accessToken: string, deviceId: string, vin: string, cpToken: string) => Promise<ServiceStatus | ServiceError>
+
     /**
      * Set the maximum state of charge. This requires a valid CP authentication token. The
      * vehicle will never charge more than the specified charge level (in percentage)
@@ -385,7 +385,7 @@ export interface CommandElectricVehicleService {
      * @param maxStateOfCharge Maximum State of Charge (0-100%)
      */
     setMaxStateOfCharge: (accessToken: string, deviceId: string, vin: string, cpToken: string, maxStateOfCharge: number) => Promise<ServiceStatus | ServiceError>
-    
+
     /**
      * Set the one-off maximum state of charge. This requires a valid CP authentication token.
      * The vehicle will never charge more than the specified charge level (in percentage) for
@@ -401,7 +401,7 @@ export interface CommandElectricVehicleService {
      * @param maxStateOfCharge Maximum State of Charge (0-100%)
      */
     setOneOfMaxStateOfCharge: (accessToken: string, deviceId: string, vin: string, maxStateOfCharge: number) => Promise<ServiceStatus | ServiceError>
-    
+
     /**
      * Add a single departure timer for the specified vehicle. You need to pass a year, month,
      * day, hour and minute in order to specify the departure time. A valid CP service token is
@@ -420,7 +420,7 @@ export interface CommandElectricVehicleService {
      * @param departureTime Departure Date and Time
      */
     addDepartureTimer: (accessToken: string, deviceId: string, vin: string, cpToken: string, departureTime: Date) => Promise<ServiceStatus | ServiceError>
-    
+
     /**
      * Add repeated departure timer for the specified vehicle. You need to pass a year, month,
      * day, hour and minute in order to specify the departure time. Additionally, you need to
@@ -435,7 +435,7 @@ export interface CommandElectricVehicleService {
      * @param repeatSchedule Departure Day Schedule
      */
     addRepeatedDepartureTimer: (accessToken: string, deviceId: string, vin: string, cpToken: string, departureTime: Date, repeatSchedule: RepeatSchedule) => Promise<ServiceStatus | ServiceError>
-    
+
     /**
      * Delete departure timers specified by their index. Requires a valid CP service
      * authentication token.
@@ -449,7 +449,7 @@ export interface CommandElectricVehicleService {
      * @param timerIndex Index of the Timer to Delete
      */
     deleteDepartureTimers: (accessToken: string, deviceId: string, vin: string, cpToken: string, timerIndex: number) => Promise<ServiceStatus | ServiceError>
-    
+
     /**
      * Set a time period for charging. The vehicle will prioritize charging during the specified
      * period.
@@ -466,7 +466,7 @@ export interface CommandElectricVehicleService {
      * @param cpToken CP Token
      */
     //addChargingPeriod: (accessToken: string, deviceId: string, vin: string, cpToken: string, chargingPeriod: ChargingPeriod) => Promise<ServiceStatus | ServiceError>
-    
+
     /**
      * Prioritize climate controls for either range or comfort.
      * 
@@ -480,7 +480,7 @@ export interface CommandElectricVehicleService {
      * @param priority `PRIORITIZE_RANGE` or `PRIORITIZE_COMFORT`
      */
     setPriority: (accessToken: string, deviceId: string, vin: string, eccToken: string, priority: 'PRIORITIZE_RANGE' | 'PRIORITIZE_COMFORT') => Promise<ServiceStatus | ServiceError>
-    
+
     /**
      * The vehicle will enter a sleep mode after four days of inactivity. In order to use remote
      * control features after this time a wake up timer is required.
@@ -498,7 +498,7 @@ export interface CommandElectricVehicleService {
      * @param wakeupTime Wakeup Date and Time
      */
     addWakeupTime: (accessToken: string, deviceId: string, vin: string, swuToken: string, wakeupTime: Date) => Promise<ServiceStatus | ServiceError>
-    
+
     /**
      * Cancel the wakeup timer.
      * 
