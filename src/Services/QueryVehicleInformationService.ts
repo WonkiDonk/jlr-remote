@@ -1,19 +1,9 @@
 import axios from 'axios'
 import { QueryVehicleInformationService } from './Services'
 import { ContactInformation, ServiceStatus, VehicleAttributes, VehicleContactInformation, VehicleDepartureTimers, VehicleHealthStatus, VehiclePosition, CurrentVehicleStatus, CurrentVehicleResponseV3, VehicleSubscriptionPackages, VehicleTariffs, VehicleTrip, VehicleTrips, VehicleWakeupTime } from './ServiceTypes'
+import { baseUrls, getHeaders } from './ServiceHelpers'
 
-const IFAS_BASE_URL = 'https://ifas.prod-row.jlrmotor.com/ifas/jlr'
-const IFOP_BASE_ULR = 'https://ifop.prod-row.jlrmotor.com/ifop/jlr'
-const IF9_BASE_URL = 'https://if9.prod-row.jlrmotor.com/if9/jlr'
-
-const getHeaders = (accessToken: string, deviceId: string, partial?: any) => {
-    return {
-        'Content-Type': 'application/json',
-        'X-Device-Id': deviceId,
-        'Authorization': `Bearer ${accessToken}`,
-        ...partial
-    }
-}
+const IF9_BASE_URL = baseUrls.IF9_BASE_URL
 
 const queryVehicleInformationService: QueryVehicleInformationService = {
     getContactInformation: async (accessToken: string, deviceId: string, vin: string, mcc: string): Promise<ContactInformation> => {
