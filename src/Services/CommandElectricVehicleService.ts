@@ -83,7 +83,28 @@ const commandElectricVehicleService: CommandElectricVehicleService = {
         return response.data
     },
 
-    addRepeatedDepartureTimer: (accessToken: string, deviceId: string, vin: string, cpToken: string, departureTime: Date, repeatSchedule: RepeatSchedule): Promise<ServiceStatus | ServiceError> => { throw new Error('Not implemented') },
+    addRepeatedDepartureTimer: async (accessToken: string, deviceId: string, vin: string, cpToken: string, departureTime: Date, repeatSchedule: RepeatSchedule): Promise<ServiceStatus | ServiceError> => {
+        const command = {
+            token: cpToken,
+            departureTimerSetting: {
+                timers: [
+                    {
+                        departureTime: {
+                            hour: departureTime.getHours(),
+                            minute: departureTime.getMinutes()
+                        },
+                        timerIndex: 50,
+                        timerTarget: { repeatSchedule },
+                        timerType: { key: 'BOTHCHARGEANDPRECONDITION', value: true }
+                    }
+                ]
+            }
+        }
+        const headers = getHeaders(accessToken, deviceId, { 'Accept': 'application/vnd.wirelesscar.ngtp.if9.ServiceStatus-v5+json', 'Content-Type': 'application/vnd.wirelesscar.ngtp.if9.PhevService-v1+json; charset=utf' })
+        const response = await axios.post(`${baseUrl}/vehicles/${vin}/chargeProfile`, command, { headers })
+
+        return response.data
+    },
 
     deleteDepartureTimers: (accessToken: string, deviceId: string, vin: string, cpToken: string, timerIndex: number): Promise<ServiceStatus | ServiceError> => { throw new Error('Not implemented') },
 
