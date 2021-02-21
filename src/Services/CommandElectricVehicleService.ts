@@ -1,8 +1,18 @@
+import axios from 'axios'
+import { baseUrls, getHeaders } from './ServiceHelpers'
 import { CommandElectricVehicleService } from './Services'
 import { ServiceStatus, ServiceError, RepeatSchedule } from './ServiceTypes'
 
+const baseUrl = baseUrls.IF9_BASE_URL
+
 const commandElectricVehicleService: CommandElectricVehicleService = {
-    stopClimatePreconditioning: (accessToken: string, deviceId: string, vin: string, eccToken: string): Promise<ServiceStatus | ServiceError> => { throw new Error('Not implemented') },
+    stopClimatePreconditioning: async (accessToken: string, deviceId: string, vin: string, eccToken: string): Promise<ServiceStatus | ServiceError> => {
+        const command = { token: eccToken, serviceParameters: [{ 'key': 'PRECONDITIONING', 'value': 'STOP' }] }
+        const headers = getHeaders(accessToken, deviceId, { 'Accept': 'application/vnd.wirelesscar.ngtp.if9.ServiceStatus-v5+json', 'Content-Type': 'application/vnd.wirelesscar.ngtp.if9.PhevService-v1+json; charset=utf' })
+        const response = await axios.post(`${baseUrl}/vehicles/${vin}/preconditioning`, command, { headers })
+
+        return response.data
+    },
 
     startClimatePrecdonditioning: (accessToken: string, deviceId: string, vin: string, eccToken: string): Promise<ServiceStatus | ServiceError> => { throw new Error('Not implemented') },
 
