@@ -14,7 +14,13 @@ const commandElectricVehicleService: CommandElectricVehicleService = {
         return response.data
     },
 
-    startClimatePrecdonditioning: (accessToken: string, deviceId: string, vin: string, eccToken: string): Promise<ServiceStatus | ServiceError> => { throw new Error('Not implemented') },
+    startClimatePrecdonditioning: async (accessToken: string, deviceId: string, vin: string, eccToken: string, targetTemperatureCelcius: number = 21.0): Promise<ServiceStatus | ServiceError> => {
+        const command = { token: eccToken, serviceParameters: [{ key: 'PRECONDITIONING', value: 'START' }, { key: 'TARGET_TEMPERATURE_CELSIUS', value: targetTemperatureCelcius * 10 }] }
+        const headers = getHeaders(accessToken, deviceId, { 'Accept': 'application/vnd.wirelesscar.ngtp.if9.ServiceStatus-v5+json', 'Content-Type': 'application/vnd.wirelesscar.ngtp.if9.PhevService-v1+json; charset=utf' })
+        const response = await axios.post(`${baseUrl}/vehicles/${vin}/preconditioning`, command, { headers })
+
+        return response.data
+    },
 
     startCharging: (accessToken: string, deviceId: string, vin: string, eccToken: string): Promise<ServiceStatus | ServiceError> => { throw new Error('Not implemented') },
 
