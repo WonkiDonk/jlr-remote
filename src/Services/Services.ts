@@ -350,7 +350,7 @@ export interface CommandElectricVehicleService {
      * @param eccToken ECC Token
      * @param targetTemperatureCelcius Target Temperature in Degrees Celcius
      */
-    startClimatePrecdonditioning: (accessToken: string, deviceId: string, vin: string, eccToken: string, targetTemperatureCelcius: number) => Promise<ServiceStatus | ServiceError>
+    startClimatePrecdonditioning: (accessToken: string, deviceId: string, vin: string, eccToken: string, targetTemperatureCelcius?: number) => Promise<ServiceStatus | ServiceError>
     
     /**
      * Start charging the EV. Requires a valid cp service token.
