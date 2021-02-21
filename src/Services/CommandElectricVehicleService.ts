@@ -54,7 +54,34 @@ const commandElectricVehicleService: CommandElectricVehicleService = {
         return response.data
     },
 
-    addDepartureTimer: (accessToken: string, deviceId: string, vin: string, cpToken: string, departureTime: Date): Promise<ServiceStatus | ServiceError> => { throw new Error('Not implemented') },
+    addDepartureTimer: async (accessToken: string, deviceId: string, vin: string, cpToken: string, departureTime: Date): Promise<ServiceStatus | ServiceError> => {
+        const command = {
+            token: cpToken,
+            departureTimerSetting: {
+                timers: [
+                    {
+                        departureTime: {
+                            hour: departureTime.getHours(),
+                            minute: departureTime.getMinutes()
+                        },
+                        timerIndex: 50,
+                        timerTarget: {
+                            singleDay: {
+                                day: departureTime.getDate(),
+                                month: departureTime.getMonth() + 1,
+                                year: departureTime.getFullYear()
+                            }
+                        },
+                        timerType: { key: 'BOTHCHARGEANDPRECONDITION', value: true }
+                    }
+                ]
+            }
+        }
+        const headers = getHeaders(accessToken, deviceId, { 'Accept': 'application/vnd.wirelesscar.ngtp.if9.ServiceStatus-v5+json', 'Content-Type': 'application/vnd.wirelesscar.ngtp.if9.PhevService-v1+json; charset=utf' })
+        const response = await axios.post(`${baseUrl}/vehicles/${vin}/chargeProfile`, command, { headers })
+
+        return response.data
+    },
 
     addRepeatedDepartureTimer: (accessToken: string, deviceId: string, vin: string, cpToken: string, departureTime: Date, repeatSchedule: RepeatSchedule): Promise<ServiceStatus | ServiceError> => { throw new Error('Not implemented') },
 
@@ -64,8 +91,7 @@ const commandElectricVehicleService: CommandElectricVehicleService = {
 
     addWakeupTime: (accessToken: string, deviceId: string, vin: string, swuToken: string, wakeupTime: Date): Promise<ServiceStatus | ServiceError> => { throw new Error('Not implemented') },
 
-    stopWakeupTime: (accessToken: string, deviceId: string, vin: string, swuToken: string): Promise<ServiceStatus | ServiceError> => { throw new Error('Not implemented') },
-
+    stopWakeupTime: (accessToken: string, deviceId: string, vin: string, swuToken: string): Promise<ServiceStatus | ServiceError> => { throw new Error('Not implemented') }
 }
 
 export default commandElectricVehicleService
