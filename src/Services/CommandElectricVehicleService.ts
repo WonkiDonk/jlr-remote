@@ -122,7 +122,14 @@ const commandElectricVehicleService: CommandElectricVehicleService = {
         return response.data
     },
 
-    addWakeupTime: (accessToken: string, deviceId: string, vin: string, swuToken: string, wakeupTime: Date): Promise<ServiceStatus | ServiceError> => { throw new Error('Not implemented') },
+    addWakeupTime: async (accessToken: string, deviceId: string, vin: string, swuToken: string, wakeupTime: Date): Promise<ServiceStatus | ServiceError> => {
+        const command = { serviceCommand: 'START', startTime: +wakeupTime / 1000, token: swuToken }
+        console.log(command)
+        const headers = getHeaders(accessToken, deviceId, { 'Accept': 'application/vnd.wirelesscar.ngtp.if9.ServiceStatus-v3+json', 'Content-Type': 'application/vnd.wirelesscar.ngtp.if9.StartServiceConfiguration-v3+json; charset=utf-8' })
+        const response = await axios.post(`${baseUrl}/vehicles/${vin}/swu`, command, { headers })
+
+        return response.data
+    },
 
     stopWakeupTime: (accessToken: string, deviceId: string, vin: string, swuToken: string): Promise<ServiceStatus | ServiceError> => { throw new Error('Not implemented') }
 }
