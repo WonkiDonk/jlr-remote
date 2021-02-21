@@ -6,7 +6,7 @@
   "repository": "https://github.com/WonkiDonk/jlr-remote",
   "author": "William Cowell",
   "license": "MIT",
-  "scripts":{
+  "scripts": {
     "test": "jest"
   },
   "devDependencies": {
@@ -30,5 +30,8 @@
     "setupFiles": [
       "<rootDir>tests/config.ts"
     ]
+  },
+  "dependencies": {
+    "axios": "^0.21.1"
   }
 }
