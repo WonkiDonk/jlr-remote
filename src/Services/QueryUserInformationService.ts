@@ -13,7 +13,12 @@ const queryUserInformationService: QueryUserInformationService = {
         return response.data
     },
 
-    getVehiclesForUser: async (accessToken: string, deviceId: string, userId: string): Promise<Vehicles> => { throw new Error('Not implemented') }
+    getVehiclesForUser: async (accessToken: string, deviceId: string, userId: string, primaryOnly: boolean = false): Promise<Vehicles> => {
+        const headers = getHeaders(accessToken, deviceId)
+        const response = await axios.get<Vehicles>(`${baseUrl}/users/${userId}/vehicles?primaryOnly=${primaryOnly}`, {headers})
+        
+        return response.data
+    }
 }
 
 export default queryUserInformationService

@@ -197,8 +197,9 @@ export interface QueryUserInformationService {
      * @param accessToken Access Token
      * @param deviceId UUID4 Device Identifier
      * @param userId User Identifier
+     * @param primaryOnly Boolean value indicating whether to query the primary vehicle only
      */
-    getVehiclesForUser: (accessToken: string, deviceId: string, userId: string) => Promise<Vehicles>
+    getVehiclesForUser: (accessToken: string, deviceId: string, userId: string, primaryOnly?: boolean) => Promise<Vehicles>
 }
 
 /**
