@@ -94,8 +94,9 @@ export interface QueryVehicleInformationService {
      * @param accessToken Access Token
      * @param deviceId UUID4 Device Identifier
      * @param vin Vehicle Identification Number
+     * @param vhsToken VHS Token
      */
-    getVehicleHealthStatus: (accessToken: string, deviceId: string, vin: string) => Promise<VehicleHealthStatus>
+    getVehicleHealthStatus: (accessToken: string, deviceId: string, vin: string, vhsToken: string) => Promise<VehicleHealthStatus>
 
     /**
      * Get current position of vehicle. Will return lat, long, speed, heading and timestamp.

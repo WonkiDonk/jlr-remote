@@ -51,7 +51,18 @@ const queryVehicleInformationService: QueryVehicleInformationService = {
         return response.data
     },
 
-    getVehicleHealthStatus: async (accessToken: string, deviceId: string, vin: string): Promise<VehicleHealthStatus> => { throw new Error('Not implemented.') },
+    getVehicleHealthStatus: async (accessToken: string, deviceId: string, vin: string, vhsToken: string): Promise<VehicleHealthStatus> => {
+        const headers = getHeaders(accessToken, deviceId, {
+            'Accept': 'application/vnd.wirelesscar.ngtp.if9.ServiceStatus-v4+json',
+            'Content-Type': 'application/vnd.wirelesscar.ngtp.if9.StartServiceConfiguration-v3+json; charset=utf-8'
+        })
+        const response = await axios.post<VehicleHealthStatus>(
+            `${IF9_BASE_URL}/vehicles/${vin}/healthstatus`,
+            {token: vhsToken},
+            {headers})
+        
+        return response.data
+    },
 
     getVehiclePosition: async (accessToken: string, deviceId: string, vin: string): Promise<VehiclePosition> => { throw new Error('Not implemented.') },
 
