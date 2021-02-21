@@ -28,7 +28,7 @@ const queryVehicleInformationService: QueryVehicleInformationService = {
 
     getVehicleTrips: (accessToken: string, deviceId: string, vin: string): Promise<VehicleTrips> => { throw new Error('Not implemented.') },
 
-    getVehicleWakeupTime: (accessToken: string, deviceId: string, vin: string): Promise<VehicleWakeupTime> => { throw new Error('Not implemented.') },
+    getVehicleWakeupTime: (accessToken: string, deviceId: string, vin: string): Promise<VehicleWakeupTime> => { throw new Error('Not implemented.') }
 }
 
 export default queryVehicleInformationService
