@@ -30,7 +30,13 @@ const commandElectricVehicleService: CommandElectricVehicleService = {
         return response.data
     },
 
-    stopCharging: (accessToken: string, deviceId: string, vin: string, cpToken: string): Promise<ServiceStatus | ServiceError> => { throw new Error('Not implemented') },
+    stopCharging: async (accessToken: string, deviceId: string, vin: string, cpToken: string): Promise<ServiceStatus | ServiceError> => {
+        const command = { token: cpToken, serviceParameters: [{ key: 'CHARGE_NOW_SETTING', value: 'FORCE_OFF' }] }
+        const headers = getHeaders(accessToken, deviceId, { 'Accept': 'application/vnd.wirelesscar.ngtp.if9.ServiceStatus-v5+json', 'Content-Type': 'application/vnd.wirelesscar.ngtp.if9.PhevService-v1+json; charset=utf' })
+        const response = await axios.post(`${baseUrl}/vehicles/${vin}/chargeProfile`, command, { headers })
+
+        return response.data
+    },
 
     setMaxStateOfCharge: (accessToken: string, deviceId: string, vin: string, cpToken: string, maxStateOfCharge: number): Promise<ServiceStatus | ServiceError> => { throw new Error('Not implemented') },
 
