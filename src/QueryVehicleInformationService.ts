@@ -113,7 +113,12 @@ const queryVehicleInformationService: QueryVehicleInformationService = {
         return response.data
     },
 
-    getVehicleWakeupTime: async (accessToken: string, deviceId: string, vin: string): Promise<VehicleWakeupTime> => { throw new Error('Not implemented.') }
+    getVehicleWakeupTime: async (accessToken: string, deviceId: string, vin: string): Promise<VehicleWakeupTime> => {
+        const headers = getHeaders(accessToken, deviceId, {'Accept': 'application/vnd.wirelesscar.ngtp.if9.VehicleWakeupTime-v2+json'})
+        const response = await axios.get<VehicleWakeupTime>(`${IF9_BASE_URL}/vehicles/${vin}/wakeuptime`, {headers})
+        
+        return response.data
+    }
 }
 
 export default queryVehicleInformationService
