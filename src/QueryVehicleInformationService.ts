@@ -106,7 +106,12 @@ const queryVehicleInformationService: QueryVehicleInformationService = {
         return response.data
     },
 
-    getVehicleTrips: async (accessToken: string, deviceId: string, vin: string): Promise<VehicleTrips> => { throw new Error('Not implemented.') },
+    getVehicleTrips: async (accessToken: string, deviceId: string, vin: string): Promise<VehicleTrips> => {
+        const headers = getHeaders(accessToken, deviceId, {'Accept': '*/*', 'Content-Type': 'application/vnd.ngtp.org.triplist-v2+json'})
+        const response = await axios.get<VehicleTrips>(`${IF9_BASE_URL}/vehicles/${vin}/trips?count=1000`, {headers})
+        
+        return response.data
+    },
 
     getVehicleWakeupTime: async (accessToken: string, deviceId: string, vin: string): Promise<VehicleWakeupTime> => { throw new Error('Not implemented.') }
 }
