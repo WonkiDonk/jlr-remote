@@ -64,7 +64,12 @@ const queryVehicleInformationService: QueryVehicleInformationService = {
         return response.data
     },
 
-    getVehiclePosition: async (accessToken: string, deviceId: string, vin: string): Promise<VehiclePosition> => { throw new Error('Not implemented.') },
+    getVehiclePosition: async (accessToken: string, deviceId: string, vin: string): Promise<VehiclePosition> => {
+        const headers = getHeaders(accessToken, deviceId)
+        const response = await axios.get<VehiclePosition>(`${IF9_BASE_URL}/vehicles/${vin}/position`, {headers})
+        
+        return response.data
+    },
 
     getVehicleStatus: async (accessToken: string, deviceId: string, vin: string): Promise<CurrentVehicleStatus> => { throw new Error('Not implemented.') },
 
