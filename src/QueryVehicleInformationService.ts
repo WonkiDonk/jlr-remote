@@ -85,7 +85,12 @@ const queryVehicleInformationService: QueryVehicleInformationService = {
         return response.data
     },
 
-    getVehicleSubscriptionPackages: async (accessToken: string, deviceId: string, vin: string): Promise<VehicleSubscriptionPackages> => { throw new Error('Not implemented.') },
+    getVehicleSubscriptionPackages: async (accessToken: string, deviceId: string, vin: string): Promise<VehicleSubscriptionPackages> => {
+        const headers = getHeaders(accessToken, deviceId)
+        const response = await axios.get<VehicleSubscriptionPackages>(`${IF9_BASE_URL}/vehicles/${vin}/subscriptionpackages`, {headers})
+        
+        return response.data
+    },
 
     getVehicleTariffs: async (accessToken: string, deviceId: string, vin: string): Promise<VehicleTariffs> => { throw new Error('Not implemented.') },
 
