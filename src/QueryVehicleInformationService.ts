@@ -44,7 +44,12 @@ const queryVehicleInformationService: QueryVehicleInformationService = {
         return response.data
     },
 
-    getVehicleDepartureTimers: async (accessToken: string, deviceId: string, vin: string): Promise<VehicleDepartureTimers> => { throw new Error('Not implemented.') },
+    getVehicleDepartureTimers: async (accessToken: string, deviceId: string, vin: string): Promise<VehicleDepartureTimers> => {
+        const headers = getHeaders(accessToken, deviceId, {'Accept': 'application/vnd.wirelesscar.ngtp.if9.DepartureTimerSettings-v1+json'})
+        const response = await axios.get<VehicleDepartureTimers>(`${IF9_BASE_URL}/vehicles/${vin}/departuretimers`, {headers})
+        
+        return response.data
+    },
 
     getVehicleHealthStatus: async (accessToken: string, deviceId: string, vin: string): Promise<VehicleHealthStatus> => { throw new Error('Not implemented.') },
 
