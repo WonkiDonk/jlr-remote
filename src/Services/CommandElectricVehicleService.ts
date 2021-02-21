@@ -114,7 +114,13 @@ const commandElectricVehicleService: CommandElectricVehicleService = {
         return response.data
     },
 
-    setPriority: (accessToken: string, deviceId: string, vin: string, eccToken: string, priority: 'PRIORITIZE_RANGE' | 'PRIORITIZE_COMFORT'): Promise<ServiceStatus | ServiceError> => { throw new Error('Not implemented') },
+    setPriority: async (accessToken: string, deviceId: string, vin: string, eccToken: string, priority: 'PRIORITIZE_RANGE' | 'PRIORITIZE_COMFORT'): Promise<ServiceStatus | ServiceError> => {
+        const command = { token: eccToken, serviceParameters: [{ key: 'PRIORITY_SETTING', value: priority }] }
+        const headers = getHeaders(accessToken, deviceId, { 'Accept': 'application/vnd.wirelesscar.ngtp.if9.ServiceStatus-v5+json', 'Content-Type': 'application/vnd.wirelesscar.ngtp.if9.PhevService-v1+json; charset=utf' })
+        const response = await axios.post(`${baseUrl}/vehicles/${vin}/preconditioning`, command, { headers })
+
+        return response.data
+    },
 
     addWakeupTime: (accessToken: string, deviceId: string, vin: string, swuToken: string, wakeupTime: Date): Promise<ServiceStatus | ServiceError> => { throw new Error('Not implemented') },
 
