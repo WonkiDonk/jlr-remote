@@ -187,7 +187,7 @@ export interface QueryUserInformationService {
      * @param deviceId UUID4 Device Identifier
      * @param userId User Identifier
      */
-    getUserInfoFromID: (accessToken: string, deviceId: string, userId: string) => Promise<UserInfo>
+    getUserInfoFromId: (accessToken: string, deviceId: string, userId: string) => Promise<UserInfo>
     
     /**
      * Lists the vehicles associated with the specified user id. It is unclear at this time what
