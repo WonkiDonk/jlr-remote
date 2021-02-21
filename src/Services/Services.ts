@@ -400,7 +400,7 @@ export interface CommandElectricVehicleService {
      * @param cpToken CP Token
      * @param maxStateOfCharge Maximum State of Charge (0-100%)
      */
-    setOneOfMaxStateOfCharge: (accessToken: string, deviceId: string, vin: string, maxStateOfCharge: number) => Promise<ServiceStatus | ServiceError>
+    setOneOfMaxStateOfCharge: (accessToken: string, deviceId: string, vin: string, cpToken: string, maxStateOfCharge: number) => Promise<ServiceStatus | ServiceError>
 
     /**
      * Add a single departure timer for the specified vehicle. You need to pass a year, month,
