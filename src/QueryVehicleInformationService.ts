@@ -16,7 +16,12 @@ const getHeaders = (accessToken: string, deviceId: string, partial?: any) => {
 }
 
 const queryVehicleInformationService: QueryVehicleInformationService = {
-    getContactInformation: async (accessToken: string, deviceId: string, vin: string, mcc: string): Promise<ContactInformation> => { throw new Error('Not implemented') },
+    getContactInformation: async (accessToken: string, deviceId: string, vin: string, mcc: string): Promise<ContactInformation> => {
+        const headers = getHeaders(accessToken, deviceId)
+        const response = await axios.get<ContactInformation>(`${IF9_BASE_URL}/vehicles/${vin}/contactinfo/${mcc}`, {headers})
+        
+        return response.data
+    },
 
     getServiceStatus: async (accessToken: string, deviceId: string, vin: string, customerServiceId: string): Promise<ServiceStatus> => { throw new Error('Not implemented.') },
 
