@@ -99,7 +99,12 @@ const queryVehicleInformationService: QueryVehicleInformationService = {
         return response.data
     },
 
-    getVehicleTrip: async (accessToken: string, deviceId: string, vin: string, tripId: string): Promise<VehicleTrip> => { throw new Error('Not implemented.') },
+    getVehicleTrip: async (accessToken: string, deviceId: string, vin: string, tripId: string): Promise<VehicleTrip> => {
+        const headers = getHeaders(accessToken, deviceId)
+        const response = await axios.get<VehicleTrip>(`${IF9_BASE_URL}/vehicles/${vin}/trips/${tripId}/route?pageSize=1000&page=0`, {headers})
+        
+        return response.data
+    },
 
     getVehicleTrips: async (accessToken: string, deviceId: string, vin: string): Promise<VehicleTrips> => { throw new Error('Not implemented.') },
 
