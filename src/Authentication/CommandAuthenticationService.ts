@@ -27,7 +27,7 @@ const commandAuthenticationService: CommandAuthenticationService = {
 
     getRduToken: async (accessToken: string, deviceId: string, vin: string, userId: string, userPin: string): Promise<CommandToken> => getCommandToken(accessToken, deviceId, vin, userId, 'RDU', userPin),
 
-    getSwuToken: async (accessToken: string, deviceId: string, vin: string, userId: string): Promise<CommandToken> => { throw new Error('Not implemented') },
+    getSwuToken: async (accessToken: string, deviceId: string, vin: string, userId: string): Promise<CommandToken> => getCommandToken(accessToken, deviceId, vin, userId, 'SWU', ''),
 
     getVhsToken: async (accessToken: string, deviceId: string, vin: string, userId: string): Promise<CommandToken> => { throw new Error('Not implemented') }
 }
