@@ -64,7 +64,6 @@ export interface AuthenticationService {
 }
 
 export interface CommandAuthenticationService {
-    
     /**
      * Authenticate to the ALOFF service. This requires the client to pass the user's personal
      * PIN. The ALOFF service is used for remotely resetting the vehicle alarm.
