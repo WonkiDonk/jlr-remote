@@ -55,7 +55,13 @@ const commandVehicleService: CommandVehicleService = {
         return response.data
      },
 
-    setVehicleNicknameAndRegistration: (accessToken: string, deviceId: string, vin: string, nickname: string, registrationNumber: string): Promise<ServiceStatus | ServiceError> => { throw new Error('Not implemented') },
+    setVehicleNicknameAndRegistration: async (accessToken: string, deviceId: string, vin: string, nickname: string, registrationNumber: string): Promise<ServiceStatus | ServiceError> => {
+        const command = { nickname, registrationNumber }
+        const headers = getHeaders(accessToken, deviceId, { 'Content-Type': 'application/vnd.ngtp.org.VehicleAttributes-v4+json' })
+        const response = await axios.post(`${baseUrl}/vehicles/${vin}/attributes`, command, { headers })
+
+        return response.data
+    },
 
     stopAlarm: (accessToken: string, deviceId: string, vin: string, aloffToken: string): Promise<ServiceStatus | ServiceError> => { throw new Error('Not implemented') },
 
