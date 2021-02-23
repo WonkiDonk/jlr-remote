@@ -1,4 +1,4 @@
-import { Auth, RefreshTokenResponse } from "../Services/ServiceTypes";
+import { Auth, LoginUserResponse, RefreshTokenResponse, UserInfo } from "../Services/ServiceTypes";
 
 export interface AuthenticationService {
     /**
@@ -49,7 +49,7 @@ export interface AuthenticationService {
      * @param expiresIn Expires In
      * @param username Username for the JLR Remote App
      */
-    registerDevice: (accessToken: string, deviceId: string, authorizationToken: string, expiresIn: string, username: string) => Promise<void>
+    registerDevice: (accessToken: string, deviceId: string, authorizationToken: string, expiresIn: string, username: string) => Promise<boolean>
 
     /**
      * After successful user authentication and device id registration, we need to log in the
@@ -61,7 +61,7 @@ export interface AuthenticationService {
      * @param accessToken Access Token 
      * @param deviceId UUID4 Device Identifier
      */
-    loginUser: (accessToken: string, deviceId: string, username: string) => Promise<void>
+    loginUser: (accessToken: string, deviceId: string, username: string) => Promise<LoginUserResponse>
 }
 
 export interface CommandToken { 

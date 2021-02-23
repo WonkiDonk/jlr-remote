@@ -1,7 +1,7 @@
 
-import { Auth, RefreshTokenResponse } from '../Services/ServiceTypes'
+import { Auth, LoginUserResponse, RefreshTokenResponse } from '../Services/ServiceTypes'
 import { AuthenticationService } from './Services'
-import { baseUrls } from '../Services/ServiceHelpers'
+import { baseUrls, getHeaders } from '../Services/ServiceHelpers'
 import axios from 'axios'
 
 const authenticationService: AuthenticationService = {
@@ -15,15 +15,20 @@ const authenticationService: AuthenticationService = {
 
     refreshToken: async (deviceId: string, refreshToken: string): Promise<RefreshTokenResponse> => { throw new Error('Not implemented') },
 
-    registerDevice: async (accessToken: string, deviceId: string, authorizationToken: string, expiresIn: string, username: string): Promise<void> => {
+    registerDevice: async (accessToken: string, deviceId: string, authorizationToken: string, expiresIn: string, username: string): Promise<boolean> => {
         const data = { access_token: accessToken, authorization_token: authorizationToken, expires_in: expiresIn, deviceID: deviceId }
         const headers = { 'Content-Type': 'application/json', 'Authorization': 'Basic YXM6YXNwYXNz', 'X-Device-Id': deviceId, 'Connection': 'close' }
         const response = await axios.post(`${baseUrls.IFOP_BASE_ULR}/users/${username}/clients`, data, { headers })
-    
-        return response.data
+
+        return response.status === 204
     },
 
-    loginUser: async (accessToken: string, deviceId: string, username: string): Promise<void> => { throw new Error('Not implemented') }
+    loginUser: async (accessToken: string, deviceId: string, username: string): Promise<LoginUserResponse> => {
+        const headers = getHeaders(accessToken, deviceId, { 'Accept': 'application/vnd.wirelesscar.ngtp.if9.User-v3+json' })
+        const response = await axios.get(`${baseUrls.IF9_BASE_URL}/users?loginName=${username}`, { headers })
+
+        return response.data
+    }
 }
 
 export default authenticationService
