@@ -23,7 +23,7 @@ const authenticationService: AuthenticationService = {
 
     registerDevice: async (accessToken: string, deviceId: string, authorizationToken: string, expiresIn: string, username: string): Promise<boolean> => {
         const data = { access_token: accessToken, authorization_token: authorizationToken, expires_in: expiresIn, deviceID: deviceId }
-        const headers = { 'Content-Type': 'application/json', 'Authorization': 'Basic YXM6YXNwYXNz', 'X-Device-Id': deviceId, 'Connection': 'close' }
+        const headers = getHeaders(accessToken, deviceId, { 'Connection': 'close' })
         const response = await axios.post(`${baseUrls.IFOP_BASE_ULR}/users/${username}/clients`, data, { headers })
 
         return response.status === 204
