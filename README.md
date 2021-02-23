@@ -1,6 +1,8 @@
 # jlr-remote
 
-Module for interacting with the Jaguar Land Rover Remote API.
+[![Support the Project](https://liberapay.com/assets/widgets/donate.svg)](https://liberapay.com/william-cowell/donate)
+
+Library for interacting with the Jaguar Land Rover Remote API using TypeScript or JavaScript.
 
 ## Acknowledgements
 

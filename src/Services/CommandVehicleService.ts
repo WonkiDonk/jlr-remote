@@ -4,6 +4,7 @@ import { CommandVehicleService } from './Services'
 import { ServiceError, ServiceStatus } from './ServiceTypes'
 
 const baseUrl = baseUrls.IF9_BASE_URL
+const tenHoursInSeconds = 60 * 60 *10
 
 const commandVehicleService: CommandVehicleService = {
     disablePrivacySwitch: async (accessToken: string, deviceId: string, vin: string, provToken: string): Promise<ServiceStatus | ServiceError> => {
@@ -22,7 +23,13 @@ const commandVehicleService: CommandVehicleService = {
         return response.data
     },
 
-    enableServiceMode: (accessToken: string, deviceId: string, vin: string, provToken: string): Promise<ServiceStatus | ServiceError> => { throw new Error('Not implemented') },
+    enableServiceMode: async (accessToken: string, deviceId: string, vin: string, provToken: string): Promise<ServiceStatus | ServiceError> => {
+        const command = { token: provToken, serviceCommand: "protectionStrategy_serviceMode", startTime: null, endTime: Math.floor(+(new Date()) / 1000 + tenHoursInSeconds) }
+        const headers = getHeaders(accessToken, deviceId, { 'Accept': 'application/vnd.wirelesscar.ngtp.if9.ServiceStatus-v4+json', 'Content-Type': 'application/vnd.wirelesscar.ngtp.if9.StartServiceConfiguration-v3+json; charset=utf-8' })
+        const response = await axios.post(`${baseUrl}/vehicles/${vin}/prov`, command, { headers })
+
+        return response.data
+    },
 
     enableTransportMode: (accessToken: string, deviceId: string, vin: string, provToken: string): Promise<ServiceStatus | ServiceError> => { throw new Error('Not implemented') },
 
