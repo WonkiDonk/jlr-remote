@@ -1,4 +1,4 @@
-import { Auth, RefreshTokenResponsxe } from "../Services/ServiceTypes";
+import { Auth, AuthenticateALOFF, AuthenticateCP, AuthenticateECC, AuthenticateHBLF, AuthenticatePROV, AuthenticateRDL, AuthenticateRDU, AuthenticateSWU, AuthenticateVHS, RefreshTokenResponse } from "../Services/ServiceTypes";
 
 export interface AuthenitcationService {
     /**
@@ -31,8 +31,9 @@ export interface AuthenitcationService {
      * and user login again.
      * 
      * @param deviceId UUID4 Device Identifier
+     * @param refreshToken Refresh Token
      */
-    refreshToken: (deviceId: string, refreshToken: string) => Promise<RefreshTokenResponsxe>
+    refreshToken: (deviceId: string, refreshToken: string) => Promise<RefreshTokenResponse>
 
     /**
      * After a succesful user authentication it is neccessary to register a device. A device
@@ -41,10 +42,13 @@ export interface AuthenitcationService {
      * the vehicle service.
      * 
      * The server should return 204, and hence, an empty body, if the request was accepted.
-
+     * 
+     * @param accessToken Access Token
      * @param deviceId UUID4 Device Identifier
+     * @param authorizationToken Authorization Token
+     * @param expiresIn Expires In
      */
-    registerDevice: (deviceId: string, accessToken: string, authorisationToken: string, expiresIn: string) => Promise<void>
+    registerDevice: (accessToken: string, deviceId: string, authorizationToken: string, expiresIn: string) => Promise<void>
 
     /**
      * After successful user authentication and device id registration, we need to log in the
@@ -57,4 +61,113 @@ export interface AuthenitcationService {
      * @param deviceId UUID4 Device Identifier
      */
     loginUser: (accessToken: string, deviceId: string, username: string) => Promise<void>
+}
+
+export interface CommandAuthenticationService {
+    
+    /**
+     * Authenticate to the ALOFF service. This requires the client to pass the user's personal
+     * PIN. The ALOFF service is used for remotely resetting the vehicle alarm.
+     * 
+     * @param accessToken Access Token 
+     * @param deviceId UUID4 Device Identifier
+     * @param vin Vehicle Identification Number
+     * @param userPin User's Personal PIN
+     */
+    getAloffToken: (accessToken: string, deviceId: string, vin: string, userPin: string) => Promise<AuthenticateALOFF>
+    
+    /**
+     * Authenticate to the CP service. This requires the client to pass a PIN which is the last
+     * four digits in the vehicle VIN. The CP service authentication is required for charging
+     * profile related operations.
+     * 
+     * @param accessToken Access Token 
+     * @param deviceId UUID4 Device Identifier
+     * @param vin Vehicle Identification Number
+     * @param lastFourOfVin Last Four Digits of the VIN
+     */
+    getCpToken: (accessToken: string, deviceId: string, vin: string, lastFourOfVin: string) => Promise<AuthenticateCP>
+    
+    /**
+     * Authenticate to the ECC service. This requires the client to pass a PIN which can be any
+     * arbitrary value, including an empty one. However, the mobile app passes the last four
+     * digits in the vehicle VIN. The ECC service authentication is required for climate
+     * preconditoning controls.
+     * 
+     * @param accessToken Access Token 
+     * @param deviceId UUID4 Device Identifier
+     * @param vin Vehicle Identification Number
+     * @param lastFourOfVin Last Four Digits of the VIN
+     */
+    getEccToken: (accessToken: string, deviceId: string, vin: string, lastFourOfVin: string) => Promise<AuthenticateECC>
+    
+    /**
+     * Authenticate to the HBLF service. This requires the client to pass a PIN which is the
+     * last four digits in the vehicle VIN. I'm assuming HBLF stands for HonkBlink Something
+     * something and you need the token returned from this authentication operation to send the
+     * honkblink command.
+     * 
+     * In order to authenticate to the service, the last four digits of the vehicle VIN number
+     * need to be supplied in the body.
+     * 
+     * @param accessToken Access Token 
+     * @param deviceId UUID4 Device Identifier
+     * @param vin Vehicle Identification Number
+     * @param lastFourOfVin Last Four Digits of the VIN
+     */
+    getHblfToken: (accessToken: string, deviceId: string, vin: string, lastFourOfVin: string) => Promise<AuthenticateHBLF>
+    
+    /**
+     * Authenticate to the PROV service. This requires the client to pass the user's personal
+     * PIN. This service is used for enabling and disabling service mode.
+     * 
+     * @param accessToken Access Token 
+     * @param deviceId UUID4 Device Identifier
+     * @param vin Vehicle Identification Number
+     * @param userPin User's Personal PIN
+     */
+    getProvToken: (accessToken: string, deviceId: string, vin: string, userPin: string) => Promise<AuthenticatePROV>
+    
+    /**
+     * Authenticate to the RDU service. This requires the client to pass the user's personal
+     * PIN. The RDU service is used for remotely unlocking the vehicle.
+     * 
+     * @param accessToken Access Token 
+     * @param deviceId UUID4 Device Identifier
+     * @param vin Vehicle Identification Number
+     * @param userPin User's Personal PIN
+     */
+    getRdlToken: (accessToken: string, deviceId: string, vin: string, userPin: string) => Promise<AuthenticateRDL>
+    
+    /**
+     * Authenticate to the RDU service. This requires the client to pass the user's personal
+     * PIN. The RDU service is used for remotely unlocking the vehicle.
+     * 
+     * @param accessToken Access Token 
+     * @param deviceId UUID4 Device Identifier
+     * @param vin Vehicle Identification Number
+     * @param userPin User's Personal PIN
+     */
+    getRduToken: (accessToken: string, deviceId: string, vin: string, userPin: string) => Promise<AuthenticateRDU>
+    
+    /**
+     * Authenticate to the SWU service. This requires the client to pass an empty PIN value. The
+     * SWU service is used for setting wake up timers.
+     * 
+     * @param accessToken Access Token 
+     * @param deviceId UUID4 Device Identifier
+     * @param vin Vehicle Identification Number
+     */
+    getSwuToken: (accessToken: string, deviceId: string, vin: string) => Promise<AuthenticateSWU>
+    
+    /**
+     * Authenticate to the VHS service and obtain the VHS authorization token. This is required
+     * for certain vehicle related operations. Retrieving vehicle health status is one example
+     * of such an operation.
+     * 
+     * @param accessToken Access Token 
+     * @param deviceId UUID4 Device Identifier
+     * @param vin Vehicle Identification Number
+     */
+    getVhsToken: (accessToken: string, deviceId: string, vin: string) => Promise<AuthenticateVHS>
 }

@@ -47,7 +47,7 @@ export interface Auth {
  * Note that after refreshing the access token you will have to perform device registration
  * and user login again.
  */
-export interface RefreshTokenResponsxe {
+export interface RefreshTokenResponse {
     access_token:        string;
     authorization_token: string;
     expires_in:          string;
@@ -1276,11 +1276,11 @@ export class Convert {
         return JSON.stringify(uncast(value, r("Auth")), null, 2);
     }
 
-    public static toRefreshToken(json: string): RefreshTokenResponsxe {
+    public static toRefreshToken(json: string): RefreshTokenResponse {
         return cast(JSON.parse(json), r("RefreshToken"));
     }
 
-    public static refreshTokenToJson(value: RefreshTokenResponsxe): string {
+    public static refreshTokenToJson(value: RefreshTokenResponse): string {
         return JSON.stringify(uncast(value, r("RefreshToken")), null, 2);
     }
 
