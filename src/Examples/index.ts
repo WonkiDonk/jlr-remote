@@ -1,5 +1,4 @@
 import * as jlr_remote from '../index'
-import { VehicleAttributes } from '../Services/ServiceTypes'
 
 type Car = {
     nickname: string,
@@ -55,4 +54,38 @@ const getBatteryChargeLevel = async (deviceId: string, username: string, passwor
         : null
 }
 
-export default {getElectricVehicles, getBatteryChargeLevel}
+const preconditionCar = async (deviceId: string, username: string, password: string, vin: string): Promise<void> => {
+        // Authenticate
+        const {access_token, authorization_token, expires_in } = await jlr_remote.authenticationService.authenticate(deviceId, username, password)
+
+        // Register the application as a device
+        await jlr_remote.authenticationService.registerDevice(access_token, deviceId, authorization_token, expires_in, username)
+    
+        // Login the user
+        const {userId} = await jlr_remote.authenticationService.loginUser(access_token, deviceId, username)
+
+        // Get command token (startClimatePreconditioning requires ECC token)
+        const {token} = await jlr_remote.commandAuthenticationService.getEccToken(access_token, deviceId, vin, userId, vin.slice(vin.length - 4))
+
+        // Send the command to start the preconditioning at 21.0 degrees C
+        await jlr_remote.commandElectricVehicleService.startClimatePrecdonditioning(access_token, deviceId, vin, token, 210)
+}
+
+const lockCar = async (deviceId: string, username: string, password: string, vin: string, userPin: string): Promise<void> => {
+    // Authenticate
+    const {access_token, authorization_token, expires_in } = await jlr_remote.authenticationService.authenticate(deviceId, username, password)
+
+    // Register the application as a device
+    await jlr_remote.authenticationService.registerDevice(access_token, deviceId, authorization_token, expires_in, username)
+
+    // Login the user
+    const {userId} = await jlr_remote.authenticationService.loginUser(access_token, deviceId, username)
+
+    // Get command token (lock requires ECC token)
+    const {token} = await jlr_remote.commandAuthenticationService.getRdlToken(access_token, deviceId, vin, userId, userPin)
+
+    // Send the command to lock the car.
+    await jlr_remote.commandVehicleService.lockVehicle(access_token, deviceId, vin, token)
+}
+
+export default {getElectricVehicles, getBatteryChargeLevel, preconditionCar, lockCar}
