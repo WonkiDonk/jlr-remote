@@ -6,7 +6,13 @@ import { ServiceError, ServiceStatus } from './ServiceTypes'
 const baseUrl = baseUrls.IF9_BASE_URL
 
 const commandVehicleService: CommandVehicleService = {
-    disablePrivacySwitch: (accessToken: string, deviceId: string, vin: string, provToken: string): Promise<ServiceStatus | ServiceError> => { throw new Error('Not implemented') },
+    disablePrivacySwitch: async (accessToken: string, deviceId: string, vin: string, provToken: string): Promise<ServiceStatus | ServiceError> => {
+        const command = { token: provToken, serviceCommand: "privacySwitch_off", startTime: null, endTime: null }
+        const headers = getHeaders(accessToken, deviceId, { 'Accept': 'application/vnd.wirelesscar.ngtp.if9.ServiceStatus-v4+json', 'Content-Type': 'application/vnd.wirelesscar.ngtp.if9.StartServiceConfiguration-v3+json; charset=utf-8' })
+        const response = await axios.post(`${baseUrl}/vehicles/${vin}/prov`, command, { headers })
+
+        return response.data
+    },
 
     enablePrivacySwitch: async (accessToken: string, deviceId: string, vin: string, provToken: string): Promise<ServiceStatus | ServiceError> => {
         const command = { token: provToken, serviceCommand: "privacySwitch_on", startTime: null, endTime: null }
