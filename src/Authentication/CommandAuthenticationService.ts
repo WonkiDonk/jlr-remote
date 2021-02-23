@@ -15,7 +15,7 @@ const getCommandToken = async (accessToken: string, deviceId: string, vin: strin
 const commandAuthenticationService: CommandAuthenticationService = {
     getAloffToken: async (accessToken: string, deviceId: string, vin: string, userId: string, userPin: string): Promise<CommandToken> => getCommandToken(accessToken, deviceId, vin, userId, 'ALOFF', userPin),
 
-    getCpToken: async (accessToken: string, deviceId: string, vin: string, userId: string, lastFourOfVin: string): Promise<CommandToken> => { throw new Error('Not implemented') },
+    getCpToken: async (accessToken: string, deviceId: string, vin: string, userId: string, lastFourOfVin: string): Promise<CommandToken> => getCommandToken(accessToken, deviceId, vin, userId, 'CP', lastFourOfVin),
 
     getEccToken: async (accessToken: string, deviceId: string, vin: string, userId: string, lastFourOfVin: string): Promise<CommandToken> => { throw new Error('Not implemented') },
 
