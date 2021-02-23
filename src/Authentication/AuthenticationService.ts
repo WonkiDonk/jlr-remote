@@ -13,7 +13,13 @@ const authenticationService: AuthenticationService = {
         return response.data
     },
 
-    refreshToken: async (deviceId: string, refreshToken: string): Promise<RefreshTokenResponse> => { throw new Error('Not implemented') },
+    refreshToken: async (deviceId: string, refreshToken: string): Promise<RefreshTokenResponse> => {
+        const data = { grant_type: 'refresh_token', refresh_token: refreshToken }
+        const headers = { 'Content-Type': 'application/json', 'Authorization': 'Basic YXM6YXNwYXNz', 'X-Device-Id': deviceId, 'Connection': 'close' }
+        const response = await axios.post(`${baseUrls.IFAS_BASE_URL}/tokens`, data, { headers })
+    
+        return response.data
+    },
 
     registerDevice: async (accessToken: string, deviceId: string, authorizationToken: string, expiresIn: string, username: string): Promise<boolean> => {
         const data = { access_token: accessToken, authorization_token: authorizationToken, expires_in: expiresIn, deviceID: deviceId }
