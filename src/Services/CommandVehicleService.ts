@@ -31,7 +31,13 @@ const commandVehicleService: CommandVehicleService = {
         return response.data
     },
 
-    enableTransportMode: (accessToken: string, deviceId: string, vin: string, provToken: string): Promise<ServiceStatus | ServiceError> => { throw new Error('Not implemented') },
+    enableTransportMode: async (accessToken: string, deviceId: string, vin: string, provToken: string): Promise<ServiceStatus | ServiceError> => {
+        const command = { token: provToken, serviceCommand: "protectionStrategy_transportMode", startTime: null, endTime: Math.floor(+(new Date()) / 1000 + tenHoursInSeconds) }
+        const headers = getHeaders(accessToken, deviceId, { 'Accept': 'application/vnd.wirelesscar.ngtp.if9.ServiceStatus-v4+json', 'Content-Type': 'application/vnd.wirelesscar.ngtp.if9.StartServiceConfiguration-v3+json; charset=utf-8' })
+        const response = await axios.post(`${baseUrl}/vehicles/${vin}/prov`, command, { headers })
+
+        return response.data
+    },
 
     honkHorn: (accessToken: string, deviceId: string, vin: string, hblfToken: string): Promise<ServiceStatus | ServiceError> => { throw new Error('Not implemented') },
 
