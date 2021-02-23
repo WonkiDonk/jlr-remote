@@ -13,7 +13,7 @@ Library for interacting with the Jaguar Land Rover Remote API using TypeScript o
 - Preconditioning an electric vehicle
 - Locking a vehicle
 
-> **Please note**: each example shows authentication, device registration and logging in. You only need to complete this once per session. Once you have a `refresh_token`, you can use this to authenticate for subsequent sessions instead of the auth/device reg/log in process.
+> **Please note**: each example shows authentication, device registration and logging in. You only need to complete this once per session or until your `access_token` expires. Once your `access_token` has expired, you can refresh it using the `authenticationService.refreshToken(deviceId, refresh_token)` method instead of the auth/device reg/log in process.
 
 ## Acknowledgements
 
