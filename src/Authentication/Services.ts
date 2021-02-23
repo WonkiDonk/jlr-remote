@@ -47,8 +47,9 @@ export interface AuthenticationService {
      * @param deviceId UUID4 Device Identifier
      * @param authorizationToken Authorization Token
      * @param expiresIn Expires In
+     * @param username Username for the JLR Remote App
      */
-    registerDevice: (accessToken: string, deviceId: string, authorizationToken: string, expiresIn: string) => Promise<void>
+    registerDevice: (accessToken: string, deviceId: string, authorizationToken: string, expiresIn: string, username: string) => Promise<void>
 
     /**
      * After successful user authentication and device id registration, we need to log in the
