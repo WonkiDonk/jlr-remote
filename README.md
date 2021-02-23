@@ -6,7 +6,7 @@ Library for interacting with the Jaguar Land Rover Remote API using TypeScript o
 
 ## Examples
 
-[Examples](/examples/index.ts) are provided for:
+[Examples](/src/Examples/index.ts) are provided for:
 
 - Getting a list of electric vehicles on an account
 - Getting the charge level of an electric vehicle
