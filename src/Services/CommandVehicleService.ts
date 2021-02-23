@@ -63,7 +63,13 @@ const commandVehicleService: CommandVehicleService = {
         return response.data
     },
 
-    stopAlarm: (accessToken: string, deviceId: string, vin: string, aloffToken: string): Promise<ServiceStatus | ServiceError> => { throw new Error('Not implemented') },
+    stopAlarm: async (accessToken: string, deviceId: string, vin: string, aloffToken: string): Promise<ServiceStatus | ServiceError> => {
+        const command = { token: aloffToken }
+        const headers = getHeaders(accessToken, deviceId, { 'Accept': 'application/vnd.wirelesscar.ngtp.if9.ServiceStatus-v4+json', 'Content-Type': 'application/vnd.wirelesscar.ngtp.if9.StartServiceConfiguration-v3+json; charset=utf-8' })
+        const response = await axios.post(`${baseUrl}/vehicles/${vin}/alarmOff`, command, { headers })
+
+        return response.data
+    },
 
     unlockVehicle: async (accessToken: string, deviceId: string, vin: string, rduToken: string): Promise<ServiceStatus | ServiceError> => { 
         const command = { token: rduToken }
