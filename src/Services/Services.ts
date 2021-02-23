@@ -314,9 +314,9 @@ export interface CommandVehicleService {
      * @param accessToken Access Token
      * @param deviceId UUID4 Device Identifier
      * @param vin Vehicle Identification Number
-     * @param rdlToken RDL Token
+     * @param rduToken RDU Token
      */
-    unlockVehicle: (accessToken: string, deviceId: string, vin: string, rdlToken: string) => Promise<ServiceStatus | ServiceError>
+    unlockVehicle: (accessToken: string, deviceId: string, vin: string, rduToken: string) => Promise<ServiceStatus | ServiceError>
 }
 
 
