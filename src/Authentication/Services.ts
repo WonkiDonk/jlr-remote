@@ -1,4 +1,4 @@
-import { Auth, AuthenticateALOFF, AuthenticateCP, AuthenticateECC, AuthenticateHBLF, AuthenticatePROV, AuthenticateRDL, AuthenticateRDU, AuthenticateSWU, AuthenticateVHS, RefreshTokenResponse } from "../Services/ServiceTypes";
+import { Auth, RefreshTokenResponse } from "../Services/ServiceTypes";
 
 export interface AuthenticationService {
     /**
@@ -63,6 +63,10 @@ export interface AuthenticationService {
     loginUser: (accessToken: string, deviceId: string, username: string) => Promise<void>
 }
 
+export interface CommandToken { 
+    token: string
+}
+
 export interface CommandAuthenticationService {
     /**
      * Authenticate to the ALOFF service. This requires the client to pass the user's personal
@@ -71,9 +75,10 @@ export interface CommandAuthenticationService {
      * @param accessToken Access Token 
      * @param deviceId UUID4 Device Identifier
      * @param vin Vehicle Identification Number
+     * @param userId User Identifier
      * @param userPin User's Personal PIN
      */
-    getAloffToken: (accessToken: string, deviceId: string, vin: string, userPin: string) => Promise<AuthenticateALOFF>
+    getAloffToken: (accessToken: string, deviceId: string, vin: string, userId: string, userPin: string) => Promise<CommandToken>
     
     /**
      * Authenticate to the CP service. This requires the client to pass a PIN which is the last
@@ -83,9 +88,10 @@ export interface CommandAuthenticationService {
      * @param accessToken Access Token 
      * @param deviceId UUID4 Device Identifier
      * @param vin Vehicle Identification Number
+     * @param userId User Identifier
      * @param lastFourOfVin Last Four Digits of the VIN
      */
-    getCpToken: (accessToken: string, deviceId: string, vin: string, lastFourOfVin: string) => Promise<AuthenticateCP>
+    getCpToken: (accessToken: string, deviceId: string, vin: string, userId: string, lastFourOfVin: string) => Promise<CommandToken>
     
     /**
      * Authenticate to the ECC service. This requires the client to pass a PIN which can be any
@@ -96,9 +102,10 @@ export interface CommandAuthenticationService {
      * @param accessToken Access Token 
      * @param deviceId UUID4 Device Identifier
      * @param vin Vehicle Identification Number
+     * @param userId User Identifier
      * @param lastFourOfVin Last Four Digits of the VIN
      */
-    getEccToken: (accessToken: string, deviceId: string, vin: string, lastFourOfVin: string) => Promise<AuthenticateECC>
+    getEccToken: (accessToken: string, deviceId: string, vin: string, userId: string, lastFourOfVin: string) => Promise<CommandToken>
     
     /**
      * Authenticate to the HBLF service. This requires the client to pass a PIN which is the
@@ -112,9 +119,10 @@ export interface CommandAuthenticationService {
      * @param accessToken Access Token 
      * @param deviceId UUID4 Device Identifier
      * @param vin Vehicle Identification Number
+     * @param userId User Identifier
      * @param lastFourOfVin Last Four Digits of the VIN
      */
-    getHblfToken: (accessToken: string, deviceId: string, vin: string, lastFourOfVin: string) => Promise<AuthenticateHBLF>
+    getHblfToken: (accessToken: string, deviceId: string, vin: string, userId: string, lastFourOfVin: string) => Promise<CommandToken>
     
     /**
      * Authenticate to the PROV service. This requires the client to pass the user's personal
@@ -123,9 +131,10 @@ export interface CommandAuthenticationService {
      * @param accessToken Access Token 
      * @param deviceId UUID4 Device Identifier
      * @param vin Vehicle Identification Number
+     * @param userId User Identifier
      * @param userPin User's Personal PIN
      */
-    getProvToken: (accessToken: string, deviceId: string, vin: string, userPin: string) => Promise<AuthenticatePROV>
+    getProvToken: (accessToken: string, deviceId: string, vin: string, userId: string, userPin: string) => Promise<CommandToken>
     
     /**
      * Authenticate to the RDU service. This requires the client to pass the user's personal
@@ -134,9 +143,10 @@ export interface CommandAuthenticationService {
      * @param accessToken Access Token 
      * @param deviceId UUID4 Device Identifier
      * @param vin Vehicle Identification Number
+     * @param userId User Identifier
      * @param userPin User's Personal PIN
      */
-    getRdlToken: (accessToken: string, deviceId: string, vin: string, userPin: string) => Promise<AuthenticateRDL>
+    getRdlToken: (accessToken: string, deviceId: string, vin: string, userId: string, userPin: string) => Promise<CommandToken>
     
     /**
      * Authenticate to the RDU service. This requires the client to pass the user's personal
@@ -145,9 +155,10 @@ export interface CommandAuthenticationService {
      * @param accessToken Access Token 
      * @param deviceId UUID4 Device Identifier
      * @param vin Vehicle Identification Number
+     * @param userId User Identifier
      * @param userPin User's Personal PIN
      */
-    getRduToken: (accessToken: string, deviceId: string, vin: string, userPin: string) => Promise<AuthenticateRDU>
+    getRduToken: (accessToken: string, deviceId: string, vin: string, userId: string, userPin: string) => Promise<CommandToken>
     
     /**
      * Authenticate to the SWU service. This requires the client to pass an empty PIN value. The
@@ -156,8 +167,9 @@ export interface CommandAuthenticationService {
      * @param accessToken Access Token 
      * @param deviceId UUID4 Device Identifier
      * @param vin Vehicle Identification Number
+     * @param userId User Identifier
      */
-    getSwuToken: (accessToken: string, deviceId: string, vin: string) => Promise<AuthenticateSWU>
+    getSwuToken: (accessToken: string, deviceId: string, vin: string, userId: string) => Promise<CommandToken>
     
     /**
      * Authenticate to the VHS service and obtain the VHS authorization token. This is required
@@ -167,6 +179,7 @@ export interface CommandAuthenticationService {
      * @param accessToken Access Token 
      * @param deviceId UUID4 Device Identifier
      * @param vin Vehicle Identification Number
+     * @param userId User Identifier
      */
-    getVhsToken: (accessToken: string, deviceId: string, vin: string) => Promise<AuthenticateVHS>
+    getVhsToken: (accessToken: string, deviceId: string, vin: string, userId: string) => Promise<CommandToken>
 }
