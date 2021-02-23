@@ -1,6 +1,6 @@
 import { Auth, AuthenticateALOFF, AuthenticateCP, AuthenticateECC, AuthenticateHBLF, AuthenticatePROV, AuthenticateRDL, AuthenticateRDU, AuthenticateSWU, AuthenticateVHS, RefreshTokenResponse } from "../Services/ServiceTypes";
 
-export interface AuthenitcationService {
+export interface AuthenticationService {
     /**
      * Initial user authentication requires you to pass your username (email address) and
      * password as well as specifying the appropriate grant type. The server will return with an
