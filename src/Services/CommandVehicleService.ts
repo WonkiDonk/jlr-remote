@@ -47,7 +47,13 @@ const commandVehicleService: CommandVehicleService = {
         return response.data
     },
 
-    lockVehicle: (accessToken: string, deviceId: string, vin: string, rdlToken: string): Promise<ServiceStatus | ServiceError> => { throw new Error('Not implemented') },
+    lockVehicle: async (accessToken: string, deviceId: string, vin: string, rdlToken: string): Promise<ServiceStatus | ServiceError> => { 
+        const command = { token: rdlToken }
+        const headers = getHeaders(accessToken, deviceId, { 'Content-Type': 'application/vnd.wirelesscar.ngtp.if9.StartServiceConfiguration-v2+json' })
+        const response = await axios.post(`${baseUrl}/vehicles/${vin}/lock`, command, { headers })
+
+        return response.data
+     },
 
     setVehicleNicknameAndRegistration: (accessToken: string, deviceId: string, vin: string, nickname: string, registrationNumber: string): Promise<ServiceStatus | ServiceError> => { throw new Error('Not implemented') },
 
