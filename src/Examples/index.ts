@@ -81,7 +81,7 @@ const lockCar = async (deviceId: string, username: string, password: string, vin
     // Login the user
     const { userId } = await jlr_remote.authenticationService.loginUser(access_token, deviceId, username)
 
-    // Get command token (lock requires ECC token)
+    // Get command token (lock requires RDL token)
     const { token } = await jlr_remote.commandAuthenticationService.getRdlToken(access_token, deviceId, vin, userId, userPin)
 
     // Send the command to lock the car.
