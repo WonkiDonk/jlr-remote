@@ -171,9 +171,9 @@ const commandAuthenticationService: CommandAuthenticationService = {
 
     getRduToken: async (accessToken: string, deviceId: string, vin: string, userId: string, userPin: string): Promise<CommandToken> => getCommandToken(accessToken, deviceId, vin, userId, 'RDU', userPin),
 
-    getReoffToken: async (accessToken: string, deviceId: string, vin: string, userId: string, userPin: string): Promise<CommandToken> => { throw new Error('Not implemented') },
+    getReoffToken: async (accessToken: string, deviceId: string, vin: string, userId: string, userPin: string): Promise<CommandToken> => getCommandToken(accessToken, deviceId, vin, userId, 'REOFF', userPin),
  
-    getReonToken: async (accessToken: string, deviceId: string, vin: string, userId: string, userPin: string): Promise<CommandToken> => { throw new Error('Not implemented') },
+    getReonToken: async (accessToken: string, deviceId: string, vin: string, userId: string, userPin: string): Promise<CommandToken> => getCommandToken(accessToken, deviceId, vin, userId, 'REON', userPin),
 
     getSwuToken: async (accessToken: string, deviceId: string, vin: string, userId: string): Promise<CommandToken> => getCommandToken(accessToken, deviceId, vin, userId, 'SWU', ''),
 
