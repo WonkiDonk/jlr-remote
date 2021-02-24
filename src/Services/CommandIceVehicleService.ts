@@ -61,7 +61,13 @@ const commandIceVehicleService: CommandIceVehicleService = {
         return response.data
     },
 
-    remoteEngineStop: async (accessToken: string, deviceId: string, vin: string, reoffToken: string): Promise<ServiceStatus | ServiceError> => { throw new Error('Not implemented') },
+    remoteEngineStop: async (accessToken: string, deviceId: string, vin: string, reoffToken: string): Promise<ServiceStatus | ServiceError> => {
+        const command = { token: reoffToken, serviceName: 'REOFF' }
+        const headers = getHeaders(accessToken, deviceId, { 'Content-Type': 'application/vnd.wirelesscar.ngtp.if9.StartServiceConfiguration-v2+json' })
+        const response = await axios.post(`${baseUrl}/vehicles/${vin}/engineOff`, command, { headers })
+
+        return response.data
+    },
 
     enableProvisioningMode: async (accessToken: string, deviceId: string, vin: string, provToken: string): Promise<ServiceStatus | ServiceError> => { throw new Error('Not implemented') },
 
