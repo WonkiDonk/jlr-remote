@@ -3,7 +3,7 @@ import { ServiceError, ServiceStatus } from '../JaguarLandRover/ServiceTypes'
 /**
  * Sends Internal Combustion Engine (ICE) Vehicle-specific Commands
  */
-interface CommandICEVehicleService {
+interface CommandIceVehicleService {
     /**
      * @param accessToken Access Token
      * @param deviceId UUID4 Device Identifier
@@ -37,7 +37,7 @@ interface CommandICEVehicleService {
     setRemoteClimateControlTargetTemperature: (accessToken: string, deviceId: string, vin: string, targetTemperature?: number) => Promise<ServiceStatus | ServiceError>
 }
 
-const commandICEVehicleService: CommandICEVehicleService = {
+const commandIceVehicleService: CommandIceVehicleService = {
     remoteEngineStart: async (accessToken: string, deviceId: string, reonToken: string): Promise<ServiceStatus | ServiceError> => { throw new Error('Not implemented') },
 
     remoteEngineStop: async (accessToken: string, deviceId: string, reoffToken: string): Promise<ServiceStatus | ServiceError> => { throw new Error('Not implemented') },
@@ -47,4 +47,4 @@ const commandICEVehicleService: CommandICEVehicleService = {
     setRemoteClimateControlTargetTemperature: async (accessToken: string, deviceId: string, vin: string, targetTemperature?: number | undefined): Promise<ServiceStatus | ServiceError> => { throw new Error('Not implemented') }
 }
 
-export { CommandICEVehicleService, commandICEVehicleService }
+export { CommandIceVehicleService as CommandICEVehicleService, commandIceVehicleService }
