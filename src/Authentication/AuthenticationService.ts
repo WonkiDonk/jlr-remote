@@ -1,6 +1,6 @@
 import axios from 'axios'
-import { baseUrls, getHeaders } from '../Services/ServiceHelpers'
-import { Auth, LoginUserResponse, RefreshTokenResponse } from '../Services/ServiceTypes'
+import { baseUrls, getHeaders } from '../JaguarLandRover/ServiceHelpers'
+import { Auth, LoginUserResponse, RefreshTokenResponse } from '../JaguarLandRover/ServiceTypes'
 
 interface AuthenticationService {
     /**

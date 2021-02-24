@@ -1,6 +1,21 @@
 import axios from 'axios'
-import { baseUrls, getHeaders } from './ServiceHelpers'
-import { ContactInformation, CurrentVehicleResponseV3, CurrentVehicleStatus, ServiceStatus, VehicleAttributes, VehicleContactInformation, VehicleDepartureTimers, VehicleHealthStatus, VehiclePosition, VehicleSubscriptionPackages, VehicleTariffs, VehicleTrip, VehicleTrips, VehicleWakeupTime } from './ServiceTypes'
+import { baseUrls, getHeaders } from '../JaguarLandRover/ServiceHelpers'
+import {
+    ContactInformation,
+    CurrentVehicleResponseV3,
+    CurrentVehicleStatus,
+    ServiceStatus,
+    VehicleAttributes,
+    VehicleContactInformation,
+    VehicleDepartureTimers,
+    VehicleHealthStatus,
+    VehiclePosition,
+    VehicleSubscriptionPackages,
+    VehicleTariffs,
+    VehicleTrip,
+    VehicleTrips,
+    VehicleWakeupTime
+} from '../JaguarLandRover/ServiceTypes'
 
 const baseUrl = baseUrls.IF9_BASE_URL
 

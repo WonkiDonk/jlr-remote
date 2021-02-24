@@ -1,6 +1,6 @@
 import axios from "axios";
-import { baseUrls, getHeaders } from "./ServiceHelpers";
-import { ReverseGeocode } from "./ServiceTypes";
+import { baseUrls, getHeaders } from "../JaguarLandRover/ServiceHelpers";
+import { ReverseGeocode } from "../JaguarLandRover/ServiceTypes";
 
 /**
  * Miscellanous Services

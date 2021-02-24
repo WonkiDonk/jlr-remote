@@ -1,6 +1,6 @@
 import axios from 'axios'
-import { baseUrls, getHeaders } from './ServiceHelpers'
-import { ServiceError, ServiceStatus } from './ServiceTypes'
+import { baseUrls, getHeaders } from '../JaguarLandRover/ServiceHelpers'
+import { ServiceError, ServiceStatus } from '../JaguarLandRover/ServiceTypes'
 
 const baseUrl = baseUrls.IF9_BASE_URL
 const tenHoursInSeconds = 60 * 60 * 10

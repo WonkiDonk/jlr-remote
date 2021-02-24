@@ -1,5 +1,5 @@
 import axios from 'axios'
-import { baseUrls, getHeaders } from '../Services/ServiceHelpers'
+import { baseUrls, getHeaders } from '../JaguarLandRover/ServiceHelpers'
 
 const baseUrl = baseUrls.IF9_BASE_URL
 
