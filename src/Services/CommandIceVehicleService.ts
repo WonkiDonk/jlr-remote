@@ -47,4 +47,4 @@ const commandIceVehicleService: CommandIceVehicleService = {
     setRemoteClimateControlTargetTemperature: async (accessToken: string, deviceId: string, vin: string, targetTemperature?: number | undefined): Promise<ServiceStatus | ServiceError> => { throw new Error('Not implemented') }
 }
 
-export { CommandIceVehicleService as CommandICEVehicleService, commandIceVehicleService }
+export { CommandIceVehicleService, commandIceVehicleService }
