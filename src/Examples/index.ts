@@ -54,7 +54,7 @@ const getBatteryChargeLevel = async (deviceId: string, username: string, passwor
         : null
 }
 
-const preconditionCar = async (deviceId: string, username: string, password: string, vin: string): Promise<void> => {
+const preconditionEV = async (deviceId: string, username: string, password: string, vin: string): Promise<void> => {
     // Authenticate
     const { access_token, authorization_token, expires_in } = await jlr_remote.authenticationService.authenticate(deviceId, username, password)
 
@@ -88,4 +88,30 @@ const lockCar = async (deviceId: string, username: string, password: string, vin
     await jlr_remote.commandVehicleService.lockVehicle(access_token, deviceId, vin, token)
 }
 
-export default { getElectricVehicles, getBatteryChargeLevel, preconditionCar, lockCar }
+const preconditionIceCar = async (deviceId: string, username: string, password: string, vin: string, userPin: string): Promise<void> => {
+    // Authenticate
+    const { access_token, authorization_token, expires_in } = await jlr_remote.authenticationService.authenticate(deviceId, username, password)
+
+    // Register the application as a device
+    await jlr_remote.authenticationService.registerDevice(access_token, deviceId, authorization_token, expires_in, username)
+
+    // Login the user
+    const { userId } = await jlr_remote.authenticationService.loginUser(access_token, deviceId, username)
+
+    // Get command token (remote engine start requires REON token)
+    const reon = await jlr_remote.commandAuthenticationService.getReonToken(access_token, deviceId, vin, userId, userPin)
+
+    // Send the command to turn on the engine.
+    await jlr_remote.commandIceVehicleService.remoteEngineStart(access_token, deviceId, vin, reon.token)
+
+    // Get the command token (Provisioning Mode requires PROV token)
+    const prov = await jlr_remote.commandAuthenticationService.getProvToken(access_token, deviceId, vin, userId, userPin)
+    
+    // Send the command to put the vehicle into Provisioning Mode
+    await jlr_remote.commandIceVehicleService.enableProvisioningMode(access_token, deviceId, vin, prov.token)
+
+    // Set the target temperature
+    await jlr_remote.commandIceVehicleService.setRemoteClimateControlTargetTemperature(access_token, deviceId, vin, 21)
+}
+
+export default { getElectricVehicles, getBatteryChargeLevel, preconditionCar: preconditionEV, lockCar, preconditionIceCar }
