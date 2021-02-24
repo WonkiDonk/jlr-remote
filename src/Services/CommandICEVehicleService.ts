@@ -37,4 +37,14 @@ interface CommandICEVehicleService {
     setRemoteClimateControlTargetTemperature: (accessToken: string, deviceId: string, vin: string, targetTemperature?: number) => Promise<ServiceStatus | ServiceError>
 }
 
-export { CommandICEVehicleService }
+const commandICEVehicleService: CommandICEVehicleService = {
+    remoteEngineStart: async (accessToken: string, deviceId: string, reonToken: string): Promise<ServiceStatus | ServiceError> => { throw new Error('Not implemented') },
+
+    remoteEngineStop: async (accessToken: string, deviceId: string, reoffToken: string): Promise<ServiceStatus | ServiceError> => { throw new Error('Not implemented') },
+
+    enableProvisioningMode: async (accessToken: string, deviceId: string, provToken: string): Promise<ServiceStatus | ServiceError> => { throw new Error('Not implemented') },
+
+    setRemoteClimateControlTargetTemperature: async (accessToken: string, deviceId: string, vin: string, targetTemperature?: number | undefined): Promise<ServiceStatus | ServiceError> => { throw new Error('Not implemented') }
+}
+
+export { CommandICEVehicleService, commandICEVehicleService }
