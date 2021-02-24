@@ -1,4 +1,4 @@
-import { ServiceError, ServiceStatus } from "./ServiceTypes"
+import { ServiceError, ServiceStatus } from '../JaguarLandRover/ServiceTypes'
 
 /**
  * Sends Internal Combustion Engine (ICE) Vehicle-specific Commands
