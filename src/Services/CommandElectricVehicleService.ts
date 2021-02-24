@@ -1,6 +1,6 @@
 import axios from 'axios'
-import { baseUrls, getHeaders } from './ServiceHelpers'
-import { ServiceStatus, ServiceError, RepeatSchedule } from './ServiceTypes'
+import { baseUrls, getHeaders } from '../JaguarLandRover/ServiceHelpers'
+import { ServiceStatus, ServiceError, RepeatSchedule } from '../JaguarLandRover/ServiceTypes'
 
 const baseUrl = baseUrls.IF9_BASE_URL
 
@@ -20,9 +20,9 @@ interface CommandElectricVehicleService {
      * @param deviceId UUID4 Device Identifier
      * @param vin Vehicle Identification Number
      * @param eccToken ECC Token
-     * @param targetTemperatureCelcius Target Temperature in Degrees Celcius
+     * @param targetTemperature Target Temperature
      */
-    startClimatePrecdonditioning: (accessToken: string, deviceId: string, vin: string, eccToken: string, targetTemperatureCelcius?: number) => Promise<ServiceStatus | ServiceError>
+    startClimatePrecdonditioning: (accessToken: string, deviceId: string, vin: string, eccToken: string, targetTemperature?: number) => Promise<ServiceStatus | ServiceError>
 
     /**
      * Stop the climate preconditioning immediately.
@@ -200,8 +200,8 @@ interface CommandElectricVehicleService {
 }
 
 const commandElectricVehicleService: CommandElectricVehicleService = {
-    startClimatePrecdonditioning: async (accessToken: string, deviceId: string, vin: string, eccToken: string, targetTemperatureCelcius: number = 210): Promise<ServiceStatus | ServiceError> => {
-        const command = { token: eccToken, serviceParameters: [{ key: 'PRECONDITIONING', value: 'START' }, { key: 'TARGET_TEMPERATURE_CELSIUS', value: targetTemperatureCelcius }] }
+    startClimatePrecdonditioning: async (accessToken: string, deviceId: string, vin: string, eccToken: string, targetTemperature: number = 210): Promise<ServiceStatus | ServiceError> => {
+        const command = { token: eccToken, serviceParameters: [{ key: 'PRECONDITIONING', value: 'START' }, { key: 'TARGET_TEMPERATURE_CELSIUS', value: targetTemperature }] }
         const headers = getHeaders(accessToken, deviceId, { 'Accept': 'application/vnd.wirelesscar.ngtp.if9.ServiceStatus-v5+json', 'Content-Type': 'application/vnd.wirelesscar.ngtp.if9.PhevService-v1+json; charset=utf' })
         const response = await axios.post(`${baseUrl}/vehicles/${vin}/preconditioning`, command, { headers })
 
