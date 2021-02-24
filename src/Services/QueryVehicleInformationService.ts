@@ -7,7 +7,7 @@ const baseUrl = baseUrls.IF9_BASE_URL
 /**
  * Queries Vehicle Information
  */
-export interface QueryVehicleInformationService {
+interface QueryVehicleInformationService {
     /**
      * Get country specific contact information based on the supplied Mobile Country Code (MCC).
      * Note that it does not show contact information for the specified country specifically,
@@ -265,4 +265,4 @@ const queryVehicleInformationService: QueryVehicleInformationService = {
     }
 }
 
-export default queryVehicleInformationService
+export { QueryVehicleInformationService, queryVehicleInformationService }

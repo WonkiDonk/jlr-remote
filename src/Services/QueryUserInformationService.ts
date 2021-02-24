@@ -7,7 +7,7 @@ const baseUrl = baseUrls.IF9_BASE_URL
 /**
  * Queries User Information
  */
-export interface QueryUserInformationService {
+interface QueryUserInformationService {
     /**
      * List user information based on the user ID.
      * 
@@ -46,4 +46,5 @@ const queryUserInformationService: QueryUserInformationService = {
     }
 }
 
-export default queryUserInformationService
+export { QueryUserInformationService, queryUserInformationService }
+

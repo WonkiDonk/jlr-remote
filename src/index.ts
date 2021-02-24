@@ -1,26 +1,24 @@
-import authenticationService from './Authentication/AuthenticationService'
-import commandAuthenticationService from './Authentication/CommandAuthenticationService'
-import queryUserInformationService from './Services/QueryUserInformationService'
-import queryVehicleInformationService from './Services/QueryVehicleInformationService'
-import commandElectricVehicleService from './Services/CommandElectricVehicleService'
-import commandVehicleService from './Services/CommandVehicleService'
-import miscServices from './Services/MiscServices'
-import { AuthenticationService, CommandAuthenticationService } from './Authentication/Services'
-import { QueryUserInformationService, QueryVehicleInformationService, CommandElectricVehicleService, CommandVehicleService, MiscServices } from './Services/Services'
+import { AuthenticationService, authenticationService } from './Authentication/AuthenticationService'
+import { CommandAuthenticationService, commandAuthenticationService } from './Authentication/CommandAuthenticationService'
+import { CommandElectricVehicleService, commandElectricVehicleService } from './Services/CommandElectricVehicleService'
+import { CommandVehicleService, commandVehicleService } from './Services/CommandVehicleService'
+import { MiscServices, miscServices } from './Services/MiscServices'
+import { QueryUserInformationService, queryUserInformationService } from './Services/QueryUserInformationService'
+import { QueryVehicleInformationService, queryVehicleInformationService } from './Services/QueryVehicleInformationService'
 
 export {
     authenticationService,
     commandAuthenticationService,
-    queryUserInformationService,
-    queryVehicleInformationService,
     commandElectricVehicleService,
     commandVehicleService,
     miscServices,
+    queryUserInformationService,
+    queryVehicleInformationService,
     AuthenticationService,
     CommandAuthenticationService,
-    QueryUserInformationService,
-    QueryVehicleInformationService,
     CommandElectricVehicleService,
     CommandVehicleService,
+    QueryUserInformationService,
+    QueryVehicleInformationService,
     MiscServices
 }
