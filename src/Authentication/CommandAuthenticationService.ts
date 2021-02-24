@@ -101,6 +101,30 @@ interface CommandAuthenticationService {
     getRduToken: (accessToken: string, deviceId: string, vin: string, userId: string, userPin: string) => Promise<CommandToken>
 
     /**
+     * Authenticate to the REOFF service. This requires the client to pass the user's personal
+     * PIN. The RDU service is used for remotely stopping the vehicle engine.
+     * 
+     * @param accessToken Access Token 
+     * @param deviceId UUID4 Device Identifier
+     * @param vin Vehicle Identification Number
+     * @param userId User Identifier
+     * @param userPin User's Personal PIN
+     */
+    getReoffToken: (accessToken: string, deviceId: string, vin: string, userId: string, userPin: string) => Promise<CommandToken>
+
+    /**
+     * Authenticate to the REON service. This requires the client to pass the user's personal
+     * PIN. The REON service is used for remotely starting the vehicle engine.
+     * 
+     * @param accessToken Access Token 
+     * @param deviceId UUID4 Device Identifier
+     * @param vin Vehicle Identification Number
+     * @param userId User Identifier
+     * @param userPin User's Personal PIN
+     */
+    getReonToken: (accessToken: string, deviceId: string, vin: string, userId: string, userPin: string) => Promise<CommandToken>
+
+    /**
      * Authenticate to the SWU service. This requires the client to pass an empty PIN value. The
      * SWU service is used for setting wake up timers.
      * 
@@ -146,6 +170,10 @@ const commandAuthenticationService: CommandAuthenticationService = {
     getRdlToken: async (accessToken: string, deviceId: string, vin: string, userId: string, userPin: string): Promise<CommandToken> => getCommandToken(accessToken, deviceId, vin, userId, 'RDL', userPin),
 
     getRduToken: async (accessToken: string, deviceId: string, vin: string, userId: string, userPin: string): Promise<CommandToken> => getCommandToken(accessToken, deviceId, vin, userId, 'RDU', userPin),
+
+    getReoffToken: async (accessToken: string, deviceId: string, vin: string, userId: string, userPin: string): Promise<CommandToken> => { throw new Error('Not implemented') },
+ 
+    getReonToken: async (accessToken: string, deviceId: string, vin: string, userId: string, userPin: string): Promise<CommandToken> => { throw new Error('Not implemented') },
 
     getSwuToken: async (accessToken: string, deviceId: string, vin: string, userId: string): Promise<CommandToken> => getCommandToken(accessToken, deviceId, vin, userId, 'SWU', ''),
 
