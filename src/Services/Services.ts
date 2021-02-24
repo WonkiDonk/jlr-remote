@@ -519,7 +519,16 @@ export interface CommandElectricVehicleService {
  * Miscellanous Services
  */
 export interface MiscServices {
-    getReverseGeocode: (accessToken: string, latitude: number, longitude: number) => Promise<ReverseGeocode>
+    /**
+     * Lookup a lat/long combination and get address information associated with the supplied
+     * coordinates.
+     * 
+     * @param accessToken Access Token
+     * @param deviceId UUID4 Device Identifier
+     * @param latitude Latitude
+     * @param longitude Longitude
+     */
+    getReverseGeocode: (accessToken: string, deviceId: string, latitude: number, longitude: number) => Promise<ReverseGeocode>
 }
 
 /**

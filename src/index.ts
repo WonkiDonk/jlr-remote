@@ -5,8 +5,8 @@ import queryVehicleInformationService from './Services/QueryVehicleInformationSe
 import commandElectricVehicleService from './Services/CommandElectricVehicleService'
 import commandVehicleService from './Services/CommandVehicleService'
 import miscServices from './Services/MiscServices'
-import {AuthenticationService, CommandAuthenticationService} from './Authentication/Services'
-import {QueryUserInformationService, QueryVehicleInformationService, CommandElectricVehicleService, CommandVehicleService, MiscServices} from './Services/Services'
+import { AuthenticationService, CommandAuthenticationService } from './Authentication/Services'
+import { QueryUserInformationService, QueryVehicleInformationService, CommandElectricVehicleService, CommandVehicleService, MiscServices } from './Services/Services'
 
 export {
     authenticationService,
