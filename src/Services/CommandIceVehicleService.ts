@@ -80,7 +80,7 @@ const commandIceVehicleService: CommandIceVehicleService = {
     setRemoteClimateControlTargetTemperature: async (accessToken: string, deviceId: string, vin: string, targetTemperature: number): Promise<ServiceStatus | ServiceError> => {
         const command = { key: 'ClimateControlRccTargetTemp', value: targetTemperature, applied: 1 }
         const headers = getHeaders(accessToken, deviceId)
-        const response = await axios.post(`${baseUrl}/vehicles/${vin}/engineOn`, command, { headers })
+        const response = await axios.post(`${baseUrl}/vehicles/${vin}/settings`, command, { headers })
 
         return response.data
     }
