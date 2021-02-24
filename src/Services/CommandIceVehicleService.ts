@@ -49,7 +49,7 @@ interface CommandIceVehicleService {
      * @param vin Vehicle Identification Number
      * @param targetTemperature Target Temperature
      */
-    setRemoteClimateControlTargetTemperature: (accessToken: string, deviceId: string, vin: string, targetTemperature?: number) => Promise<ServiceStatus | ServiceError>
+    setRemoteClimateControlTargetTemperature: (accessToken: string, deviceId: string, vin: string, targetTemperature: number) => Promise<ServiceStatus | ServiceError>
 }
 
 const commandIceVehicleService: CommandIceVehicleService = {
@@ -71,7 +71,13 @@ const commandIceVehicleService: CommandIceVehicleService = {
 
     enableProvisioningMode: async (accessToken: string, deviceId: string, vin: string, provToken: string): Promise<ServiceStatus | ServiceError> => { throw new Error('Not implemented') },
 
-    setRemoteClimateControlTargetTemperature: async (accessToken: string, deviceId: string, vin: string, targetTemperature?: number | undefined): Promise<ServiceStatus | ServiceError> => { throw new Error('Not implemented') }
+    setRemoteClimateControlTargetTemperature: async (accessToken: string, deviceId: string, vin: string, targetTemperature: number): Promise<ServiceStatus | ServiceError> => {
+        const command = { key: 'ClimateControlRccTargetTemp', value: targetTemperature, applied: 1 }
+        const headers = getHeaders(accessToken, deviceId)
+        const response = await axios.post(`${baseUrl}/vehicles/${vin}/engineOn`, command, { headers })
+
+        return response.data
+    }
 }
 
 export { CommandIceVehicleService, commandIceVehicleService }
