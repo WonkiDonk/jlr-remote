@@ -1,7 +1,22 @@
 import axios from "axios";
 import { baseUrls, getHeaders } from "./ServiceHelpers";
-import { MiscServices } from "./Services";
 import { ReverseGeocode } from "./ServiceTypes";
+
+/**
+ * Miscellanous Services
+ */
+interface MiscServices {
+    /**
+     * Lookup a lat/long combination and get address information associated with the supplied
+     * coordinates.
+     * 
+     * @param accessToken Access Token
+     * @param deviceId UUID4 Device Identifier
+     * @param latitude Latitude
+     * @param longitude Longitude
+     */
+    getReverseGeocode: (accessToken: string, deviceId: string, latitude: number, longitude: number) => Promise<ReverseGeocode>
+}
 
 const miscServices: MiscServices = {
     getReverseGeocode: async (accessToken: string, deviceId: string, latitude: number, longitude: number): Promise<ReverseGeocode> => {
@@ -12,4 +27,4 @@ const miscServices: MiscServices = {
     }
 }
 
-export default miscServices
+export { MiscServices, miscServices }
