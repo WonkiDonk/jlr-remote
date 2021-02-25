@@ -10,8 +10,9 @@ Library for interacting with the Jaguar Land Rover Remote API using TypeScript o
 
 - Getting a list of electric vehicles on an account
 - Getting the charge level of an electric vehicle
-- Preconditioning an electric vehicle
+- Preconditioning an electric vehicle (EVs)
 - Locking a vehicle
+- Preconditioning a vehicle with an internal combustion engine (ICEs)
 
 > **Please note**: each example shows authentication, device registration and logging in. You only need to complete this once per session or until your `access_token` expires. Once your `access_token` has expired, you can refresh it using the `authenticationService.refreshToken(deviceId, refresh_token)` method instead of the auth/device reg/log in process.
 
