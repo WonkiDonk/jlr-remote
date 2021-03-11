@@ -1,0 +1,13 @@
+language: node_js
+node_js:
+- 12
+deploy:
+  provider: npm
+  email: wonkidonk@outlook.com
+  api_key: $NPM_TOKEN
+  on:
+    tags: true
+    branch: main
+env:
+  global:
+    secure: EcvzXGBO2g4DIT/Mad5xYJ1jaMiyswpvmD+sNxUrCs5JxsGGC7BmkDlg2Vg4fDfpgiv+3sTHJnpRH6U9XUYcZeQxKbtcDA7fJVjXXQdXTC7DxHdh3xAHubApXFQanloG5VemaKMTntJiWF/Gh09e0/4n6XNgJ8yJzeNB+CptRBBzKEbbj0z43KGqCMi4m9VYj/g5zLpda76KeOafrhLQ5vZN/yKeKvnYMnvDDznZ9Y24yRVfdmyOpMVNs4Kg6I7+GsPSgcZ5qY/cH9YslaQ8qDoV3K9T2x6evmepP6+I1ftSCs7tmRoxPZIlOIRTdMj3d+7nK0W6iEcP7kjyhfp3TQ7W3o/KlEqZNDJbItmHIGTaQXlotOduPr2WUxRqsZtZ8M0yuVciaz9b8GHAyjbC7fe1JaDdCKdltT6sMtnQMHWyrh+YgOzbRF4vzmpDtfQAWTPo4sUiIrIkSMTHx/RjmMXA5ugTJdboWG+CKP+tfHSduxwBzJIKaqYeFnRFZdnF6k4gxI1Qe5eY7Pcu+OSksNw27ufc+5eCNy8CDKLkCHJx/D2yQ8M3fuaSTvSRZo5RO2xnG3Fc2uwoNDFyybL+bbYXlYmGse+b63Hu7YbTOdEHjS1UHGsfaEZh/IsRJqRMuYV04qFW4lKHoGgTQ0tafnEH66f+kquTkLAHAVzxfqM=
