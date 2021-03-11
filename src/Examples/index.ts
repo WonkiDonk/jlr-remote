@@ -68,7 +68,7 @@ const preconditionEV = async (deviceId: string, username: string, password: stri
     const { token } = await jlr_remote.commandAuthenticationService.getEccToken(access_token, deviceId, vin, userId, vin.slice(vin.length - 4))
 
     // Send the command to start the preconditioning at 21.0 degrees C
-    await jlr_remote.commandElectricVehicleService.startClimatePrecdonditioning(access_token, deviceId, vin, token, 210)
+    await jlr_remote.commandElectricVehicleService.startClimatePreconditioning(access_token, deviceId, vin, token, 210)
 }
 
 const lockCar = async (deviceId: string, username: string, password: string, vin: string, userPin: string): Promise<void> => {

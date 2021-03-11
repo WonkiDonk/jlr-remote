@@ -22,7 +22,7 @@ interface CommandElectricVehicleService {
      * @param eccToken ECC Token
      * @param targetTemperature Target Temperature
      */
-    startClimatePrecdonditioning: (accessToken: string, deviceId: string, vin: string, eccToken: string, targetTemperature?: number) => Promise<ServiceStatus | ServiceError>
+    startClimatePreconditioning: (accessToken: string, deviceId: string, vin: string, eccToken: string, targetTemperature?: number) => Promise<ServiceStatus | ServiceError>
 
     /**
      * Stop the climate preconditioning immediately.
@@ -200,7 +200,7 @@ interface CommandElectricVehicleService {
 }
 
 const commandElectricVehicleService: CommandElectricVehicleService = {
-    startClimatePrecdonditioning: async (accessToken: string, deviceId: string, vin: string, eccToken: string, targetTemperature: number = 210): Promise<ServiceStatus | ServiceError> => {
+    startClimatePreconditioning: async (accessToken: string, deviceId: string, vin: string, eccToken: string, targetTemperature: number = 210): Promise<ServiceStatus | ServiceError> => {
         const command = { token: eccToken, serviceParameters: [{ key: 'PRECONDITIONING', value: 'START' }, { key: 'TARGET_TEMPERATURE_CELSIUS', value: targetTemperature }] }
         const headers = getHeaders(accessToken, deviceId, { 'Accept': 'application/vnd.wirelesscar.ngtp.if9.ServiceStatus-v5+json', 'Content-Type': 'application/vnd.wirelesscar.ngtp.if9.PhevService-v1+json; charset=utf' })
         const response = await axios.post(`${baseUrl}/vehicles/${vin}/preconditioning`, command, { headers })

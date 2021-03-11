@@ -7,7 +7,8 @@
   "author": "William Cowell",
   "license": "MIT",
   "scripts": {
-    "test": "jest"
+    "test": "jest",
+    "build": "tsc"
   },
   "devDependencies": {
     "@types/jest": "^26.0.20",
