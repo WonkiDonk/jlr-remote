@@ -1,5 +1,4 @@
 import { createMock } from 'ts-auto-mock'
-import { On, method } from 'ts-auto-mock/extension'
 import { QueryVehicleInformationService } from '../src/Services/QueryVehicleInformationService'
 import { VehicleAttributes } from '../src/JaguarLandRover/ServiceTypes'
 import { VehicleRemote } from '../src/Remotes/VehicleRemote'
@@ -14,7 +13,7 @@ describe('Vehicle Remote', () => {
             const mockService = createMock<QueryVehicleInformationService>()
             mockService.getVehicleAttributes = mockGetVehicleAttributes
     
-            const remote = new VehicleRemote('', mockService)
+            const remote = new VehicleRemote('', '', mockService)
     
             const response = await remote.getVehicleAttributes()
     
@@ -23,12 +22,11 @@ describe('Vehicle Remote', () => {
 
         test('uses the access token', () => {})
 
-
         test.each(['hello world', 'cat', 'dog'])
             ('uses the device ID `%s`', async (expectedDeviceId) => {
             // Arrange
             const mockService = createMock<QueryVehicleInformationService>()
-            const remote = new VehicleRemote(expectedDeviceId, mockService)
+            const remote = new VehicleRemote(expectedDeviceId, '', mockService)
 
             // Act
             await remote.getVehicleAttributes()
@@ -40,6 +38,19 @@ describe('Vehicle Remote', () => {
                 expect.any(String))
         })
 
-        test('uses the VIN', () => {})
+        test.each(['hello world', 'dog', 'cat'])
+            ('uses the VIN `%s`', async (expectedVIN) => {
+            // Arrange
+            
+            const mockService = createMock<QueryVehicleInformationService>()
+            const remote = new VehicleRemote('', expectedVIN, mockService)
+            // Act
+            await remote.getVehicleAttributes()
+            // Assert
+            expect(mockService.getVehicleAttributes).toHaveBeenCalledWith(
+                expect.any(String),
+                expect.any(String),
+                expectedVIN)
+        })
     }) 
 })
