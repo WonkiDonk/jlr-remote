@@ -3,13 +3,13 @@ import {QueryVehicleInformationService} from '../Services/QueryVehicleInformatio
 class VehicleRemote {
     private readonly service: QueryVehicleInformationService
     private readonly deviceId: string
-    constructor(deviceId: string, queryVehicleInformationService: QueryVehicleInformationService) {
+    constructor(deviceId: string, private readonly vin: string, queryVehicleInformationService: QueryVehicleInformationService) {
         this.deviceId = deviceId
         this.service = queryVehicleInformationService
     }
 
     getVehicleAttributes = (): Promise<any> => {
-        return this.service.getVehicleAttributes('', this.deviceId, '')
+        return this.service.getVehicleAttributes('', this.deviceId, this.vin)
     }
 }
 
