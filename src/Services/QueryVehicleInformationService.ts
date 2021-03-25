@@ -2,7 +2,7 @@ import axios from 'axios'
 import { baseUrls, getHeaders } from '../JaguarLandRover/ServiceHelpers'
 import {
     ContactInformation,
-    CurrentVehicleResponseV3,
+    CurrentVehicleStatusV3,
     CurrentVehicleStatus,
     ServiceStatus,
     VehicleAttributes,
@@ -122,7 +122,7 @@ interface QueryVehicleInformationService {
      * @param deviceId UUID4 Device Identifier
      * @param vin Vehicle Identification Number 
      */
-    getVehicleStatusV3: (accessToken: string, deviceId: string, vin: string) => Promise<CurrentVehicleResponseV3>
+    getVehicleStatusV3: (accessToken: string, deviceId: string, vin: string) => Promise<CurrentVehicleStatusV3>
 
     /**
      * Get list of subscription packages for a specific VIN
@@ -237,9 +237,9 @@ const queryVehicleInformationService: QueryVehicleInformationService = {
         return response.data
     },
 
-    getVehicleStatusV3: async (accessToken: string, deviceId: string, vin: string): Promise<CurrentVehicleResponseV3> => {
+    getVehicleStatusV3: async (accessToken: string, deviceId: string, vin: string): Promise<CurrentVehicleStatusV3> => {
         const headers = getHeaders(accessToken, deviceId, { 'Accept': 'application/vnd.ngtp.org.if9.healthstatus-v3+json' })
-        const response = await axios.get<CurrentVehicleResponseV3>(`${baseUrl}/vehicles/${vin}/status?includeInactive=true`, { headers })
+        const response = await axios.get<CurrentVehicleStatusV3>(`${baseUrl}/vehicles/${vin}/status?includeInactive=true`, { headers })
 
         return response.data
     },

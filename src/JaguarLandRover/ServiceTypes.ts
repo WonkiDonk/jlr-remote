@@ -321,7 +321,7 @@ export interface VehicleStatus {
  * Version 3 of the vehicle status API request. The returned data is structured a bit
  * differently here with EV data compartmentalized nicely.
  */
-export interface CurrentVehicleResponseV3 {
+export interface CurrentVehicleStatusV3 {
     vehicleStatus:   GetVehicleStatusV3VehicleStatus;
     vehicleAlerts:   VehicleAlert[];
     lastUpdatedTime: string;
@@ -1340,11 +1340,11 @@ export class Convert {
         return JSON.stringify(uncast(value, r("GetVehicleStatus")), null, 2);
     }
 
-    public static toGetVehicleStatusV3(json: string): CurrentVehicleResponseV3 {
+    public static toGetVehicleStatusV3(json: string): CurrentVehicleStatusV3 {
         return cast(JSON.parse(json), r("GetVehicleStatusV3"));
     }
 
-    public static getVehicleStatusV3ToJson(value: CurrentVehicleResponseV3): string {
+    public static getVehicleStatusV3ToJson(value: CurrentVehicleStatusV3): string {
         return JSON.stringify(uncast(value, r("GetVehicleStatusV3")), null, 2);
     }
 
