@@ -1,12 +1,15 @@
-import {QueryVehicleInformationService} from '../Services/QueryVehicleInformationService'
+import { QueryVehicleInformationService } from '../Services/QueryVehicleInformationService'
+import { VehicleRemoteAuthenticator } from './VehicleRemoteAuthenticator'
 
 class VehicleRemote {
-    constructor(private readonly deviceId: string, private readonly vin: string, private readonly queryVehicleInformationService: QueryVehicleInformationService) {
-        
-    }
+    constructor(private readonly deviceId: string, private readonly vin: string,
+        private readonly vehicleRemoteAuthenticator: VehicleRemoteAuthenticator,
+        private readonly queryVehicleInformationService: QueryVehicleInformationService) { }
 
-    getVehicleAttributes = (): Promise<any> => {
-        return this.queryVehicleInformationService.getVehicleAttributes('', this.deviceId, this.vin)
+    getVehicleAttributes = async (): Promise<any> => {
+        const accessToken = await this.vehicleRemoteAuthenticator.getAccessToken()
+        
+        return this.queryVehicleInformationService.getVehicleAttributes(accessToken, this.deviceId, this.vin)
     }
 }
 
