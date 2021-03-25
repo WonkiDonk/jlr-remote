@@ -63,10 +63,10 @@ describe('Vehicle Remote', () => {
         })
 
         test.each(['hello world', 'dog', 'cat'])
-            ('uses the VIN `%s`', async (expectedVIN) => {
+            ('uses the VIN `%s`', async (expectedVin) => {
             // Arrange
             const mockService = createMock<QueryVehicleInformationService>()
-            const remote = new VehicleRemote('', expectedVIN, createMock<VehicleRemoteAuthenticator>(), mockService)
+            const remote = new VehicleRemote('', expectedVin, createMock<VehicleRemoteAuthenticator>(), mockService)
 
             // Act
             await remote.getVehicleAttributes()
@@ -75,7 +75,7 @@ describe('Vehicle Remote', () => {
             expect(mockService.getVehicleAttributes).toHaveBeenCalledWith(
                 expect.any(String),
                 expect.any(String),
-                expectedVIN)
+                expectedVin)
         })
     })
     
@@ -136,8 +136,21 @@ describe('Vehicle Remote', () => {
             )
         })
 
-        test('uses the VIN', () => {
-
+        test.each(['some vin', 'another vin', 'this is not a VIN!'])
+            ('uses the VIN', async (expectedVin: string) => {
+            // Arrange
+            const mockService = createMock<QueryVehicleInformationService>()
+            const remote = new VehicleRemote('', expectedVin, createMock<VehicleRemoteAuthenticator>(), mockService)
+            
+            // Act
+            await remote.getVehicleStatus()
+            
+            // Assert
+            expect(mockService.getVehicleStatusV3).toHaveBeenCalledWith(
+                expect.any(String),
+                expect.any(String),
+                expectedVin
+            )
         })
     })
 })
