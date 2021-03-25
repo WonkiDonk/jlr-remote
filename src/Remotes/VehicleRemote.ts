@@ -14,8 +14,8 @@ class VehicleRemote {
 
     getVehicleStatus = async (): Promise<any> => { 
         const accessToken = await this.vehicleRemoteAuthenticator.getAccessToken()
-        
-        return this.queryVehicleInformationService.getVehicleStatusV3(accessToken, '', '')
+
+        return this.queryVehicleInformationService.getVehicleStatusV3(accessToken, this.deviceId, '')
     }
 }
 

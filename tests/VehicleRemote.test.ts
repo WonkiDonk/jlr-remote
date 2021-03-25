@@ -25,7 +25,7 @@ describe('Vehicle Remote', () => {
         })
 
         test.each(['hello world', 'example token', 'this token is not even real'])
-            ('uses the access token', async (expectedAccessToken: string) => {
+            ('uses the access token `%s`', async (expectedAccessToken: string) => {
             // Arrange
             const mockVehicleRemoteAuthentication = createMock<VehicleRemoteAuthenticator>()
             const mockGetAccessToken = jest.fn()
@@ -98,7 +98,7 @@ describe('Vehicle Remote', () => {
         })  
 
         test.each(['hello world', 'fake access token', 'real access token, honest, gov!'])
-        ('uses the access token', async (expectedAccessToken: string) => {
+            ('uses the access token `%s`', async (expectedAccessToken: string) => {
             // Arrange
             const mockGetAccessToken = jest.fn()
             mockGetAccessToken.mockImplementation(() => Promise.resolve(expectedAccessToken))
@@ -119,8 +119,21 @@ describe('Vehicle Remote', () => {
                 expect.any(String))
         })
 
-        test('uses the device ID', () => {
+        test.each(['Hello World', 'Fake Id', 'exampleId'])
+            ('uses the device ID `%s`', async (expectedDeviceId: string) => {   
+            // Arrange
+            const mockService = createMock<QueryVehicleInformationService>()
+            const remote = new VehicleRemote(expectedDeviceId, '', createMock<VehicleRemoteAuthenticator>(), mockService)
 
+            // Act
+            await remote.getVehicleStatus()
+
+            // Assert
+            expect(mockService.getVehicleStatusV3).toHaveBeenCalledWith(
+                expect.any(String),
+                expectedDeviceId,
+                expect.any(String)
+            )
         })
 
         test('uses the VIN', () => {
