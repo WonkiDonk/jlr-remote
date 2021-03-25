@@ -1,6 +1,6 @@
 import { createMock } from 'ts-auto-mock'
 import { QueryVehicleInformationService } from '../src/Services/QueryVehicleInformationService'
-import { VehicleAttributes } from '../src/JaguarLandRover/ServiceTypes'
+import { CurrentVehicleStatusV3, VehicleAttributes } from '../src/JaguarLandRover/ServiceTypes'
 import { VehicleRemote } from '../src/Remotes/VehicleRemote'
 import { VehicleRemoteAuthenticator } from '../src/Remotes/VehicleRemoteAuthenticator'
 
@@ -77,5 +77,36 @@ describe('Vehicle Remote', () => {
                 expect.any(String),
                 expectedVIN)
         })
-    }) 
+    })
+    
+    describe('Get vehicle status', () => {
+        test('returns vehicle status', async () => {
+            // Arrange
+            const status = createMock<CurrentVehicleStatusV3>()
+            const mockService = createMock<QueryVehicleInformationService>()
+            const mockGetVehicleStatusV3 = jest.fn()
+            mockService.getVehicleStatusV3 = mockGetVehicleStatusV3
+            mockGetVehicleStatusV3.mockImplementation( () => Promise.resolve(status))
+
+            const remote = new VehicleRemote('', '', createMock<VehicleRemoteAuthenticator>(), mockService)
+
+            // Act
+            const response = await remote.getVehicleStatus()
+
+            // Assert
+            expect(response).toBe(status)
+        })  
+
+        test('uses the access token', () => {
+
+        })
+
+        test('uses the device ID', () => {
+
+        })
+
+        test('uses the VIN', () => {
+
+        })
+    })
 })
