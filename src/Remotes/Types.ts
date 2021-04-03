@@ -187,7 +187,9 @@ export {
     ElectricVehicleRemote,
     InternalCombustionEngineVehicleRemote,
     VehicleRemoteInformation,
+    LockState,
     VehicleRemoteControl,
+    ChargeState,
     ElectricVehicleRemoteControl,
     InternalCombustionEngineVehicleRemoteControl
 }
