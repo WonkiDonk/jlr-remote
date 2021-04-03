@@ -2,7 +2,7 @@ import { createMock } from 'ts-auto-mock'
 import { QueryVehicleInformationService } from '../../src/Services/QueryVehicleInformationService'
 import { CurrentVehicleStatusV3, VehicleAttributes } from '../../src/JaguarLandRover/ServiceTypes'
 import { JlrVehicleRemoteInformation } from '../../src/Remotes/JlrVehicleRemoteInformation'
-import { VehicleRemoteAuthenticator } from '../../src/Remotes/VehicleRemoteAuthenticator'
+import { VehicleRemoteAuthenticator } from '../../src/Remotes/Types'
 
 describe('JLR Vehicle Remote Information', () => {
     describe('Get vehicle attributes', () => {
