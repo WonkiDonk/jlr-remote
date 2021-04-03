@@ -1,4 +1,4 @@
-import { ElectricVehicleRemoteControl, ChargeState } from "./Types";
+import { ElectricVehicleRemoteControl, ChargeState } from './Types'
 
 class JlrElectricVehicleRemoteControl implements ElectricVehicleRemoteControl {
     public type: 'EV' = 'EV'
