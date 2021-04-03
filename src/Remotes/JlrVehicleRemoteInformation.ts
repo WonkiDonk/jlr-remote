@@ -1,5 +1,5 @@
 import { QueryVehicleInformationService } from '../Services/QueryVehicleInformationService'
-import { VehicleRemoteAuthenticator } from './VehicleRemoteAuthenticator'
+import { VehicleRemoteAuthenticator } from './Types'
 
 class JlrVehicleRemoteInformation {
     constructor(private readonly deviceId: string, private readonly vin: string,
