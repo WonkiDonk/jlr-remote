@@ -1,7 +1,7 @@
 import { QueryVehicleInformationService } from '../Services/QueryVehicleInformationService'
 import { VehicleRemoteAuthenticator } from './VehicleRemoteAuthenticator'
 
-class VehicleRemote {
+class JlrVehicleRemoteInformation {
     constructor(private readonly deviceId: string, private readonly vin: string,
         private readonly vehicleRemoteAuthenticator: VehicleRemoteAuthenticator,
         private readonly queryVehicleInformationService: QueryVehicleInformationService) { }
@@ -19,4 +19,4 @@ class VehicleRemote {
     }
 }
 
-export { VehicleRemote }
+export { JlrVehicleRemoteInformation }

@@ -1,10 +1,10 @@
 import { createMock } from 'ts-auto-mock'
-import { QueryVehicleInformationService } from '../src/Services/QueryVehicleInformationService'
-import { CurrentVehicleStatusV3, VehicleAttributes } from '../src/JaguarLandRover/ServiceTypes'
-import { VehicleRemote } from '../src/Remotes/VehicleRemote'
-import { VehicleRemoteAuthenticator } from '../src/Remotes/VehicleRemoteAuthenticator'
+import { QueryVehicleInformationService } from '../../src/Services/QueryVehicleInformationService'
+import { CurrentVehicleStatusV3, VehicleAttributes } from '../../src/JaguarLandRover/ServiceTypes'
+import { JlrVehicleRemoteInformation } from '../../src/Remotes/JlrVehicleRemoteInformation'
+import { VehicleRemoteAuthenticator } from '../../src/Remotes/VehicleRemoteAuthenticator'
 
-describe('Vehicle Remote', () => {
+describe('JLR Vehicle Remote Information', () => {
     describe('Get vehicle attributes', () => {
         test('returns vehicle attributes', async () => {
             // Arrange
@@ -15,7 +15,7 @@ describe('Vehicle Remote', () => {
             const mockService = createMock<QueryVehicleInformationService>()
             mockService.getVehicleAttributes = mockGetVehicleAttributes
             
-            const remote = new VehicleRemote('', '', createMock<VehicleRemoteAuthenticator>(), mockService)
+            const remote = new JlrVehicleRemoteInformation('', '', createMock<VehicleRemoteAuthenticator>(), mockService)
 
             // Act
             const response = await remote.getVehicleAttributes()
@@ -34,7 +34,7 @@ describe('Vehicle Remote', () => {
             mockVehicleRemoteAuthentication.getAccessToken = mockGetAccessToken
 
             const mockService = createMock<QueryVehicleInformationService>()
-            const remote = new VehicleRemote('', '', mockVehicleRemoteAuthentication, mockService)
+            const remote = new JlrVehicleRemoteInformation('', '', mockVehicleRemoteAuthentication, mockService)
 
             // Act
             await remote.getVehicleAttributes()
@@ -50,7 +50,7 @@ describe('Vehicle Remote', () => {
             ('uses the device ID `%s`', async (expectedDeviceId) => {
             // Arrange
             const mockService = createMock<QueryVehicleInformationService>()
-            const remote = new VehicleRemote(expectedDeviceId, '', createMock<VehicleRemoteAuthenticator>(), mockService)
+            const remote = new JlrVehicleRemoteInformation(expectedDeviceId, '', createMock<VehicleRemoteAuthenticator>(), mockService)
 
             // Act
             await remote.getVehicleAttributes()
@@ -66,7 +66,7 @@ describe('Vehicle Remote', () => {
             ('uses the VIN `%s`', async (expectedVin) => {
             // Arrange
             const mockService = createMock<QueryVehicleInformationService>()
-            const remote = new VehicleRemote('', expectedVin, createMock<VehicleRemoteAuthenticator>(), mockService)
+            const remote = new JlrVehicleRemoteInformation('', expectedVin, createMock<VehicleRemoteAuthenticator>(), mockService)
 
             // Act
             await remote.getVehicleAttributes()
@@ -88,7 +88,7 @@ describe('Vehicle Remote', () => {
             mockService.getVehicleStatusV3 = mockGetVehicleStatusV3
             mockGetVehicleStatusV3.mockImplementation( () => Promise.resolve(status))
 
-            const remote = new VehicleRemote('', '', createMock<VehicleRemoteAuthenticator>(), mockService)
+            const remote = new JlrVehicleRemoteInformation('', '', createMock<VehicleRemoteAuthenticator>(), mockService)
 
             // Act
             const response = await remote.getVehicleStatus()
@@ -107,7 +107,7 @@ describe('Vehicle Remote', () => {
             mockAuthenticator.getAccessToken = mockGetAccessToken
 
             const mockService = createMock<QueryVehicleInformationService>()
-            const remote = new VehicleRemote('', '', mockAuthenticator, mockService)
+            const remote = new JlrVehicleRemoteInformation('', '', mockAuthenticator, mockService)
 
             // Act
             await remote.getVehicleStatus()
@@ -123,7 +123,7 @@ describe('Vehicle Remote', () => {
             ('uses the device ID `%s`', async (expectedDeviceId: string) => {   
             // Arrange
             const mockService = createMock<QueryVehicleInformationService>()
-            const remote = new VehicleRemote(expectedDeviceId, '', createMock<VehicleRemoteAuthenticator>(), mockService)
+            const remote = new JlrVehicleRemoteInformation(expectedDeviceId, '', createMock<VehicleRemoteAuthenticator>(), mockService)
 
             // Act
             await remote.getVehicleStatus()
@@ -137,10 +137,10 @@ describe('Vehicle Remote', () => {
         })
 
         test.each(['some vin', 'another vin', 'this is not a VIN!'])
-            ('uses the VIN', async (expectedVin: string) => {
+            ('uses the VIN `%s`', async (expectedVin: string) => {
             // Arrange
             const mockService = createMock<QueryVehicleInformationService>()
-            const remote = new VehicleRemote('', expectedVin, createMock<VehicleRemoteAuthenticator>(), mockService)
+            const remote = new JlrVehicleRemoteInformation('', expectedVin, createMock<VehicleRemoteAuthenticator>(), mockService)
             
             // Act
             await remote.getVehicleStatus()
