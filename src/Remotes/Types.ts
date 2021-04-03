@@ -182,14 +182,14 @@ type InternalCombustionEngineVehicleRemote = VehicleRemoteInformation
 type VehicleRemote = ElectricVehicleRemote | InternalCombustionEngineVehicleRemote
 
 export {
-    VehicleRemoteAuthenticator,
-    VehicleRemote,
-    ElectricVehicleRemote,
-    InternalCombustionEngineVehicleRemote,
-    VehicleRemoteInformation,
-    LockState,
-    VehicleRemoteControl,
     ChargeState,
+    ElectricVehicleRemote,
     ElectricVehicleRemoteControl,
-    InternalCombustionEngineVehicleRemoteControl
+    InternalCombustionEngineVehicleRemote,
+    InternalCombustionEngineVehicleRemoteControl,
+    LockState,
+    VehicleRemote,
+    VehicleRemoteAuthenticator,
+    VehicleRemoteControl,
+    VehicleRemoteInformation
 }
