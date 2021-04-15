@@ -2,7 +2,6 @@ import { JlrVehicleRemoteControl } from "../../src/Remotes/JlrVehicleRemoteContr
 import { createMock } from 'ts-auto-mock'
 import { CommandVehicleService } from '../../src/Services/CommandVehicleService'
 import { VehicleRemoteAuthenticator } from "../../src/Remotes/Types"
-import { JlrVehicleRemoteInformation } from "../../src/Remotes/JlrVehicleRemoteInformation"
 import { CommandAuthenticationService } from "../../src/Authentication/CommandAuthenticationService"
 
 describe('JLR Vehicle Remote Control', () => {
