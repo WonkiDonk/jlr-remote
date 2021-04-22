@@ -14,11 +14,13 @@ class JlrVehicleRemoteControl implements VehicleRemoteControl {
         const commandToken = await this.commandAuthenticationService.getHblfToken(accessToken, this.deviceId, this.vin, this.userId, this.lastFourOfVin)
         const hblfToken = commandToken.token
 
-        this.commandVehicleService.honkHorn(accessToken, this.deviceId, this.vin, hblfToken)
+        await this.commandVehicleService.honkHorn(accessToken, this.deviceId, this.vin, hblfToken)
     }
 
-    lock = (): Promise<void> => {
-        throw new Error('Not implemented.')
+    lock = async (): Promise<void> => {
+        const accessToken = await this.vehicleRemoteAuthenticator.getAccessToken()
+
+        await this.commandVehicleService.lockVehicle(accessToken, '', '', '')
     }
     
     unlock = (): Promise<void> => {
