@@ -163,19 +163,22 @@ describe('JLR Vehicle Remote Control', () => {
                 })
         })
 
-        test.each(['hello world', 'what token', 'this token'])
+        test.each(['hello world', 'what token', 'fake token'])
             ('uses the hblf command token `%s`', async (expectedHblfToken) => {
                 // Arrange
                 const mockCommandAuthenticationService = createMock<CommandAuthenticationService>()
+                const mockGetHblfToken = jest.fn()
+                const commandToken = { token: expectedHblfToken }
+                mockGetHblfToken.mockImplementation(() => Promise.resolve(commandToken))
+                
+                mockCommandAuthenticationService.getHblfToken = mockGetHblfToken 
+
                 const mockService = createMock<CommandVehicleService>()
                 const remote = new JlrVehicleRemoteControl('', '', '', '', createMock<VehicleRemoteAuthenticator>(), mockCommandAuthenticationService, mockService)
-
-                const mockHblfToken = mockCommandAuthenticationService.getHblfToken('', '', '', '', '')
-                expectedHblfToken = (await mockHblfToken).token
-
+                
                 // Act
                 await remote.beepAndFlash()
-
+                
                 // Assert
                 expect(mockService.honkHorn).toHaveBeenCalledWith(
                     expect.any(String),
@@ -197,3 +200,5 @@ describe('JLR Vehicle Remote Control', () => {
 
     })
 })
+
+
