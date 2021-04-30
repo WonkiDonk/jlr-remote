@@ -50,7 +50,7 @@ describe('JLR Vehicle Remote Control', () => {
             ('uses the VIN `%s`', async (expectedVin) => {
                 // Arrange
                 const mockService = createMock<CommandVehicleService>()
-                const remote = new JlrVehicleRemoteControl('', expectedVin, '', '', '',createMock<VehicleRemoteAuthenticator>(), createMock<CommandAuthenticationService>(), mockService)
+                const remote = new JlrVehicleRemoteControl('', expectedVin, '', '', '', createMock<VehicleRemoteAuthenticator>(), createMock<CommandAuthenticationService>(), mockService)
 
                 // Act
                 await remote.beepAndFlash()
@@ -112,7 +112,7 @@ describe('JLR Vehicle Remote Control', () => {
                 ('uses the VIN `%s`', async (expectedVin) => {
                     // Arrange
                     const mockService = createMock<CommandAuthenticationService>()
-                    const remote = new JlrVehicleRemoteControl('', expectedVin, '', '', '',createMock<VehicleRemoteAuthenticator>(), mockService, createMock<CommandVehicleService>())
+                    const remote = new JlrVehicleRemoteControl('', expectedVin, '', '', '', createMock<VehicleRemoteAuthenticator>(), mockService, createMock<CommandVehicleService>())
 
                     // Act
                     await remote.beepAndFlash()
@@ -130,7 +130,7 @@ describe('JLR Vehicle Remote Control', () => {
                 ('uses user ID `%s`', async (expectedUserId) => {
                     // Arrange
                     const mockService = createMock<CommandAuthenticationService>()
-                    const remote = new JlrVehicleRemoteControl('', '', expectedUserId, '', '',createMock<VehicleRemoteAuthenticator>(), mockService, createMock<CommandVehicleService>())
+                    const remote = new JlrVehicleRemoteControl('', '', expectedUserId, '', '', createMock<VehicleRemoteAuthenticator>(), mockService, createMock<CommandVehicleService>())
 
                     // Act
                     await remote.beepAndFlash()
@@ -148,7 +148,7 @@ describe('JLR Vehicle Remote Control', () => {
                 ('uses last four of VIN `%s`', async (expectedLastFourOfVin) => {
                     // Arrange
                     const mockService = createMock<CommandAuthenticationService>()
-                    const remote = new JlrVehicleRemoteControl('', '', '', expectedLastFourOfVin, '',createMock<VehicleRemoteAuthenticator>(), mockService, createMock<CommandVehicleService>())
+                    const remote = new JlrVehicleRemoteControl('', '', '', expectedLastFourOfVin, '', createMock<VehicleRemoteAuthenticator>(), mockService, createMock<CommandVehicleService>())
 
                     // Act
                     await remote.beepAndFlash()
@@ -170,15 +170,15 @@ describe('JLR Vehicle Remote Control', () => {
                 const mockGetHblfToken = jest.fn()
                 const commandToken = { token: expectedHblfToken }
                 mockGetHblfToken.mockImplementation(() => Promise.resolve(commandToken))
-                
-                mockCommandAuthenticationService.getHblfToken = mockGetHblfToken 
+
+                mockCommandAuthenticationService.getHblfToken = mockGetHblfToken
 
                 const mockService = createMock<CommandVehicleService>()
-                const remote = new JlrVehicleRemoteControl('', '', '', '', '',createMock<VehicleRemoteAuthenticator>(), mockCommandAuthenticationService, mockService)
-                
+                const remote = new JlrVehicleRemoteControl('', '', '', '', '', createMock<VehicleRemoteAuthenticator>(), mockCommandAuthenticationService, mockService)
+
                 // Act
                 await remote.beepAndFlash()
-                
+
                 // Assert
                 expect(mockService.honkHorn).toHaveBeenCalledWith(
                     expect.any(String),
@@ -190,7 +190,188 @@ describe('JLR Vehicle Remote Control', () => {
 
     describe('Lock vehicle', () => {
         test.each(['hello world', 'fake token', 'bad token'])
-        ('uses access token `%s`', async (expectedAccessToken: string) => {
+            ('uses access token `%s`', async (expectedAccessToken: string) => {
+                // Arrange
+                const mockVehicleRemoteAuthentication = createMock<VehicleRemoteAuthenticator>()
+                const mockGetAccessToken = jest.fn()
+                mockGetAccessToken.mockImplementation(() => Promise.resolve(expectedAccessToken))
+
+                mockVehicleRemoteAuthentication.getAccessToken = mockGetAccessToken
+
+                const mockService = createMock<CommandVehicleService>()
+                const remote = new JlrVehicleRemoteControl('', '', '', '', '', mockVehicleRemoteAuthentication, createMock<CommandAuthenticationService>(), mockService)
+
+                // Act
+                await remote.lock()
+
+                // Assert
+                expect(mockService.lockVehicle).toHaveBeenCalledWith(
+                    expectedAccessToken,
+                    expect.any(String),
+                    expect.any(String),
+                    expect.any(String))
+            })
+
+        test.each(['hello world', 'fake Id', 'no Id'])
+            ('uses the device Id `%s`', async (expectedDeviceId: string) => {
+                // Arrange
+                const mockService = createMock<CommandVehicleService>()
+                const remote = new JlrVehicleRemoteControl(expectedDeviceId, '', '', '', '', createMock<VehicleRemoteAuthenticator>(), createMock<CommandAuthenticationService>(), mockService)
+
+                // Act
+                await remote.lock()
+
+                // Assert
+                expect(mockService.lockVehicle).toHaveBeenCalledWith(
+                    expect.any(String),
+                    expectedDeviceId,
+                    expect.any(String),
+                    expect.any(String))
+            })
+
+        test.each(['hello world', 'what VIN', 'who VIN'])
+            ('uses the VIN `%s`', async (expectedVin: string) => {
+                // Arrange
+                const mockService = createMock<CommandVehicleService>()
+                const remote = new JlrVehicleRemoteControl('', expectedVin, '', '', '', createMock<VehicleRemoteAuthenticator>(), createMock<CommandAuthenticationService>(), mockService)
+
+                // Act
+                await remote.lock()
+
+                // Assert
+                expect(mockService.lockVehicle).toHaveBeenCalledWith(
+                    expect.any(String),
+                    expect.any(String),
+                    expectedVin,
+                    expect.any(String))
+            })
+
+        describe('Get the rdl token', () => {
+            test.each(['hello world', 'bad token', 'what token'])
+                ('uses the access token `%s`', async (expectedAccessToken: string) => {
+                    // Arrange
+                    const mockVehicleRemoteAuthentication = createMock<VehicleRemoteAuthenticator>()
+                    const mockGetAccessToken = jest.fn()
+                    mockGetAccessToken.mockImplementation(() => Promise.resolve(expectedAccessToken))
+
+                    mockVehicleRemoteAuthentication.getAccessToken = mockGetAccessToken
+
+                    const mockService = createMock<CommandAuthenticationService>()
+                    const remote = new JlrVehicleRemoteControl('', '', '', '', '', mockVehicleRemoteAuthentication, mockService, createMock<CommandVehicleService>())
+
+                    // Act
+                    await remote.lock()
+
+                    // Assert
+                    expect(mockService.getRdlToken).toHaveBeenCalledWith(
+                        expectedAccessToken,
+                        expect.any(String),
+                        expect.any(String),
+                        expect.any(String),
+                        expect.any(String))
+                })
+
+            test.each(['hello world', 'fake Id', 'no Id'])
+                ('uses the device Id `%s`', async (expectedDeviceId) => {
+                    // Arrange
+                    const mockService = createMock<CommandAuthenticationService>()
+                    const remote = new JlrVehicleRemoteControl(expectedDeviceId, '', '', '', '', createMock<VehicleRemoteAuthenticator>(), mockService, createMock<CommandVehicleService>())
+
+                    // Act
+                    await remote.lock()
+
+                    // Assert
+                    expect(mockService.getRdlToken).toHaveBeenCalledWith(
+                        expect.any(String),
+                        expectedDeviceId,
+                        expect.any(String),
+                        expect.any(String),
+                        expect.any(String))
+                })
+
+            test.each(['hello world', 'no Vin', 'what Vin'])
+                ('uses the VIN `%s`', async (expectedVin) => {
+                    // Arrange
+                    const mockService = createMock<CommandAuthenticationService>()
+                    const remote = new JlrVehicleRemoteControl('', expectedVin, '', '', '', createMock<VehicleRemoteAuthenticator>(), mockService, createMock<CommandVehicleService>())
+
+                    // Act
+                    await remote.lock()
+
+                    // Assert
+                    expect(mockService.getRdlToken).toHaveBeenCalledWith(
+                        expect.any(String),
+                        expect.any(String),
+                        expectedVin,
+                        expect.any(String),
+                        expect.any(String))
+                })
+
+            test.each(['hello world', 'new user', 'fake user'])
+                ('uses the user Id `%s`', async (expectedUserId) => {
+                    // Arrange
+                    const mockService = createMock<CommandAuthenticationService>()
+                    const remote = new JlrVehicleRemoteControl('', '', expectedUserId, '', '', createMock<VehicleRemoteAuthenticator>(), mockService, createMock<CommandVehicleService>())
+
+                    // Act
+                    await remote.lock()
+
+                    // Assert
+                    expect(mockService.getRdlToken).toHaveBeenCalledWith(
+                        expect.any(String),
+                        expect.any(String),
+                        expect.any(String),
+                        expectedUserId,
+                        expect.any(String))
+                })
+
+            test.each(['hello world', 'new Pin', 'old Pin'])
+                ('uses the user PIN `%s`', async (expectedUserPin) => {
+                    // Arrange
+                    const mockService = createMock<CommandAuthenticationService>()
+                    const remote = new JlrVehicleRemoteControl('', '', '', '', expectedUserPin, createMock<VehicleRemoteAuthenticator>(), mockService, createMock<CommandVehicleService>())
+
+                    // Act 
+                    await remote.lock()
+
+                    // Assert
+                    expect(mockService.getRdlToken).toHaveBeenCalledWith(
+                        expect.any(String),
+                        expect.any(String),
+                        expect.any(String),
+                        expect.any(String),
+                        expectedUserPin)
+                })
+        })
+
+        test.each(['hello world', 'good token', 'bad token'])
+            ('uses the rdl token `%s`', async (expectedRdlToken) => {
+                // Arrange
+                const mockCommandAuthenticationService = createMock<CommandAuthenticationService>()
+                const mockGetHblfToken = jest.fn()
+                const commandToken = { token: expectedRdlToken }
+                mockGetHblfToken.mockImplementation(() => Promise.resolve(commandToken))
+
+                mockCommandAuthenticationService.getRdlToken = mockGetHblfToken
+
+                const mockService = createMock<CommandVehicleService>()
+                const remote = new JlrVehicleRemoteControl('', '', '', '', '', createMock<VehicleRemoteAuthenticator>(), mockCommandAuthenticationService, mockService)
+
+                // Act
+                await remote.lock()
+
+                // Assert
+                expect(mockService.lockVehicle).toHaveBeenCalledWith(
+                    expect.any(String),
+                    expect.any(String),
+                    expect.any(String),
+                    expectedRdlToken)
+            })
+    })
+
+    describe('Unlock vehicle', () => {
+        test.each(['hello world', 'bad token', 'good token'])
+        ('uses the the access token `%s`', async (expectedAccessToken) => {
             // Arrange
             const mockVehicleRemoteAuthentication = createMock<VehicleRemoteAuthenticator>()
             const mockGetAccessToken = jest.fn()
@@ -202,175 +383,49 @@ describe('JLR Vehicle Remote Control', () => {
             const remote = new JlrVehicleRemoteControl('', '', '', '', '', mockVehicleRemoteAuthentication, createMock<CommandAuthenticationService>(), mockService)
             
             // Act
-            await remote.lock()
-
-            // Assert
-            expect(mockService.lockVehicle).toHaveBeenCalledWith(
-               expectedAccessToken,
-               expect.any(String),
-               expect.any(String),
-               expect.any(String))
-        })
-
-        test.each(['hello world', 'fake Id', 'no Id'])
-        ('uses the device Id `%s`', async (expectedDeviceId: string) => {
-            // Arrange
-            const mockService = createMock<CommandVehicleService>()
-            const remote = new JlrVehicleRemoteControl(expectedDeviceId, '', '', '', '', createMock<VehicleRemoteAuthenticator>(), createMock<CommandAuthenticationService>(), mockService)
-            
-            // Act
-            await remote.lock()
+            await remote.unlock()
             
             // Assert
-            expect(mockService.lockVehicle).toHaveBeenCalledWith(
-                expect.any(String),
-                expectedDeviceId,
-                expect.any(String),
-                expect.any(String))
-        })
-
-        test.each(['hello world', 'what VIN', 'who VIN'])
-        ('uses the VIN `%s`', async (expectedVin: string) => {
-            // Arrange
-            const mockService = createMock<CommandVehicleService>()
-            const remote = new JlrVehicleRemoteControl('', expectedVin, '', '', '', createMock<VehicleRemoteAuthenticator>(), createMock<CommandAuthenticationService>(), mockService)
-            
-            // Act
-            await remote.lock()
-            
-            // Assert
-            expect(mockService.lockVehicle).toHaveBeenCalledWith(
-                expect.any(String),
-                expect.any(String),
-                expectedVin,
-                expect.any(String))
-        })
-
-        describe('Get the rdl token', () => {
-            test.each(['hello world', 'bad token', 'what token'])
-            ('uses the access token `%s`', async (expectedAccessToken: string) => {
-                // Arrange
-                const mockVehicleRemoteAuthentication = createMock<VehicleRemoteAuthenticator>()
-                const mockGetAccessToken = jest.fn()
-                mockGetAccessToken.mockImplementation(() => Promise.resolve(expectedAccessToken))
-
-                mockVehicleRemoteAuthentication.getAccessToken = mockGetAccessToken
-
-                const mockService = createMock<CommandAuthenticationService>()
-                const remote = new JlrVehicleRemoteControl('', '', '', '', '', mockVehicleRemoteAuthentication, mockService, createMock<CommandVehicleService>())
-                
-                // Act
-                await remote.lock()
-                
-                // Assert
-                expect(mockService.getRdlToken).toHaveBeenCalledWith(
+            expect(mockService.unlockVehicle).toHaveBeenCalledWith(
                 expectedAccessToken,
                 expect.any(String),
                 expect.any(String),
-                expect.any(String),
                 expect.any(String))
+        })
+
+        test.skip('uses the device Id `%s`', async () => {
+
+        })
+
+        test.skip('uses the vin `%s`', async () => {
+
+        })
+
+        describe('Gets the rdu token', () => {
+            test.skip('uses the access token `%s`', async () => {
+
             })
 
-            test.each(['hello world', 'fake Id', 'no Id'])
-            ('uses the device Id `%s`', async(expectedDeviceId) => {
-                // Arrange
-            const mockService = createMock<CommandAuthenticationService>()
-            const remote = new JlrVehicleRemoteControl(expectedDeviceId, '', '', '', '', createMock<VehicleRemoteAuthenticator>(), mockService, createMock<CommandVehicleService>())
-            
-            // Act
-            await remote.lock()
-            
-            // Assert
-            expect(mockService.getRdlToken).toHaveBeenCalledWith(
-                expect.any(String),
-                expectedDeviceId,
-                expect.any(String),
-                expect.any(String),
-                expect.any(String))
+            test.skip('uses the device Id `%s`', async () => {
+
             })
 
-            test.each(['hello world', 'no Vin', 'what Vin'])
-            ('uses the VIN `%s`', async (expectedVin) => {
-                // Arrange
-                const mockService = createMock<CommandAuthenticationService>()
-                const remote = new JlrVehicleRemoteControl('', expectedVin,'', '', '', createMock<VehicleRemoteAuthenticator>(), mockService, createMock<CommandVehicleService>())
-                
-                // Act
-                await remote.lock()
-                
-                // Assert
-                expect(mockService.getRdlToken).toHaveBeenCalledWith(
-                    expect.any(String),
-                    expect.any(String),
-                    expectedVin,
-                    expect.any(String),
-                    expect.any(String))
+            test.skip('uses the Vin `%s`', async () => {
+
             })
 
-            test.each(['hello world', 'new user', 'fake user'])
-            ('uses the user Id `%s`', async (expectedUserId) => {
-                // Arrange
-                const mockService = createMock<CommandAuthenticationService>()
-                const remote = new JlrVehicleRemoteControl('', '', expectedUserId, '', '', createMock<VehicleRemoteAuthenticator>(), mockService, createMock<CommandVehicleService>())
-                
-                // Act
-                await remote.lock()
-                
-                // Assert
-                expect(mockService.getRdlToken).toHaveBeenCalledWith(
-                    expect.any(String),
-                    expect.any(String),
-                    expect.any(String),
-                    expectedUserId,
-                    expect.any(String))
+            test.skip('uses the user Id `%s`', async () => {
+
             })
 
-            test.each(['hello world', 'new Pin', 'old Pin'])
-            ('uses the user PIN `%s`', async (expectedUserPin) => {
-                // Arrange
-                const mockService = createMock<CommandAuthenticationService>()
-                const remote = new JlrVehicleRemoteControl('', '', '', '', expectedUserPin, createMock<VehicleRemoteAuthenticator>(), mockService, createMock<CommandVehicleService>())
-                
-                // Act 
-                await remote.lock()
-                
-                // Assert
-                expect(mockService.getRdlToken).toHaveBeenCalledWith(
-                    expect.any(String),
-                    expect.any(String),
-                    expect.any(String),
-                    expect.any(String),
-                    expectedUserPin)
+            test.skip('uses the user Pin ``%s', async () => {
+
             })
         })
 
-        test.each(['hello world', 'good token', 'bad token'])
-        ('uses the rdl token `%s`', async (expectedRdlToken) => {
-            // Arrange
-            const mockCommandAuthenticationService = createMock<CommandAuthenticationService>()
-            const mockGetHblfToken = jest.fn()
-            const commandToken = { token: expectedRdlToken }
-            mockGetHblfToken.mockImplementation(() => Promise.resolve(commandToken))
-                
-            mockCommandAuthenticationService.getRdlToken = mockGetHblfToken
+        test.skip('uses the rdu token `%s`', async () => {
 
-            const mockService = createMock<CommandVehicleService>()
-            const remote = new JlrVehicleRemoteControl('', '', '', '', '', createMock<VehicleRemoteAuthenticator>(), mockCommandAuthenticationService, mockService)
-            
-            // Act
-            await remote.lock()
-            
-            // Assert
-            expect(mockService.lockVehicle).toHaveBeenCalledWith(
-                expect.any(String),
-                expect.any(String),
-                expect.any(String),
-                expectedRdlToken)
         })
-    })
-
-    describe('Unlock vehicle', () => {
-
     })
 
     describe('Get lock state', () => {
