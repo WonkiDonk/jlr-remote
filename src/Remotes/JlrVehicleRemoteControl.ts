@@ -29,7 +29,7 @@ class JlrVehicleRemoteControl implements VehicleRemoteControl {
     unlock = async (): Promise<void> => {
         const accessToken = await this.vehicleRemoteAuthenticator.getAccessToken()
 
-        await this.commandVehicleService.unlockVehicle(accessToken, this.deviceId, '', '')
+        await this.commandVehicleService.unlockVehicle(accessToken, this.deviceId, this.vin, '')
     }
     
     getLockState = (): Promise<LockState> => {
