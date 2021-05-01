@@ -428,12 +428,32 @@ describe('JLR Vehicle Remote Control', () => {
         })
 
         describe('Gets the rdu token', () => {
-            test.skip('uses the access token `%s`', async () => {
+            test.each(['hello world', 'bad token', 'fake token'])
+            ('uses the access token `%s`', async (expectedAccessToken) => {
+                // Arrange
+                const mockVehicleRemoteAuthenticaton = createMock<VehicleRemoteAuthenticator>()
+                const mockGetAccessToken = jest.fn()
+                mockGetAccessToken.mockImplementation(() => Promise.resolve(expectedAccessToken))
 
+                mockVehicleRemoteAuthenticaton.getAccessToken = mockGetAccessToken
+
+                const mockService = createMock<CommandAuthenticationService>()
+                const remote = new JlrVehicleRemoteControl('', '', '', '', '', mockVehicleRemoteAuthenticaton, mockService, createMock<CommandVehicleService>())
+                
+                // Act
+                await remote.unlock()
+                
+                // Assert
+                expect(mockService.getRduToken).toHaveBeenCalledWith(
+                    expectedAccessToken,
+                    expect.any(String),
+                    expect.any(String),
+                    expect.any(String),
+                    expect.any(String))
             })
 
             test.skip('uses the device Id `%s`', async () => {
-
+                
             })
 
             test.skip('uses the Vin `%s`', async () => {
