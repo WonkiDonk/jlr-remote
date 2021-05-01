@@ -489,8 +489,22 @@ describe('JLR Vehicle Remote Control', () => {
                     expect.any(String))
             })
 
-            test.skip('uses the user Id `%s`', async () => {
-
+            test.each(['hello world', 'fake Id', 'no Id'])
+            ('uses the user Id `%s`', async (expectedUserId) => {
+                // Arrange
+                const mockService = createMock<CommandAuthenticationService>()
+                const remote = new JlrVehicleRemoteControl('', '', expectedUserId, '', '', createMock<VehicleRemoteAuthenticator>(), mockService, createMock<CommandVehicleService>())
+                
+                // Act
+                await remote.unlock()
+                
+                // Assert
+                expect(mockService.getRduToken).toHaveBeenCalledWith(
+                    expect.any(String),
+                    expect.any(String),
+                    expect.any(String),
+                    expectedUserId,
+                    expect.any(String))
             })
 
             test.skip('uses the user Pin ``%s', async () => {
