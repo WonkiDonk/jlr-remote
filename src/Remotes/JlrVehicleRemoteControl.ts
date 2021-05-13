@@ -5,6 +5,7 @@ import { CommandAuthenticationService } from '../Authentication/CommandAuthentic
 class JlrVehicleRemoteControl implements VehicleRemoteControl {
     constructor(private readonly deviceId: string, private readonly vin: string,
         private readonly userId: string, private readonly lastFourOfVin: string,
+        private readonly userPin: string,
         private readonly vehicleRemoteAuthenticator: VehicleRemoteAuthenticator,
         private readonly commandAuthenticationService: CommandAuthenticationService,
         private readonly commandVehicleService: CommandVehicleService) { }
@@ -14,11 +15,15 @@ class JlrVehicleRemoteControl implements VehicleRemoteControl {
         const commandToken = await this.commandAuthenticationService.getHblfToken(accessToken, this.deviceId, this.vin, this.userId, this.lastFourOfVin)
         const hblfToken = commandToken.token
 
-        this.commandVehicleService.honkHorn(accessToken, this.deviceId, this.vin, hblfToken)
+        await this.commandVehicleService.honkHorn(accessToken, this.deviceId, this.vin, hblfToken)
     }
 
-    lock = (): Promise<void> => {
-        throw new Error('Not implemented.')
+    lock = async (): Promise<void> => {
+        const accessToken = await this.vehicleRemoteAuthenticator.getAccessToken()
+        const commandToken = await this.commandAuthenticationService.getRdlToken(accessToken, this.deviceId, this.vin, this.userId, this.userPin)
+        const rdlToken = commandToken.token
+
+        await this.commandVehicleService.lockVehicle(accessToken, this.deviceId, this.vin, rdlToken)
     }
     
     unlock = (): Promise<void> => {
