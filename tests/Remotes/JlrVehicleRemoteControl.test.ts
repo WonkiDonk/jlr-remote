@@ -552,7 +552,7 @@ describe('JLR Vehicle Remote Control', () => {
     })
 
     describe('Get lock state', () => {
-
+        
     })
 })
 
