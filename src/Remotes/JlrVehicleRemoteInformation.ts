@@ -7,13 +7,13 @@ class JlrVehicleRemoteInformation implements VehicleRemoteInformation {
         private readonly queryVehicleInformationService: QueryVehicleInformationService) { }
 
     getVehicleAttributes = async (): Promise<any> => {
-        const accessToken = await this.vehicleRemoteAuthenticator.getAccessToken()
+        const accessToken = await this.vehicleRemoteAuthenticator.getAccessToken('', '', '')
         
         return this.queryVehicleInformationService.getVehicleAttributes(accessToken, this.deviceId, this.vin)
     }
 
     getVehicleStatus = async (): Promise<any> => { 
-        const accessToken = await this.vehicleRemoteAuthenticator.getAccessToken()
+        const accessToken = await this.vehicleRemoteAuthenticator.getAccessToken('', '', '')
 
         return this.queryVehicleInformationService.getVehicleStatusV3(accessToken, this.deviceId, this.vin)
     }
