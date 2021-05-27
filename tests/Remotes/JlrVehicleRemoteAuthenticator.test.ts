@@ -1,6 +1,7 @@
 import { JlrVehicleRemoteAuthenticator } from "../../src/Remotes/JlrVehicleRemoteAuthenticator"
 import {createMock} from 'ts-auto-mock'
 import { authenticationService, AuthenticationService } from "../../src/Authentication/AuthenticationService"
+import { Auth } from "../../src/JaguarLandRover/ServiceTypes"
 
 describe('Vehicle Remote Authenticator', () => {
     describe('Get Access Token', () => {
@@ -48,16 +49,36 @@ describe('Vehicle Remote Authenticator', () => {
                 expectedUsername
             )
         })
-        test('login to the JLR Vehicle Remote', async () => {
+        test.each([
+            ['access token', 'device Id', 'username'],
+            ['fake token', 'no device Id', 'fake username'],
+            ['bad token', 'bad device', 'no name']
+        ])
+        ('login to the JLR Vehicle Remote', async (expectedAccessToken, expectedDeviceId, expectedUsername) => {
             // Arrange
+            const mockAuth = createMock<Auth>()
+            mockAuth.access_token = expectedAccessToken
+
             const authenticationService = createMock<AuthenticationService>()
-            const authenticator = new JlrVehicleRemoteAuthenticator('', '', '', authenticationService)
+            authenticationService.authenticate = jest.fn(() => Promise.resolve(mockAuth))
+
+            const authenticator = new JlrVehicleRemoteAuthenticator(expectedDeviceId, expectedUsername, '', authenticationService)
             
             // Act
             await authenticator.getAccessToken()
             
             // Assert
-            expect(authenticationService.loginUser).toHaveBeenCalledTimes(1)
+            expect(authenticationService.loginUser).toHaveBeenCalledWith(
+                expectedAccessToken,
+                expectedDeviceId,
+                expectedUsername
+            )
         })
+
+        test.skip('returns a new access token', () => {})
+
+        test.skip('returns the same access token if the existing access token has not expired', () => {})
+
+        test.skip('returns a new access token using the refresh token after an access token has expired', () => {})
     })
 })
