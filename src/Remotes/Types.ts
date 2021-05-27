@@ -5,7 +5,7 @@ interface VehicleRemoteAuthenticator {
     /**
      * Gets access tokens required to remotely interact with a vehicle.
      */
-    getAccessToken: (deviceId: string, username: string, password: string) => Promise<string>
+    getAccessToken: () => Promise<string>
 }
 
 /**

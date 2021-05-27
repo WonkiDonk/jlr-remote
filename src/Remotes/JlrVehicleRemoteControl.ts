@@ -11,7 +11,7 @@ class JlrVehicleRemoteControl implements VehicleRemoteControl {
         private readonly commandVehicleService: CommandVehicleService) { }
         
     beepAndFlash = async (): Promise<void> => {
-        const accessToken = await this.vehicleRemoteAuthenticator.getAccessToken('', '', '')
+        const accessToken = await this.vehicleRemoteAuthenticator.getAccessToken()
         const commandToken = await this.commandAuthenticationService.getHblfToken(accessToken, this.deviceId, this.vin, this.userId, this.lastFourOfVin)
         const hblfToken = commandToken.token
 
@@ -19,7 +19,7 @@ class JlrVehicleRemoteControl implements VehicleRemoteControl {
     }
 
     lock = async (): Promise<void> => {
-        const accessToken = await this.vehicleRemoteAuthenticator.getAccessToken('', '', '')
+        const accessToken = await this.vehicleRemoteAuthenticator.getAccessToken()
         const commandToken = await this.commandAuthenticationService.getRdlToken(accessToken, this.deviceId, this.vin, this.userId, this.userPin)
         const rdlToken = commandToken.token
 
@@ -27,7 +27,7 @@ class JlrVehicleRemoteControl implements VehicleRemoteControl {
     }
     
     unlock = async (): Promise<void> => {
-        const accessToken = await this.vehicleRemoteAuthenticator.getAccessToken('', '', '')
+        const accessToken = await this.vehicleRemoteAuthenticator.getAccessToken()
         const commandToken = await this.commandAuthenticationService.getRduToken(accessToken, this.deviceId, this.vin, this.userId, this.userPin)
         const rduToken = commandToken.token
 
