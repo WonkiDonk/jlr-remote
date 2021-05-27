@@ -23,16 +23,33 @@ describe('Vehicle Remote Authenticator', () => {
                 expectedPassword
             )
         })
-        test('registers the device with JLR Vehicle Remote', async () => {
+        test.each([
+            ['access token', 'device id', 'auth token', 'expires in', 'user name'],
+            ['another token', 'special device id', 'not an auth token', 'never expires in', 'me!'],
+            ['final token', 'lol device id', 'simple auth token', 'expires tomorrow', 'your user name']
+        ])
+        ('registers the device with JLR Vehicle Remote', async (expectedAccessToken, expectedDeviceId, expectedAuthorizationToken, expectedExpiresIn, expectedUsername) => {
             // Arrange
             const authenticationService = createMock<AuthenticationService>()
-            const authenticator = new JlrVehicleRemoteAuthenticator('', '', '', authenticationService)
+            const authResponse = { access_token: expectedAccessToken, authorization_token: expectedAuthorizationToken, expires_in: expectedExpiresIn, token_type: '', refresh_token: ''}
+            const mockAuthenticate = jest.fn()
+            mockAuthenticate.mockImplementation(() => Promise.resolve(authResponse))
+
+            authenticationService.authenticate = mockAuthenticate
+
+            const authenticator = new JlrVehicleRemoteAuthenticator(expectedDeviceId, expectedUsername, 'do not care', authenticationService)
             
             // Act
             await authenticator.getAccessToken()
             
             // Assert
-            expect(authenticationService.registerDevice).toHaveBeenCalledTimes(1)
+            expect(authenticationService.registerDevice).toHaveBeenCalledWith(
+                expectedAccessToken,
+                expectedDeviceId,
+                expectedAuthorizationToken,
+                expectedExpiresIn,
+                expectedUsername
+            )
         })
         test('login to the JLR Vehicle Remote', async () => {
             // Arrange

@@ -6,8 +6,8 @@ class JlrVehicleRemoteAuthenticator implements VehicleRemoteAuthenticator {
         private readonly password: string, private readonly authenticationService: AuthenticationService) { }
 
     getAccessToken = async (): Promise<string> => {
-        await this.authenticationService.authenticate(this.deviceId, this.username, this.password)
-        await this.authenticationService.registerDevice('', '', '', '', '')
+        const authResponse = await this.authenticationService.authenticate(this.deviceId, this.username, this.password)
+        await this.authenticationService.registerDevice(authResponse.access_token, this.deviceId, authResponse.authorization_token, authResponse.expires_in, this.username)
         await this.authenticationService.loginUser('', '', '')
         
         return ''
