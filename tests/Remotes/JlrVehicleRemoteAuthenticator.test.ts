@@ -30,12 +30,9 @@ describe('Vehicle Remote Authenticator', () => {
         ])
         ('registers the device with JLR Vehicle Remote', async (expectedAccessToken, expectedDeviceId, expectedAuthorizationToken, expectedExpiresIn, expectedUsername) => {
             // Arrange
-            const authenticationService = createMock<AuthenticationService>()
             const authResponse = { access_token: expectedAccessToken, authorization_token: expectedAuthorizationToken, expires_in: expectedExpiresIn, token_type: '', refresh_token: ''}
-            const mockAuthenticate = jest.fn()
-            mockAuthenticate.mockImplementation(() => Promise.resolve(authResponse))
-
-            authenticationService.authenticate = mockAuthenticate
+            const authenticationService = createMock<AuthenticationService>()
+            authenticationService.authenticate = jest.fn(() => Promise.resolve(authResponse))
 
             const authenticator = new JlrVehicleRemoteAuthenticator(expectedDeviceId, expectedUsername, 'do not care', authenticationService)
             
