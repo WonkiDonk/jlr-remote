@@ -2,6 +2,7 @@ import { JlrVehicleRemoteAuthenticator } from "../../src/Remotes/JlrVehicleRemot
 import {createMock} from 'ts-auto-mock'
 import { authenticationService, AuthenticationService } from "../../src/Authentication/AuthenticationService"
 import { Auth } from "../../src/JaguarLandRover/ServiceTypes"
+import { VehicleRemoteAuthenticator } from "../../src/Remotes/Types"
 
 describe('Vehicle Remote Authenticator', () => {
     describe('Get Access Token', () => {
@@ -75,10 +76,30 @@ describe('Vehicle Remote Authenticator', () => {
             )
         })
 
-        test.skip('returns a new access token', () => {})
+        test.each(['good token', 'bad token', 'fake token'])
+        ('returns a new access token `%s`', async (expectedAccessToken) => {
+            // Arrange
+            const mockAuth = createMock<Auth>()
+            mockAuth.access_token = expectedAccessToken
 
-        test.skip('returns the same access token if the existing access token has not expired', () => {})
+            const authenticationService = createMock<AuthenticationService>()
+            authenticationService.authenticate = jest.fn(() => Promise.resolve(mockAuth))
 
-        test.skip('returns a new access token using the refresh token after an access token has expired', () => {})
+            const authenticator = new JlrVehicleRemoteAuthenticator('', '', '', authenticationService)
+
+            // Act
+            const response = await authenticator.getAccessToken()
+            
+            // Assert
+            expect(response).toBe(expectedAccessToken)
+        })
+
+        test.skip('returns the same access token if the existing access token has not expired', () => {
+            // To do
+        })
+
+        test.skip('returns a new access token using the refresh token after an access token has expired', () => {
+            // To do
+        })
     })
 })
