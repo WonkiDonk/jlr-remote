@@ -1,6 +1,7 @@
 import { LockState, VehicleRemoteAuthenticator, VehicleRemoteControl } from './Types'
-import { CommandVehicleService } from '../Services/CommandVehicleService'
 import { CommandAuthenticationService } from '../Authentication/CommandAuthenticationService'
+import { CommandVehicleService } from '../Services/CommandVehicleService'
+import { QueryVehicleInformationService } from '../Services/QueryVehicleInformationService'
 
 class JlrVehicleRemoteControl implements VehicleRemoteControl {
     constructor(
@@ -11,7 +12,8 @@ class JlrVehicleRemoteControl implements VehicleRemoteControl {
         private readonly userPin: string,
         private readonly vehicleRemoteAuthenticator: VehicleRemoteAuthenticator,
         private readonly commandAuthenticationService: CommandAuthenticationService,
-        private readonly commandVehicleService: CommandVehicleService) { }
+        private readonly commandVehicleService: CommandVehicleService,
+        private readonly queryVehicleInformationService: QueryVehicleInformationService) { }
         
     beepAndFlash = async (): Promise<void> => {
         const accessToken = await this.vehicleRemoteAuthenticator.getAccessToken()
@@ -37,8 +39,11 @@ class JlrVehicleRemoteControl implements VehicleRemoteControl {
         await this.commandVehicleService.unlockVehicle(accessToken, this.deviceId, this.vin, rduToken)
     }
     
-    getLockState = (): Promise<LockState> => {
-        throw new Error('Not implemented.')
+    getLockState = async (): Promise<LockState> => {
+        const accessToken = await this.vehicleRemoteAuthenticator.getAccessToken()
+        await this.queryVehicleInformationService.getVehicleStatusV3(accessToken, 'x', 'x')
+
+        return { isLocked: false }
     }
 }
 

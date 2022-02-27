@@ -3,6 +3,7 @@ import { VehicleRemoteAuthenticator, VehicleRemoteControl } from '../../src/Remo
 import { createMock } from 'ts-auto-mock'
 import { CommandAuthenticationService } from '../../src/Authentication/CommandAuthenticationService'
 import { CommandVehicleService } from '../../src/Services/CommandVehicleService'
+import { QueryVehicleInformationService } from '../../src/Services/QueryVehicleInformationService'
 
 class JlrVehicleRemoteControlBuilder {
     public deviceId?: string
@@ -13,6 +14,7 @@ class JlrVehicleRemoteControlBuilder {
     public vehicleRemoteAuthenticator?: VehicleRemoteAuthenticator
     public commandAuthenticationService?: CommandAuthenticationService
     public commandVehicleService?: CommandVehicleService
+    public queryVehicleInformationService?: QueryVehicleInformationService
     
     public build: () => VehicleRemoteControl = () => {
         return new JlrVehicleRemoteControl(
@@ -23,7 +25,8 @@ class JlrVehicleRemoteControlBuilder {
             this.userPin || '',
             this.vehicleRemoteAuthenticator || createMock<VehicleRemoteAuthenticator>(),
             this.commandAuthenticationService || createMock<CommandAuthenticationService>(),
-            this.commandVehicleService || createMock<CommandVehicleService>())
+            this.commandVehicleService || createMock<CommandVehicleService>(),
+            this.queryVehicleInformationService || createMock<QueryVehicleInformationService>())
     }
 }
 

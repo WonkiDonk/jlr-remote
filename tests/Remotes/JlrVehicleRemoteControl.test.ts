@@ -1,8 +1,9 @@
 import { createMock } from 'ts-auto-mock'
-import { CommandVehicleService } from '../../src/Services/CommandVehicleService'
-import { VehicleRemoteAuthenticator } from '../../src/Remotes/Types'
 import { CommandAuthenticationService } from '../../src/Authentication/CommandAuthenticationService'
+import { CommandVehicleService } from '../../src/Services/CommandVehicleService'
 import { JlrVehicleRemoteControlBuilder } from './JlrVehicleRemoteControl.builder'
+import { QueryVehicleInformationService } from '../../src/Services/QueryVehicleInformationService'
+import { VehicleRemoteAuthenticator } from '../../src/Remotes/Types'
 
 describe('JLR Vehicle Remote Control', () => {
     describe('Beep and flash', () => {
@@ -650,14 +651,36 @@ describe('JLR Vehicle Remote Control', () => {
     describe('Get lock state', () => {
         test.each(['some token', 'another token', 'not a real token'])
             ('uses access token `%s`', async (expectedAccessToken) => {
+                // Arrange
+                const mockVehicleRemoteAuthentication = createMock<VehicleRemoteAuthenticator>()
+                mockVehicleRemoteAuthentication.getAccessToken = jest.fn(() => Promise.resolve(expectedAccessToken))
+
+                const mockQueryVehicleInformationService = createMock<QueryVehicleInformationService>()
+                const builder = new JlrVehicleRemoteControlBuilder()
                 
+                builder.vehicleRemoteAuthenticator = mockVehicleRemoteAuthentication
+                builder.queryVehicleInformationService = mockQueryVehicleInformationService
+
+                const remote = builder.build()
+
+                // Act
+                await remote.getLockState()
+
+                // Assert
+                expect(mockQueryVehicleInformationService.getVehicleStatusV3).toHaveBeenCalledWith(
+                    expectedAccessToken,
+                    expect.any(String),
+                    expect.any(String))
             })
         
-        test('uses the device Id `%s`', async (expectedDeviceId) => {})
+        test.each(['device id', 'another device id', 'not a real device id'])
+            ('uses the device Id `%s`', async (expectedDeviceId) => {})
 
-        test('uses the VIN `%s`', async (expectedDeviceId) => {})
+        test.each(['VIN', 'another VIN', 'not a real VIN'])
+            ('uses the VIN `%s`', async (expectedDeviceId) => {})
 
-        test('returns expected lock state', async () => {})
+        test.each([true, false])
+            ('returns expected lock state', async () => {})
     })
 })
 
