@@ -3,8 +3,11 @@ import { CommandVehicleService } from '../Services/CommandVehicleService'
 import { CommandAuthenticationService } from '../Authentication/CommandAuthenticationService'
 
 class JlrVehicleRemoteControl implements VehicleRemoteControl {
-    constructor(private readonly deviceId: string, private readonly vin: string,
-        private readonly userId: string, private readonly lastFourOfVin: string,
+    constructor(
+        private readonly deviceId: string,
+        private readonly vin: string,
+        private readonly userId: string,
+        private readonly lastFourOfVin: string,
         private readonly userPin: string,
         private readonly vehicleRemoteAuthenticator: VehicleRemoteAuthenticator,
         private readonly commandAuthenticationService: CommandAuthenticationService,
