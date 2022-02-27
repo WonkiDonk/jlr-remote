@@ -2,7 +2,9 @@ import { QueryVehicleInformationService } from '../Services/QueryVehicleInformat
 import { VehicleRemoteAuthenticator, VehicleRemoteInformation } from './Types'
 
 class JlrVehicleRemoteInformation implements VehicleRemoteInformation {
-    constructor(private readonly deviceId: string, private readonly vin: string,
+    constructor(
+        private readonly deviceId: string,
+        private readonly vin: string,
         private readonly vehicleRemoteAuthenticator: VehicleRemoteAuthenticator,
         private readonly queryVehicleInformationService: QueryVehicleInformationService) { }
 

@@ -1,4 +1,3 @@
-import { JlrVehicleRemoteControl } from '../../src/Remotes/JlrVehicleRemoteControl'
 import { createMock } from 'ts-auto-mock'
 import { CommandVehicleService } from '../../src/Services/CommandVehicleService'
 import { VehicleRemoteAuthenticator } from '../../src/Remotes/Types'
@@ -649,7 +648,16 @@ describe('JLR Vehicle Remote Control', () => {
     })
 
     describe('Get lock state', () => {
+        test.each(['some token', 'another token', 'not a real token'])
+            ('uses access token `%s`', async (expectedAccessToken) => {
+                
+            })
+        
+        test('uses the device Id `%s`', async (expectedDeviceId) => {})
 
+        test('uses the VIN `%s`', async (expectedDeviceId) => {})
+
+        test('returns expected lock state', async () => {})
     })
 })
 
