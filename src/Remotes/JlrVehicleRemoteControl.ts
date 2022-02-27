@@ -41,7 +41,7 @@ class JlrVehicleRemoteControl implements VehicleRemoteControl {
     
     getLockState = async (): Promise<LockState> => {
         const accessToken = await this.vehicleRemoteAuthenticator.getAccessToken()
-        await this.queryVehicleInformationService.getVehicleStatusV3(accessToken, this.deviceId, 'x')
+        await this.queryVehicleInformationService.getVehicleStatusV3(accessToken, this.deviceId, this.vin)
 
         return { isLocked: false }
     }

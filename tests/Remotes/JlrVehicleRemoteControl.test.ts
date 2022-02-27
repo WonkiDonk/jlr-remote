@@ -697,7 +697,27 @@ describe('JLR Vehicle Remote Control', () => {
             })
 
         test.each(['VIN', 'another VIN', 'not a real VIN'])
-            ('uses the VIN `%s`', async (expectedDeviceId) => {})
+            ('uses the VIN `%s`', async (expectedVin) => {
+                // Arrange
+                const mockVehicleRemoteAuthentication = createMock<VehicleRemoteAuthenticator>()
+                const mockQueryVehicleInformationService = createMock<QueryVehicleInformationService>()
+                const builder = new JlrVehicleRemoteControlBuilder()
+
+                builder.vin = expectedVin
+                builder.vehicleRemoteAuthenticator = mockVehicleRemoteAuthentication
+                builder.queryVehicleInformationService = mockQueryVehicleInformationService
+
+                const remote = builder.build()
+
+                // Act
+                await remote.getLockState()
+
+                // Assert
+                expect(mockQueryVehicleInformationService.getVehicleStatusV3).toHaveBeenCalledWith(
+                    expect.any(String),
+                    expect.any(String),
+                    expectedVin)
+            })
 
         test.each([true, false])
             ('returns expected lock state', async () => {})
