@@ -1,12 +1,17 @@
 import { VehicleAttributes, VehicleAlert } from '../JaguarLandRover/ServiceTypes'
 
 /**
+ * Allowed values for locked states.
+ */
+type JlrLockState = 'LOCKED' | 'UNLOCKED' | ''
+
+/**
  * Defines the core vehicle status.
  */
  type CoreVehicleStatus = {
      TU_STATUS_PRIMARY_VOLT: string,
      TU_STATUS_PRIMARY_CHARGE_PERCENT: string,
-     DOOR_IS_ALL_DOORS_LOCKED: 'LOCKED' | 'UNLOCKED',
+     DOOR_IS_ALL_DOORS_LOCKED: JlrLockState,
      TU_STATUS_GSM_MODEM: string,
      TU_STATUS_IMEI: string,
      CLIMATE_STATUS_TIMER1_DAY: string,
@@ -26,12 +31,12 @@ import { VehicleAttributes, VehicleAlert } from '../JaguarLandRover/ServiceTypes
      TU_STATUS_SECONDARY_VOLT: string,
      ARM_REST_SECOND_ROW_STATUS: string,
      SRS_STATUS: string,
-     DOOR_REAR_RIGHT_LOCK_STATUS: 'LOCKED' | 'UNLOCKED',
+     DOOR_REAR_RIGHT_LOCK_STATUS: JlrLockState,
      IS_PANIC_ALARM_TRIGGERED: string,
      DOOR_FRONT_RIGHT_POSITION: string,
      BRAKE_FLUID_WARN: string,
      DRV_SEAT_THIRD_ROW_INHIBITION: string,
-     DOOR_REAR_LEFT_LOCK_STATUS: 'LOCKED' | 'UNLOCKED',
+     DOOR_REAR_LEFT_LOCK_STATUS: JlrLockState,
      TU_STATUS_MOBILE_PHONE_CONNECTED: string,
      TU_STATUS_SW_VERSION_CONFIG: string,
      EXT_OIL_LEVEL_WARN: string,
@@ -55,7 +60,7 @@ import { VehicleAttributes, VehicleAlert } from '../JaguarLandRover/ServiceTypes
      TU_STATUS_BUTTONS: string,
      PAS_SEAT_THIRD_ROW_STATUS: string,
      VEHICLE_STATE_TYPE: string,
-     DOOR_ENGINE_HOOD_LOCK_STATUS: 'LOCKED' | 'UNLOCKED',
+     DOOR_ENGINE_HOOD_LOCK_STATUS: JlrLockState,
      TYRE_STATUS_FRONT_RIGHT: string,
      PRIVACY_SWITCH: string,
      TU_STATUS_EXT_POWER: string,
@@ -64,11 +69,11 @@ import { VehicleAttributes, VehicleAlert } from '../JaguarLandRover/ServiceTypes
      TU_STATUS_HANDSET: string,
      BRAZIL_EVENT_MODE: string,
      IS_CRASH_SITUATION: string,
-     DOOR_FRONT_RIGHT_LOCK_STATUS: 'LOCKED' | 'UNLOCKED',
+     DOOR_FRONT_RIGHT_LOCK_STATUS: JlrLockState,
      TYRE_PRESSURE_REAR_RIGHT: string,
      TU_STATUS_CONFIG_VERSION: string,
      CLIMATE_STATUS_TIMER2_DAY: string,
-     DOOR_FRONT_LEFT_LOCK_STATUS: 'LOCKED' | 'UNLOCKED',
+     DOOR_FRONT_LEFT_LOCK_STATUS: JlrLockState,
      WINDOW_REAR_LEFT_STATUS: string,
      PAS_SEAT_FIRST_ROW_INHIBITION: string,
      DRV_SEAT_SECOND_ROW_STATUS: string,
@@ -80,7 +85,7 @@ import { VehicleAttributes, VehicleAlert } from '../JaguarLandRover/ServiceTypes
      FUEL_LEVEL_PERC: string,
      CLIMATE_STATUS_TIMER2_MONTH: string,
      PAS_SEAT_THIRD_ROW_INHIBITION: string,
-     DOOR_IS_BOOT_LOCKED: 'LOCKED' | 'UNLOCKED',
+     DOOR_IS_BOOT_LOCKED: JlrLockState,
      TU_STATUS_SW_VERSION_SECONDARY: string,
      DOOR_BOOT_POSITION: string,
      IS_HEAD_LIGHTS_ON: string,
@@ -115,7 +120,7 @@ import { VehicleAttributes, VehicleAlert } from '../JaguarLandRover/ServiceTypes
      TYRE_STATUS_REAR_RIGHT: string,
      TU_ACTIVATION_STATUS: string,
      DRV_SEAT_SECOND_ROW_INHIBITION: string,
-     DOOR_BOOT_LOCK_STATUS: 'LOCKED' | 'UNLOCKED',
+     DOOR_BOOT_LOCK_STATUS: JlrLockState,
      TU_STATUS_CAN: string
  }
 
