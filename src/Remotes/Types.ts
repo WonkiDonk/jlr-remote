@@ -362,6 +362,7 @@ type InternalCombustionEngineVehicleRemote = VehicleRemoteInformation
 type VehicleRemote = ElectricVehicleRemote | InternalCombustionEngineVehicleRemote
 
 export {
+    CurrentVehicleStatus,
     ChargeState,
     ElectricVehicleRemote,
     ElectricVehicleRemoteControl,

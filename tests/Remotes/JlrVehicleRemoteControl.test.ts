@@ -3,7 +3,9 @@ import { CommandAuthenticationService } from '../../src/Authentication/CommandAu
 import { CommandVehicleService } from '../../src/Services/CommandVehicleService'
 import { JlrVehicleRemoteControlBuilder } from './JlrVehicleRemoteControl.builder'
 import { QueryVehicleInformationService } from '../../src/Services/QueryVehicleInformationService'
-import { VehicleRemoteAuthenticator } from '../../src/Remotes/Types'
+import { CurrentVehicleStatus, VehicleRemoteAuthenticator } from '../../src/Remotes/Types'
+import { CurrentVehicleStatusV3 } from '../../src/JaguarLandRover/ServiceTypes'
+import { VehicleStatusMapper } from '../../src/Remotes/Mappers'
 
 describe('JLR Vehicle Remote Control', () => {
     describe('Beep and flash', () => {
@@ -719,8 +721,41 @@ describe('JLR Vehicle Remote Control', () => {
                     expectedVin)
             })
 
-        test.each([true, false])
-            ('returns expected lock state', async () => {})
+        test.each([
+            ['LOCKED', true],
+            ['UNLOCKED', false]])
+            ('returns expected lock state', async (lockedState, expectedIsLocked) => {
+                // Arrange
+                const mockVehicleRemoteAuthentication = createMock<VehicleRemoteAuthenticator>()
+
+                const jlrStatus = createMock<CurrentVehicleStatusV3>()
+                const status = createMock<CurrentVehicleStatus>()
+                const mockVehicleStatusMapper = createMock<VehicleStatusMapper>()
+
+                status.vehicleStatus.core.DOOR_IS_ALL_DOORS_LOCKED = lockedState
+
+                mockVehicleStatusMapper.map = jest.fn((received) =>
+                    received === jlrStatus
+                        ? status
+                        : createMock<CurrentVehicleStatus>())
+
+                const mockQueryVehicleInformationService = createMock<QueryVehicleInformationService>()
+                mockQueryVehicleInformationService.getVehicleStatusV3 = jest.fn(() => Promise.resolve(jlrStatus))
+
+                const builder = new JlrVehicleRemoteControlBuilder()
+
+                builder.vehicleRemoteAuthenticator = mockVehicleRemoteAuthentication
+                builder.queryVehicleInformationService = mockQueryVehicleInformationService
+                builder.vehicleStatusMapper = mockVehicleStatusMapper
+
+                const remote = builder.build()
+
+                // Act
+                const lockState = await remote.getLockState()
+
+                // Assert
+                expect(lockState.isLocked).toBe(expectedIsLocked)
+            })
     })
 })
 
