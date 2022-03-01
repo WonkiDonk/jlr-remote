@@ -732,7 +732,7 @@ describe('JLR Vehicle Remote Control', () => {
                 const status = createMock<CurrentVehicleStatus>()
                 const mockVehicleStatusMapper = createMock<VehicleStatusMapper>()
 
-                status.vehicleStatus.core.DOOR_IS_ALL_DOORS_LOCKED = lockedState
+                status.vehicleStatus.core.DOOR_IS_ALL_DOORS_LOCKED = lockedState === 'LOCKED' ? 'LOCKED' : 'UNLOCKED'
 
                 mockVehicleStatusMapper.map = jest.fn((received) =>
                     received === jlrStatus
