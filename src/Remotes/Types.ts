@@ -292,7 +292,7 @@ interface ElectricVehicleRemoteControl {
     /**
      * Starts the electric vehicle charging.
      */
-    startCharing: () => Promise<void>
+    startCharging: () => Promise<void>
     
     /**
      * Stops the electric vehicle charing.
