@@ -1,7 +1,13 @@
+import { CommandIceVehicleService } from '../Services/CommandIceVehicleService'
 import { InternalCombustionEngineVehicleRemoteControl } from './Types'
+import { VehicleRemoteAuthenticator } from './Types'
 
 class JlrInternalCombustionEngineVehicleRemoteControl implements InternalCombustionEngineVehicleRemoteControl {
     public type: 'ICE' = 'ICE'
+
+    constructor(
+        private readonly vehicleRemoteAuthenticator: VehicleRemoteAuthenticator,
+        private readonly commandIceVehicleService: CommandIceVehicleService) { }
 
     turnOnClimateControl = (targetTemperature: number): Promise<void> => {
         throw new Error('Not implemented.')
@@ -15,8 +21,10 @@ class JlrInternalCombustionEngineVehicleRemoteControl implements InternalCombust
         throw new Error('Not implemented.')
     }
 
-    turnOnEngine = (): Promise<void> => {
-        throw new Error('Not implemented.')
+    turnOnEngine = async (): Promise<void> => {
+        const accessToken = await this.vehicleRemoteAuthenticator.getAccessToken()
+        
+        await this.commandIceVehicleService.remoteEngineStart(accessToken,'','','')
     }
 
     turnOffEngine = (): Promise<void> => {
