@@ -102,7 +102,7 @@ interface CommandAuthenticationService {
 
     /**
      * Authenticate to the REOFF service. This requires the client to pass the user's personal
-     * PIN. The RDU service is used for remotely stopping the vehicle engine.
+     * PIN. The REOFF service is used for remotely stopping the vehicle engine.
      * 
      * @param accessToken Access Token 
      * @param deviceId UUID4 Device Identifier
