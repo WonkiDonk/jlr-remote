@@ -1,3 +1,4 @@
+import { CommandAuthenticationService } from '../Authentication/CommandAuthenticationService'
 import { CommandIceVehicleService } from '../Services/CommandIceVehicleService'
 import { InternalCombustionEngineVehicleRemoteControl } from './Types'
 import { VehicleRemoteAuthenticator } from './Types'
@@ -9,7 +10,8 @@ class JlrInternalCombustionEngineVehicleRemoteControl implements InternalCombust
         private readonly deviceId: string,
         private readonly vin: string,
         private readonly vehicleRemoteAuthenticator: VehicleRemoteAuthenticator,
-        private readonly commandIceVehicleService: CommandIceVehicleService) { }
+        private readonly commandIceVehicleService: CommandIceVehicleService,
+        private readonly commandAuthenticationService: CommandAuthenticationService) { }
 
     turnOnClimateControl = (targetTemperature: number): Promise<void> => {
         throw new Error('Not implemented.')
@@ -24,9 +26,9 @@ class JlrInternalCombustionEngineVehicleRemoteControl implements InternalCombust
     }
 
     turnOnEngine = async (): Promise<void> => {
-        // AccessToken
         const accessToken = await this.vehicleRemoteAuthenticator.getAccessToken()
-        
+        const reonToken = await this.commandAuthenticationService.getReonToken(accessToken, '', '', '', '')
+    
         await this.commandIceVehicleService.remoteEngineStart(accessToken, this.deviceId, this.vin, '')
     }
 
