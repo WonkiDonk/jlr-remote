@@ -7,6 +7,7 @@ class JlrInternalCombustionEngineVehicleRemoteControl implements InternalCombust
 
     constructor(
         private readonly deviceId: string,
+        private readonly vin: string,
         private readonly vehicleRemoteAuthenticator: VehicleRemoteAuthenticator,
         private readonly commandIceVehicleService: CommandIceVehicleService) { }
 
@@ -26,7 +27,7 @@ class JlrInternalCombustionEngineVehicleRemoteControl implements InternalCombust
         // AccessToken
         const accessToken = await this.vehicleRemoteAuthenticator.getAccessToken()
         
-        await this.commandIceVehicleService.remoteEngineStart(accessToken, this.deviceId,'','')
+        await this.commandIceVehicleService.remoteEngineStart(accessToken, this.deviceId, this.vin, '')
     }
 
     turnOffEngine = (): Promise<void> => {

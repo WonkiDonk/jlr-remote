@@ -8,11 +8,11 @@ describe('JLR Internal Combustion Engine Vehicle Remote Control', () => {
         test.each(['some token', 'fake token', 'hello world'])
             ('uses access token `%s`', async (expectedAccessToken) => {
                 // Arrange
-                const mockVehicleRemoteAuthentication = createMock<VehicleRemoteAuthenticator>()
-                mockVehicleRemoteAuthentication.getAccessToken = jest.fn(() => Promise.resolve(expectedAccessToken))
+                const mockVehicleRemoteAuthenticator = createMock<VehicleRemoteAuthenticator>()
+                mockVehicleRemoteAuthenticator.getAccessToken = jest.fn(() => Promise.resolve(expectedAccessToken))
 
                 const mockCommandIceVehicleService = createMock<CommandIceVehicleService>()
-                const remote = new JlrInternalCombustionEngineVehicleRemoteControl("not important", mockVehicleRemoteAuthentication, mockCommandIceVehicleService)
+                const remote = new JlrInternalCombustionEngineVehicleRemoteControl('not important', 'not important', mockVehicleRemoteAuthenticator, mockCommandIceVehicleService)
 
                 // Act
                 await remote.turnOnEngine()
@@ -28,9 +28,8 @@ describe('JLR Internal Combustion Engine Vehicle Remote Control', () => {
         test.each(['hello world', 'fake ID', 'bad ID'])
             ('uses device ID `%s`', async (expectedDeviceId) => {
                 // Arrange
-                const mockVehicleRemoteAuthentication = createMock<VehicleRemoteAuthenticator>()
                 const mockCommandIceVehicleService = createMock<CommandIceVehicleService>()
-                const remote = new JlrInternalCombustionEngineVehicleRemoteControl(expectedDeviceId, mockVehicleRemoteAuthentication, mockCommandIceVehicleService)
+                const remote = new JlrInternalCombustionEngineVehicleRemoteControl(expectedDeviceId, 'not important', createMock<VehicleRemoteAuthenticator>(), mockCommandIceVehicleService)
 
                 // Act
                 await remote.turnOnEngine()
@@ -43,7 +42,23 @@ describe('JLR Internal Combustion Engine Vehicle Remote Control', () => {
                     expect.any(String))
         })
 
-        test('uses Vin', () => {})
+        test.each(['vin1', 'vin2','vin3'])
+            ('uses Vin `%s`', async (expectedVin) => {
+
+                //Arrange
+                const mockCommandIceVehicleService = createMock<CommandIceVehicleService>();
+                const remote = new JlrInternalCombustionEngineVehicleRemoteControl('not important', expectedVin, createMock<VehicleRemoteAuthenticator>(), mockCommandIceVehicleService)
+
+                //Act
+                await remote.turnOnEngine()
+
+                // Assert
+                expect(mockCommandIceVehicleService.remoteEngineStart).toHaveBeenCalledWith(
+                    expect.any(String),
+                    expect.any(String),
+                    expectedVin,
+                    expect.any(String))
+                })
         })
 
         test('uses REON token', () => {})
