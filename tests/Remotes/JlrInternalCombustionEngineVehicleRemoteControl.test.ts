@@ -61,10 +61,27 @@ describe('JLR Internal Combustion Engine Vehicle Remote Control', () => {
                 })
         })
 
-        test('uses REON token', () => {})
-        })
+    describe('Gets REON token', () => {
+        test.each(['real token', 'not a real token', 'garbage'])
+            ('uses access token `%s`', async () => {})
+        
+        test.each(['some device id', 'not a real device id', 'dani and will pairing innit'])
+            ('uses device ID `%s`', async () => { })
+        
+        test.each(['hello world', 'Vin Diesel', 'fake VIN'])
+            ('uses VIN `%s`', async () => { })
+        
+        test.each(['hello world', 'useless ID', 'fake ID'])
+            ('uses user ID `%s`', async () => { })
+        
+        test.each(['hello world', 'PIN Diesel', 'fake PIN'])
+            ('uses user PIN `%s`', async () => { })
+
+        test.each(['real token', 'not a real token', 'garbage'])
+            ('uses REON command token `%s`', async () => { })
+    })
 
     describe('Turn off engine', () => {})
 
     describe('Get engine state',() => {})
-
+})
