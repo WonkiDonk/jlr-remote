@@ -15,7 +15,7 @@ class JlrElectricVehicleRemoteControl implements ElectricVehicleRemoteControl {
         throw new Error('Not implemented.')
     }
 
-    startCharing = (): Promise<void> => {
+    startCharging = (): Promise<void> => {
         throw new Error('Not implemented.')
     }
 

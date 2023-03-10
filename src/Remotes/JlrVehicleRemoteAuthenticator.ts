@@ -5,5 +5,4 @@ class JlrVehicleRemoteAuthenticator implements VehicleRemoteAuthenticator {
         throw new Error('Not implemented.')
     }
 }
-
 export { JlrVehicleRemoteAuthenticator }
