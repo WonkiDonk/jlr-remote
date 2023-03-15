@@ -11,7 +11,7 @@ class JlrInternalCombustionEngineVehicleRemoteControlBuilder {
     public userPin?: string
     public vehicleRemoteAuthenticator?: VehicleRemoteAuthenticator
     public commandIceVehicleService?: CommandIceVehicleService
-    public commandAuthenticatioService?: CommandAuthenticationService
+    public commandAuthenticationService?: CommandAuthenticationService
     
     public build: () => JlrInternalCombustionEngineVehicleRemoteControl = () => {
         return new JlrInternalCombustionEngineVehicleRemoteControl(
@@ -21,7 +21,7 @@ class JlrInternalCombustionEngineVehicleRemoteControlBuilder {
             this.userPin || '',
             this.vehicleRemoteAuthenticator || createMock<VehicleRemoteAuthenticator>(),
             this.commandIceVehicleService || createMock<CommandIceVehicleService>(),
-            this.commandAuthenticatioService || createMock<CommandAuthenticationService>())
+            this.commandAuthenticationService || createMock<CommandAuthenticationService>())
     }
 }
 
