@@ -250,17 +250,17 @@ interface VehicleRemoteControl {
     /**
      * Gets the percentage charge of the electric vehicle's high voltage battery.
      */
-    chargeLevel: number
+    chargeLevel?: number
     
     /**
      * Gets whether the electric vehicle is charging.
      */
-    isCharging: boolean
+    isCharging?: boolean
     
     /**
      * Gets whether the electric vehicle is connected to a charger.
      */
-    isConnected: boolean
+    isConnected?: boolean
 }
 
 /**
