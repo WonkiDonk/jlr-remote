@@ -6,6 +6,7 @@ import { VehicleRemoteAuthenticator } from "../../src/Remotes/Types";
 import { CommandElectricVehicleService } from "c:/Users/dfier/Desktop/3. Projects/Will-Dani/jlr-remote/src/Services/CommandElectricVehicleService"
 
 class JlrElectricVehicleRemoteControlBuilder {
+    public deviceId?: string
     public vehicleRemoteAuthenticator?: VehicleRemoteAuthenticator
     public queryVehicleInformationService?: QueryVehicleInformationService
     public commandAuthenticationService?: CommandAuthenticationService
@@ -13,6 +14,7 @@ class JlrElectricVehicleRemoteControlBuilder {
 
     public build: () => JlrElectricVehicleRemoteControl = () => {
         return new JlrElectricVehicleRemoteControl(
+            this.deviceId || '',
             this.vehicleRemoteAuthenticator || createMock<VehicleRemoteAuthenticator>(),
             this.commandElectricVehicleService || createMock<CommandElectricVehicleService>())
     }

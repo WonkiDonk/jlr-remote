@@ -1,11 +1,10 @@
 import { createMock } from 'ts-auto-mock'
-import { JlrElectricVehicleRemoteControl } from '../../src/Remotes/JlrElectricVehicleRemoteControl'
 import { CommandElectricVehicleService } from "../../src/Services/CommandElectricVehicleService"
 import { VehicleRemoteAuthenticator } from '../../src/Remotes/Types'
 import { JlrElectricVehicleRemoteControlBuilder } from './JlrElectricVehicleRemoteControl.builder'
 
 
-describe('JLR Electric Vehicle Remove Control', () => {
+describe('JLR Electric Vehicle Remote Control', () => {
     describe('Start charging', () => {
         test.each(['some token', 'fake token', 'hello world'])
         ('uses access token `%s`', async (expectedAccessToken) => {
@@ -33,8 +32,26 @@ describe('JLR Electric Vehicle Remove Control', () => {
 
         })
 
-        test('uses deviceId `%s`', () => {
-            
+        test.each(['hello world', 'fake ID', 'bad ID'])
+        ('uses device ID `%s`', async (expectedDeviceId) => {
+            // Arrange
+            const mockCommandElectricVehicleService = createMock<CommandElectricVehicleService>()
+
+            const builder = new JlrElectricVehicleRemoteControlBuilder()
+            builder.deviceId = expectedDeviceId
+            builder.commandElectricVehicleService = mockCommandElectricVehicleService
+
+            const remote = builder.build()
+
+            // Act
+            await remote.startCharging()
+
+            // Assert
+            expect(mockCommandElectricVehicleService.startCharging).toHaveBeenCalledWith(
+                expect.any(String),
+                expectedDeviceId,
+                expect.any(String),
+                expect.any(String))          
         })
 
         test('uses vin `%s`', () => {
