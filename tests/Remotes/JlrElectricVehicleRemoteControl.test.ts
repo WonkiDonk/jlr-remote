@@ -54,8 +54,26 @@ describe('JLR Electric Vehicle Remote Control', () => {
                 expect.any(String))          
         })
 
-        test('uses vin `%s`', () => {
+        test.each(['vin1', 'vin2', 'vin3'])
+        ('uses vin `%s`', async (expectedVin) => {
+            // Arrange
+            const mockCommandElectricVehicleService = createMock<CommandElectricVehicleService>()
 
+            const builder = new JlrElectricVehicleRemoteControlBuilder()
+            builder.vin = expectedVin
+            builder.commandElectricVehicleService = mockCommandElectricVehicleService
+
+            const remote = builder.build()
+
+            // Act
+            await remote.startCharging()
+
+            // Assert
+            expect(mockCommandElectricVehicleService.startCharging).toHaveBeenCalledWith(
+                expect.any(String),
+                expect.any(String),
+                expectedVin,
+                expect.any(String))
         })
 
         describe('Gets cpToken', () => {
