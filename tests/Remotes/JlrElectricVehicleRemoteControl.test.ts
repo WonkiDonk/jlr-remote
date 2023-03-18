@@ -104,9 +104,7 @@ describe('JLR Electric Vehicle Remote Control', () => {
                     expect.any(String),
                     expect.any(String))
             })
-            
-            
-            
+                       
             test.each(['some device id', 'not a real device id', 'dani and will pairing innit'])
             ('uses device ID `%s`', async (expectedDeviceId) => {
                 // Arrange
@@ -130,10 +128,30 @@ describe('JLR Electric Vehicle Remote Control', () => {
                     expect.any(String),
                     expect.any(String))
             })
+                      
+            test.each(['hello world', 'Vin Diesel', 'fake VIN'])
+            ('uses vin `%s`', async (expectedVin) => {
+                // Arrange
+                const mockCommandAuthenticationService = createMock<CommandAuthenticationService>()
+
+                const builder = new JlrElectricVehicleRemoteControlBuilder()
+                builder.vin = expectedVin
+                builder.commandAuthenticationService = mockCommandAuthenticationService
+
+                const remote = builder.build()
+
+                // Act
+                await remote.startCharging()
+
+                // Assert
+                expect(mockCommandAuthenticationService.getCpToken).toHaveBeenCalledWith(
+                    expect.any(String),
+                    expect.any(String),
+                    expectedVin,
+                    expect.any(String),
+                    expect.any(String))
+            })
             
-            
-            
-            test('uses vin `%s`', () => {})
             test('uses user ID `%s`', () => {})
             test('uses last four of vin `%s`', () => {})
             test('uses cpToken `%s`', () => {})

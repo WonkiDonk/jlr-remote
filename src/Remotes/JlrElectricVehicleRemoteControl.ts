@@ -27,7 +27,7 @@ class JlrElectricVehicleRemoteControl implements ElectricVehicleRemoteControl {
 
     startCharging = async (): Promise<void> => {
         const accessToken = await this.vehicleRemoteAuthenticator.getAccessToken()
-        const cpToken = await this.commandAuthenticationService.getCpToken(accessToken, this.deviceId, '', '', '')
+        const cpToken = await this.commandAuthenticationService.getCpToken(accessToken, this.deviceId, this.vin, '', '')
 
         await this.commandElectricVehicleService.startCharging(accessToken, this.deviceId, this.vin, '')
     }
