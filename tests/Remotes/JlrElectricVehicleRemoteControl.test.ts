@@ -296,7 +296,31 @@ describe('JLR Electric Vehicle Remote Control', () => {
         })
 
         describe('Gets cpToken', () => {
-            test('uses access token `%s`', () => {})
+            test.each(['real token', 'not a real token', 'garbage'])
+            ('uses access token `%s`', async (expectedAccessToken) => {
+                // Arrange
+                const mockCommandAuthenticationService = createMock<CommandAuthenticationService>()
+                const mockVehicleRemoteAuthenticator = createMock<VehicleRemoteAuthenticator>()
+                mockVehicleRemoteAuthenticator.getAccessToken = jest.fn(() => Promise.resolve (expectedAccessToken))
+
+                const builder = new JlrElectricVehicleRemoteControlBuilder()
+                builder.vehicleRemoteAuthenticator = mockVehicleRemoteAuthenticator
+                builder.commandAuthenticationService = mockCommandAuthenticationService
+
+                const remote = builder.build()
+
+                // Act
+                await remote.stopCharging()
+
+                // Assert
+                expect(mockCommandAuthenticationService.getCpToken).toHaveBeenCalledWith(
+                    expectedAccessToken,
+                    expect.any(String),
+                    expect.any(String),
+                    expect.any(String),
+                    expect.any(String))
+            })
+            
             test('uses device ID `%s`', () => {})
             test('uses vin `%s`', () => {})
             test('uses user ID `%s`', () => {})
