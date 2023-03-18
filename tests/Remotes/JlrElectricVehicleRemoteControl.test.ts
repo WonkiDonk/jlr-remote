@@ -2,6 +2,8 @@ import { createMock } from 'ts-auto-mock'
 import { CommandElectricVehicleService } from "../../src/Services/CommandElectricVehicleService"
 import { VehicleRemoteAuthenticator } from '../../src/Remotes/Types'
 import { JlrElectricVehicleRemoteControlBuilder } from './JlrElectricVehicleRemoteControl.builder'
+import { CommandAuthenticationService } from '../../src/Authentication/CommandAuthenticationService'
+import { JlrElectricVehicleRemoteControl } from '../../src/Remotes/JlrElectricVehicleRemoteControl'
 
 
 describe('JLR Electric Vehicle Remote Control', () => {
@@ -77,8 +79,60 @@ describe('JLR Electric Vehicle Remote Control', () => {
         })
 
         describe('Gets cpToken', () => {
-            test('uses access token `%s`', () => {})
-            test('uses device ID `%s`', () => {})
+            test.each(['real token', 'not a real token', 'garbage'])
+            ('uses access token `%s`', async (expectedAccessToken) => {
+                // Arrange
+                const mockCommandAuthenticationService = createMock<CommandAuthenticationService>()
+                const mockVehicleRemoteAuthenticator = createMock<VehicleRemoteAuthenticator>()
+                mockVehicleRemoteAuthenticator.getAccessToken = jest.fn(() => Promise.resolve(expectedAccessToken))
+
+                const builder = new JlrElectricVehicleRemoteControlBuilder()
+                builder.vehicleRemoteAuthenticator = mockVehicleRemoteAuthenticator
+                builder.commandAuthenticationService = mockCommandAuthenticationService
+
+                const remote = builder.build()
+
+                // Act
+                await remote.startCharging()
+
+
+                // Assert
+                expect(mockCommandAuthenticationService.getCpToken).toHaveBeenCalledWith(
+                    expectedAccessToken,
+                    expect.any(String),
+                    expect.any(String),
+                    expect.any(String),
+                    expect.any(String))
+            })
+            
+            
+            
+            test.each(['some device id', 'not a real device id', 'dani and will pairing innit'])
+            ('uses device ID `%s`', async (expectedDeviceId) => {
+                // Arrange
+                const mockCommandAuthenticationService = createMock<CommandAuthenticationService>()
+
+                const builder = new JlrElectricVehicleRemoteControlBuilder()
+                builder.deviceId = expectedDeviceId
+                builder.commandAuthenticationService = mockCommandAuthenticationService
+
+                const remote = builder.build()
+
+                // Act
+                await remote.startCharging()
+
+
+                // Assert
+                expect(mockCommandAuthenticationService.getCpToken).toHaveBeenCalledWith(
+                    expect.any(String),
+                    expectedDeviceId,
+                    expect.any(String),
+                    expect.any(String),
+                    expect.any(String))
+            })
+            
+            
+            
             test('uses vin `%s`', () => {})
             test('uses user ID `%s`', () => {})
             test('uses last four of vin `%s`', () => {})

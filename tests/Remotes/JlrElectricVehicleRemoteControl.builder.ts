@@ -18,7 +18,8 @@ class JlrElectricVehicleRemoteControlBuilder {
             this.deviceId || '',
             this.vin || '',
             this.vehicleRemoteAuthenticator || createMock<VehicleRemoteAuthenticator>(),
-            this.commandElectricVehicleService || createMock<CommandElectricVehicleService>())
+            this.commandElectricVehicleService || createMock<CommandElectricVehicleService>(),
+            this.commandAuthenticationService || createMock<CommandAuthenticationService>())
     }
 }
 

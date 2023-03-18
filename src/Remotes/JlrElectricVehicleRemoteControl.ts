@@ -1,6 +1,7 @@
 import { ElectricVehicleRemoteControl, ChargeState } from './Types';
 import { VehicleRemoteAuthenticator } from './Types';
 import { CommandElectricVehicleService } from '../Services/CommandElectricVehicleService';
+import { CommandAuthenticationService } from '../Authentication/CommandAuthenticationService';
 
 class JlrElectricVehicleRemoteControl implements ElectricVehicleRemoteControl {
     public type: 'EV' = 'EV'
@@ -9,7 +10,8 @@ class JlrElectricVehicleRemoteControl implements ElectricVehicleRemoteControl {
         private readonly deviceId: string,
         private readonly vin: string,
         private readonly vehicleRemoteAuthenticator: VehicleRemoteAuthenticator,
-        private readonly commandElectricVehicleService: CommandElectricVehicleService) {}
+        private readonly commandElectricVehicleService: CommandElectricVehicleService,
+        private readonly commandAuthenticationService: CommandAuthenticationService) {}
 
     turnOnClimateControl = (targetTemperature: number): Promise<void> => {
         throw new Error('Not implemented.')
@@ -25,7 +27,8 @@ class JlrElectricVehicleRemoteControl implements ElectricVehicleRemoteControl {
 
     startCharging = async (): Promise<void> => {
         const accessToken = await this.vehicleRemoteAuthenticator.getAccessToken()
-     
+        const cpToken = await this.commandAuthenticationService.getCpToken(accessToken, this.deviceId, '', '', '')
+
         await this.commandElectricVehicleService.startCharging(accessToken, this.deviceId, this.vin, '')
     }
 
