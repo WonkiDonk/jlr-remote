@@ -38,7 +38,7 @@ class JlrElectricVehicleRemoteControl implements ElectricVehicleRemoteControl {
     stopCharging = async (): Promise<void> => {
         const accessToken = await this.vehicleRemoteAuthenticator.getAccessToken()
    
-        await this.commandElectricVehicleService.stopCharging(accessToken, this.deviceId, '', '')
+        await this.commandElectricVehicleService.stopCharging(accessToken, this.deviceId, this.vin, '')
     }
 
     getChargeState = (): Promise<ChargeState> => {
