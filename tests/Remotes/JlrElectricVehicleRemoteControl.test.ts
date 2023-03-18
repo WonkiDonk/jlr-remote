@@ -390,7 +390,29 @@ describe('JLR Electric Vehicle Remote Control', () => {
                     expect.any(String))
             })
 
-            test('uses last four of vin `%s`', () => {})
+            test.each(['VIN1234', 'VIN4321', 'VIN1243', 'VIN4312'])
+            ('uses last four of vin `%s`', async (expectedLastFourOfVin) => {
+                // Arrange
+                const mockCommandAuthenticationService = createMock<CommandAuthenticationService>()
+
+                const builder = new JlrElectricVehicleRemoteControlBuilder()
+                builder.lastFourOfVin = expectedLastFourOfVin
+                builder.commandAuthenticationService = mockCommandAuthenticationService
+
+                const remote = builder.build()
+
+                // Act
+                await remote.stopCharging()
+
+                // Assert
+                expect(mockCommandAuthenticationService.getCpToken).toHaveBeenCalledWith(
+                    expect.any(String),
+                    expect.any(String),
+                    expect.any(String),
+                    expect.any(String),
+                    expectedLastFourOfVin)
+            })
+
             test('uses cpToken `%s`', () => {})
 
         })   
