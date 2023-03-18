@@ -13,11 +13,7 @@ class JlrElectricVehicleRemoteControlBuilder {
 
     public build: () => JlrElectricVehicleRemoteControl = () => {
         return new JlrElectricVehicleRemoteControl(
-            this.deviceId || '',
-            this.vin || '',
             this.vehicleRemoteAuthenticator || createMock<VehicleRemoteAuthenticator>(),
-            this.queryVehicleInformationService || createMock<QueryVehicleInformationService>(),
-            this.commandAuthenticationService || createMock<CommandAuthenticationService>(),
             this.commandElectricVehicleService || createMock<CommandElectricVehicleService>())
     }
 }

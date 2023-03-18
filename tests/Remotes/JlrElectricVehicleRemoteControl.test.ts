@@ -1,6 +1,35 @@
+import { createMock } from 'ts-auto-mock'
+import { JlrElectricVehicleRemoteControl } from '../../src/Remotes/JlrElectricVehicleRemoteControl'
+import { CommandElectricVehicleService } from "../../src/Services/CommandElectricVehicleService"
+import { VehicleRemoteAuthenticator } from '../../src/Remotes/Types'
+import { JlrElectricVehicleRemoteControlBuilder } from './JlrElectricVehicleRemoteControl.builder'
+
+
 describe('JLR Electric Vehicle Remove Control', () => {
     describe('Start charging', () => {
-        test('uses access token `%s`', () => {
+        test.each(['some token', 'fake token', 'hello world'])
+        ('uses access token `%s`', async (expectedAccessToken) => {
+            // Arrange
+            const mockVehicleRemoteAuthenticator = createMock<VehicleRemoteAuthenticator>()
+            mockVehicleRemoteAuthenticator.getAccessToken = jest.fn(() => Promise.resolve(expectedAccessToken))
+
+            const mockCommandElectricVehicleService = createMock<CommandElectricVehicleService>()
+
+            const builder = new JlrElectricVehicleRemoteControlBuilder()
+            builder.vehicleRemoteAuthenticator = mockVehicleRemoteAuthenticator
+            builder.commandElectricVehicleService = mockCommandElectricVehicleService
+
+            const remote = builder.build()
+
+            // Act
+            await remote.startCharging()
+
+            // Assert
+            expect(mockCommandElectricVehicleService.startCharging).toHaveBeenCalledWith(
+                expectedAccessToken,
+                expect.any(String),
+                expect.any(String),
+                expect.any(String))
 
         })
 
