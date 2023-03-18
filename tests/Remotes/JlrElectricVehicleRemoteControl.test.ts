@@ -221,9 +221,7 @@ describe('JLR Electric Vehicle Remote Control', () => {
                     expect.any(String),
                     expectedCpToken)
             })
-
         })   
-
     })
 
     describe('Stop charging', () => {
@@ -413,9 +411,30 @@ describe('JLR Electric Vehicle Remote Control', () => {
                     expectedLastFourOfVin)
             })
 
-            test('uses cpToken `%s`', () => {})
+            test.each(['cp Token1','cp Token2', 'cp Token3'])
+            ('uses cpToken `%s`', async (expectedCpToken) => {
+                // Arrange
+                const mockCommandElectricVehicleService = createMock<CommandElectricVehicleService>()
+                const mockCommandAuthenticationService = createMock<CommandAuthenticationService>()
+                mockCommandAuthenticationService.getCpToken = jest.fn(() => Promise.resolve({token: expectedCpToken}))
 
-        })   
+                const builder = new JlrElectricVehicleRemoteControlBuilder()
+                builder.commandElectricVehicleService = mockCommandElectricVehicleService
+                builder.commandAuthenticationService = mockCommandAuthenticationService
+
+                const remote = builder.build()
+
+                // Act
+                await remote.stopCharging()
+                
+                // Assert
+                expect(mockCommandElectricVehicleService.stopCharging).toHaveBeenCalledWith(
+                    expect.any(String),
+                    expect.any(String),
+                    expect.any(String),
+                    expectedCpToken)
+            })
+        })  
     })
 
     describe('Get charge state', () => {
