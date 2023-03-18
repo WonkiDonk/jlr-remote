@@ -9,6 +9,7 @@ class JlrElectricVehicleRemoteControlBuilder {
     public deviceId?: string
     public vin?: string
     public userId?: string
+    public lastFourOfVin?: string
     public vehicleRemoteAuthenticator?: VehicleRemoteAuthenticator
     public queryVehicleInformationService?: QueryVehicleInformationService
     public commandAuthenticationService?: CommandAuthenticationService
@@ -19,6 +20,7 @@ class JlrElectricVehicleRemoteControlBuilder {
             this.deviceId || '',
             this.vin || '',
             this.userId || '',
+            this.lastFourOfVin || '',
             this.vehicleRemoteAuthenticator || createMock<VehicleRemoteAuthenticator>(),
             this.commandElectricVehicleService || createMock<CommandElectricVehicleService>(),
             this.commandAuthenticationService || createMock<CommandAuthenticationService>())
