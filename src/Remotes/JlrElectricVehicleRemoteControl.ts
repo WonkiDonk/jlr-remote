@@ -9,6 +9,7 @@ class JlrElectricVehicleRemoteControl implements ElectricVehicleRemoteControl {
     constructor(
         private readonly deviceId: string,
         private readonly vin: string,
+        private readonly userId: string,
         private readonly vehicleRemoteAuthenticator: VehicleRemoteAuthenticator,
         private readonly commandElectricVehicleService: CommandElectricVehicleService,
         private readonly commandAuthenticationService: CommandAuthenticationService) {}
@@ -27,7 +28,7 @@ class JlrElectricVehicleRemoteControl implements ElectricVehicleRemoteControl {
 
     startCharging = async (): Promise<void> => {
         const accessToken = await this.vehicleRemoteAuthenticator.getAccessToken()
-        const cpToken = await this.commandAuthenticationService.getCpToken(accessToken, this.deviceId, this.vin, '', '')
+        const cpToken = await this.commandAuthenticationService.getCpToken(accessToken, this.deviceId, this.vin, this.userId, '')
 
         await this.commandElectricVehicleService.startCharging(accessToken, this.deviceId, this.vin, '')
     }

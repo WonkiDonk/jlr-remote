@@ -8,6 +8,7 @@ import { CommandElectricVehicleService } from "c:/Users/dfier/Desktop/3. Project
 class JlrElectricVehicleRemoteControlBuilder {
     public deviceId?: string
     public vin?: string
+    public userId?: string
     public vehicleRemoteAuthenticator?: VehicleRemoteAuthenticator
     public queryVehicleInformationService?: QueryVehicleInformationService
     public commandAuthenticationService?: CommandAuthenticationService
@@ -17,6 +18,7 @@ class JlrElectricVehicleRemoteControlBuilder {
         return new JlrElectricVehicleRemoteControl(
             this.deviceId || '',
             this.vin || '',
+            this.userId || '',
             this.vehicleRemoteAuthenticator || createMock<VehicleRemoteAuthenticator>(),
             this.commandElectricVehicleService || createMock<CommandElectricVehicleService>(),
             this.commandAuthenticationService || createMock<CommandAuthenticationService>())
