@@ -251,8 +251,26 @@ describe('JLR Electric Vehicle Remote Control', () => {
                 expect.any(String))
         })
 
-        test('uses deviceId `%s`', () => {
-            
+        test.each(['some device id', 'not a real device id', 'dani and will pairing innit'])
+        ('uses deviceId `%s`', async (expectedDeviceId) => {
+            // Arrange
+            const mockCommandElectricVehicleService = createMock<CommandElectricVehicleService>()
+
+            const builder = new JlrElectricVehicleRemoteControlBuilder()
+            builder.deviceId = expectedDeviceId
+            builder.commandElectricVehicleService = mockCommandElectricVehicleService
+
+            const remote = builder.build()
+
+            // Act
+            await remote.stopCharging()
+
+            // Assert
+            expect(mockCommandElectricVehicleService.stopCharging).toHaveBeenCalledWith(
+                expect.any(String),
+                expectedDeviceId,
+                expect.any(String),
+                expect.any(String))
         })
 
         test('uses vin `%s`', () => {
