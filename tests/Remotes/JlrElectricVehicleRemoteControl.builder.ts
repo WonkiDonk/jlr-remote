@@ -4,6 +4,7 @@ import { CommandAuthenticationService } from "../../src/Authentication/CommandAu
 import { QueryVehicleInformationService } from "c:/Users/dfier/Desktop/3. Projects/Will-Dani/jlr-remote/src/Services/QueryVehicleInformationService";
 import { VehicleRemoteAuthenticator } from "../../src/Remotes/Types";
 import { CommandElectricVehicleService } from "c:/Users/dfier/Desktop/3. Projects/Will-Dani/jlr-remote/src/Services/CommandElectricVehicleService"
+import { VehicleStatusMapper} from "../../src/Remotes/Mappers";
 
 class JlrElectricVehicleRemoteControlBuilder {
     public deviceId?: string
@@ -14,6 +15,7 @@ class JlrElectricVehicleRemoteControlBuilder {
     public queryVehicleInformationService?: QueryVehicleInformationService
     public commandAuthenticationService?: CommandAuthenticationService
     public commandElectricVehicleService?: CommandElectricVehicleService
+    public vehicleStatusMapper?: VehicleStatusMapper
 
     public build: () => JlrElectricVehicleRemoteControl = () => {
         return new JlrElectricVehicleRemoteControl(
@@ -23,7 +25,9 @@ class JlrElectricVehicleRemoteControlBuilder {
             this.lastFourOfVin || '',
             this.vehicleRemoteAuthenticator || createMock<VehicleRemoteAuthenticator>(),
             this.commandElectricVehicleService || createMock<CommandElectricVehicleService>(),
-            this.commandAuthenticationService || createMock<CommandAuthenticationService>())
+            this.commandAuthenticationService || createMock<CommandAuthenticationService>(),
+            this.queryVehicleInformationService || createMock<QueryVehicleInformationService>(),
+            this.vehicleStatusMapper || createMock<VehicleStatusMapper>())
     }
 }
 

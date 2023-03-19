@@ -4,6 +4,8 @@ import { VehicleRemoteAuthenticator } from '../../src/Remotes/Types'
 import { JlrElectricVehicleRemoteControlBuilder } from './JlrElectricVehicleRemoteControl.builder'
 import { CommandAuthenticationService } from '../../src/Authentication/CommandAuthenticationService'
 import { JlrElectricVehicleRemoteControl } from '../../src/Remotes/JlrElectricVehicleRemoteControl'
+import { QueryVehicleInformationService } from '../../src/Services/QueryVehicleInformationService'
+import { Vehicle } from '../../src/JaguarLandRover/ServiceTypes'
 
 
 describe('JLR Electric Vehicle Remote Control', () => {
@@ -439,8 +441,28 @@ describe('JLR Electric Vehicle Remote Control', () => {
 
     describe('Get charge state', () => {
         test.each(['some token', 'another token', 'not a real token'])
-            ('uses access token `%s`', async (expectedAccessToken) => {})
-        
+            ('uses access token `%s`', async (expectedAccessToken) => {
+            // Arrange
+            const mockQueryVehicleInformationService = createMock<QueryVehicleInformationService>()
+            const mockVehicleRemoteAuthenticator = createMock<VehicleRemoteAuthenticator>()
+            mockVehicleRemoteAuthenticator.getAccessToken = jest.fn (() => Promise.resolve (expectedAccessToken))
+
+            const builder = new JlrElectricVehicleRemoteControlBuilder()
+            builder.vehicleRemoteAuthenticator = mockVehicleRemoteAuthenticator
+            builder.queryVehicleInformationService = mockQueryVehicleInformationService
+
+            const remote = builder.build()
+
+            // Act
+            await remote.getChargeState()
+
+            // Assert
+            expect(mockQueryVehicleInformationService.getVehicleStatusV3).toHaveBeenCalledWith(
+                expectedAccessToken,
+                expect.any(String),
+                expect.any(String))
+        })
+
         test.each(['device id', 'another device id', 'not a real device id'])
             ('uses the device Id `%s`', async (expectedDeviceId) => {})
         

@@ -2,6 +2,8 @@ import { ElectricVehicleRemoteControl, ChargeState } from './Types';
 import { VehicleRemoteAuthenticator } from './Types';
 import { CommandElectricVehicleService } from '../Services/CommandElectricVehicleService';
 import { CommandAuthenticationService } from '../Authentication/CommandAuthenticationService';
+import { QueryVehicleInformationService } from '../Services/QueryVehicleInformationService';
+import { VehicleStatusMapper } from './Mappers';
 
 class JlrElectricVehicleRemoteControl implements ElectricVehicleRemoteControl {
     public type: 'EV' = 'EV'
@@ -13,8 +15,11 @@ class JlrElectricVehicleRemoteControl implements ElectricVehicleRemoteControl {
         private readonly lastFourOfVin: string,
         private readonly vehicleRemoteAuthenticator: VehicleRemoteAuthenticator,
         private readonly commandElectricVehicleService: CommandElectricVehicleService,
-        private readonly commandAuthenticationService: CommandAuthenticationService) {}
+        private readonly commandAuthenticationService: CommandAuthenticationService,
+        private readonly queryVehicleInformationService: QueryVehicleInformationService,
+        private readonly vehicleStatusMapper: VehicleStatusMapper) {}
 
+        
     turnOnClimateControl = (targetTemperature: number): Promise<void> => {
         throw new Error('Not implemented.')
     }
@@ -43,8 +48,12 @@ class JlrElectricVehicleRemoteControl implements ElectricVehicleRemoteControl {
         await this.commandElectricVehicleService.stopCharging(accessToken, this.deviceId, this.vin, cpToken)
     }
 
-    getChargeState = (): Promise<ChargeState> => {
-        throw new Error('Not implemented.')
+    getChargeState = async (): Promise<ChargeState> => {
+        const accessToken = await this.vehicleRemoteAuthenticator.getAccessToken()
+        const serviceStatus = await this.queryVehicleInformationService.getVehicleStatusV3(accessToken, '', '')
+        const currentStatus = this.vehicleStatusMapper.map(serviceStatus)
+        
+        return {}
     }
 }
 
