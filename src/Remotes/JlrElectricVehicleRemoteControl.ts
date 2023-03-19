@@ -50,7 +50,7 @@ class JlrElectricVehicleRemoteControl implements ElectricVehicleRemoteControl {
 
     getChargeState = async (): Promise<ChargeState> => {
         const accessToken = await this.vehicleRemoteAuthenticator.getAccessToken()
-        const serviceStatus = await this.queryVehicleInformationService.getVehicleStatusV3(accessToken, '', '')
+        const serviceStatus = await this.queryVehicleInformationService.getVehicleStatusV3(accessToken, this.deviceId, '')
         const currentStatus = this.vehicleStatusMapper.map(serviceStatus)
         
         return {}
