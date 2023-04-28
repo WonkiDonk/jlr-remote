@@ -1,9 +1,10 @@
-import { ElectricVehicleRemoteControl, ChargeState } from './Types';
+import { ElectricVehicleRemoteControl, ChargeState, CurrentVehicleStatus } from './Types';
 import { VehicleRemoteAuthenticator } from './Types';
 import { CommandElectricVehicleService } from '../Services/CommandElectricVehicleService';
 import { CommandAuthenticationService } from '../Authentication/CommandAuthenticationService';
 import { QueryVehicleInformationService } from '../Services/QueryVehicleInformationService';
 import { VehicleStatusMapper } from './Mappers';
+import { VehicleStatus } from '../JaguarLandRover/ServiceTypes';
 
 class JlrElectricVehicleRemoteControl implements ElectricVehicleRemoteControl {
     public type: 'EV' = 'EV'
@@ -17,9 +18,9 @@ class JlrElectricVehicleRemoteControl implements ElectricVehicleRemoteControl {
         private readonly commandElectricVehicleService: CommandElectricVehicleService,
         private readonly commandAuthenticationService: CommandAuthenticationService,
         private readonly queryVehicleInformationService: QueryVehicleInformationService,
-        private readonly vehicleStatusMapper: VehicleStatusMapper) {}
+        private readonly vehicleStatusMapper: VehicleStatusMapper) { }
 
-        
+
     turnOnClimateControl = (targetTemperature: number): Promise<void> => {
         throw new Error('Not implemented.')
     }
@@ -51,9 +52,17 @@ class JlrElectricVehicleRemoteControl implements ElectricVehicleRemoteControl {
     getChargeState = async (): Promise<ChargeState> => {
         const accessToken = await this.vehicleRemoteAuthenticator.getAccessToken()
         const serviceStatus = await this.queryVehicleInformationService.getVehicleStatusV3(accessToken, this.deviceId, this.vin)
-        const currentStatus = this.vehicleStatusMapper.map(serviceStatus)
+        const status: CurrentVehicleStatus = this.vehicleStatusMapper.map(serviceStatus)
+
+        if (status.vehicleStatus.ev.EV_CHARGING_STATUS === 'CHARGING') {
+            return { isCharging: true}
+        }
+
+        if (status.vehicleStatus.ev.EV_CHARGING_STATUS === 'NOT_CHARGING') {
+            return { isCharging: false }
+        }
         
-        return {}
+        return { isCharging: undefined }
     }
 }
 

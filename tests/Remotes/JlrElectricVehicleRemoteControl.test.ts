@@ -1,11 +1,12 @@
 import { createMock } from 'ts-auto-mock'
 import { CommandElectricVehicleService } from "../../src/Services/CommandElectricVehicleService"
-import { VehicleRemoteAuthenticator } from '../../src/Remotes/Types'
+import { CurrentVehicleStatus, VehicleRemoteAuthenticator } from '../../src/Remotes/Types'
 import { JlrElectricVehicleRemoteControlBuilder } from './JlrElectricVehicleRemoteControl.builder'
 import { CommandAuthenticationService } from '../../src/Authentication/CommandAuthenticationService'
 import { JlrElectricVehicleRemoteControl } from '../../src/Remotes/JlrElectricVehicleRemoteControl'
 import { QueryVehicleInformationService } from '../../src/Services/QueryVehicleInformationService'
-import { Vehicle } from '../../src/JaguarLandRover/ServiceTypes'
+import { CurrentVehicleStatusV3, Vehicle } from '../../src/JaguarLandRover/ServiceTypes'
+import { VehicleStatusMapper } from '../../src/Remotes/Mappers'
 
 
 describe('JLR Electric Vehicle Remote Control', () => {
@@ -486,7 +487,6 @@ describe('JLR Electric Vehicle Remote Control', () => {
 
         test.each(['VIN', 'another VIN', 'not a real VIN'])
             ('uses the VIN `%s`', async (expectedVin) => {
-
                 // Arrange
                 const mockQueryVehicleInformationService = createMock<QueryVehicleInformationService>()
                 
@@ -510,13 +510,37 @@ describe('JLR Electric Vehicle Remote Control', () => {
             ['CHARGING', true],
             ['NOT_CHARGING', false],
             ['UNKNOWN', undefined]])
-            ('returns expected charging state', async (ev_charging_status, expectedIsCharging) => {})
+            ('returns expected charging state %s %s', async (ev_charging_status, expectedIsCharging) => {
+                // Arrange
+                const serviceStatus = createMock<CurrentVehicleStatusV3>()
+                const mappedStatus = createMock<CurrentVehicleStatus>()
+                const mockVehicleStatusMapper = createMock<VehicleStatusMapper>()
+
+                mappedStatus.vehicleStatus.ev.EV_CHARGING_STATUS = ev_charging_status
+                mockVehicleStatusMapper.map = jest.fn((received) =>  mappedStatus)
+
+                const mockQueryVehicleInformationService = createMock<QueryVehicleInformationService>()
+                mockQueryVehicleInformationService.getVehicleStatusV3 = jest.fn(() => Promise.resolve(serviceStatus))
+
+                const builder = new JlrElectricVehicleRemoteControlBuilder()
+
+                builder.queryVehicleInformationService = mockQueryVehicleInformationService
+                builder.vehicleStatusMapper = mockVehicleStatusMapper
+
+                const remote = builder.build()
+
+                // Act
+                const chargeState = await remote.getChargeState()
+
+                // Assert
+                expect(chargeState.isCharging).toBe(expectedIsCharging)
+            })
 
         test.each([
             ['CONNECTED', true],
             ['NOT_CONNECTED', false],
             ['UNKNOWN', undefined]])
-            ('returns expected cable state', async (ev_is_plugged_in, expectedIsConnected) => { })
+            ('returns expected cable state %s %s', async (ev_is_plugged_in, expectedIsConnected) => { })
 
         test.each([
             ['100', 100],
@@ -524,6 +548,6 @@ describe('JLR Electric Vehicle Remote Control', () => {
             ['95', 95],
             ['17', 17],
             ['NaN', undefined]])
-            ('returns expected cable state', async (ev_state_of_charge, expectedChargeLevel) => { })
+            ('returns expected cable state %s %s', async (ev_state_of_charge, expectedChargeLevel) => { })
     })
 })
