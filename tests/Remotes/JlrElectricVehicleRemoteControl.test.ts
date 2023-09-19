@@ -600,7 +600,35 @@ describe('JLR Electric Vehicle Remote Control', () => {
     })
 
     describe('Turn on climate control', () => {
-        test.skip('uses access token %s', () => {})
+        test.each([
+            ['some token', 1],
+            ['another token', 2],
+            ['not a real token', 3]])
+            ('uses access token %s', async (expectedAccessToken, targetTemperature) => {
+                // Arrange
+                const mockVehicleRemoteAuthenticator = createMock<VehicleRemoteAuthenticator>()
+                mockVehicleRemoteAuthenticator.getAccessToken = jest.fn(() => Promise.resolve(expectedAccessToken))
+
+                const mockCommandElectricVehicleService = createMock<CommandElectricVehicleService>()
+
+                const builder = new JlrElectricVehicleRemoteControlBuilder()
+                builder.vehicleRemoteAuthenticator = mockVehicleRemoteAuthenticator
+                builder.commandElectricVehicleService = mockCommandElectricVehicleService
+
+                const remote = builder.build()
+
+                // Act
+                await remote.turnOnClimateControl(targetTemperature)
+
+                // Assert
+                expect(mockCommandElectricVehicleService.startClimatePreconditioning).toHaveBeenCalledWith(
+                    expectedAccessToken,
+                    expect.any(String),
+                    expect.any(String),
+                    expect.any(String),
+                    expect.any(Number))
+            })
+
         test.skip('uses deviceId %s', () => { })
         test.skip('uses VIN %s', () => { })
         describe('Get ECC token', () => {

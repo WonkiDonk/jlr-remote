@@ -20,8 +20,10 @@ class JlrElectricVehicleRemoteControl implements ElectricVehicleRemoteControl {
         private readonly vehicleStatusMapper: VehicleStatusMapper) { }
 
 
-    turnOnClimateControl = (targetTemperature: number): Promise<void> => {
-        throw new Error('Not implemented.')
+    turnOnClimateControl = async (targetTemperature: number): Promise<void> => {
+        const accessToken = await this.vehicleRemoteAuthenticator.getAccessToken()
+
+        await this.commandElectricVehicleService.startClimatePreconditioning(accessToken, '', '', '', 0)
     }
 
     turnOffClimateControl = (): Promise<void> => {
