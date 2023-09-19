@@ -97,7 +97,6 @@ describe('JLR Electric Vehicle Remote Control', () => {
                     // Act
                     await remote.startCharging()
 
-
                     // Assert
                     expect(mockCommandAuthenticationService.getCpToken).toHaveBeenCalledWith(
                         expectedAccessToken,
@@ -633,27 +632,27 @@ describe('JLR Electric Vehicle Remote Control', () => {
             ['some device ID', 1],
             ['another device ID', 2],
             ['not a real device ID', 3]])
-        ('uses deviceId %s', async (expectedDeviceId, targetTemperature) => { 
-            // Arrange
-            const mockCommandElectricVehicleService = createMock<CommandElectricVehicleService>()
+            ('uses deviceId %s', async (expectedDeviceId, targetTemperature) => {
+                // Arrange
+                const mockCommandElectricVehicleService = createMock<CommandElectricVehicleService>()
 
-            const builder = new JlrElectricVehicleRemoteControlBuilder()
-            builder.commandElectricVehicleService = mockCommandElectricVehicleService
-            builder.deviceId = expectedDeviceId
+                const builder = new JlrElectricVehicleRemoteControlBuilder()
+                builder.commandElectricVehicleService = mockCommandElectricVehicleService
+                builder.deviceId = expectedDeviceId
 
-            const remote = builder.build()
+                const remote = builder.build()
 
-            // Act
-            await remote.turnOnClimateControl(targetTemperature)
+                // Act
+                await remote.turnOnClimateControl(targetTemperature)
 
-            // Assert
-            expect(mockCommandElectricVehicleService.startClimatePreconditioning).toHaveBeenCalledWith(
-                expect.any(String),
-                expectedDeviceId,
-                expect.any(String),
-                expect.any(String),
-                expect.any(Number))
-        })
+                // Assert
+                expect(mockCommandElectricVehicleService.startClimatePreconditioning).toHaveBeenCalledWith(
+                    expect.any(String),
+                    expectedDeviceId,
+                    expect.any(String),
+                    expect.any(String),
+                    expect.any(Number))
+            })
 
         test.each([
             ['some VIN', 1],
@@ -682,7 +681,35 @@ describe('JLR Electric Vehicle Remote Control', () => {
             })
 
         describe('Get ECC token', () => {
-            test.skip('uses access token %s', () => { })
+            test.each([
+                ['real token', 1],
+                ['fake token', 2],
+                ['unimportant token', 3]
+            ])
+                ('uses access token %s', async (expectedAccessToken, targetTemperature) => {
+                    // Arrange
+                    const mockCommandAuthenticationService = createMock<CommandAuthenticationService>()
+                    const mockVehicleRemoteAuthenticator = createMock<VehicleRemoteAuthenticator>()
+                    mockVehicleRemoteAuthenticator.getAccessToken = jest.fn(() => Promise.resolve(expectedAccessToken))
+
+                    const builder = new JlrElectricVehicleRemoteControlBuilder()
+                    builder.vehicleRemoteAuthenticator = mockVehicleRemoteAuthenticator
+                    builder.commandAuthenticationService = mockCommandAuthenticationService
+
+                    const remote = builder.build()
+
+                    // Act
+                    await remote.turnOnClimateControl(targetTemperature)
+
+                    // Assert
+                    expect(mockCommandAuthenticationService.getEccToken).toHaveBeenCalledWith(
+                        expectedAccessToken,
+                        expect.any(String),
+                        expect.any(String),
+                        expect.any(String),
+                        expect.any(String))
+                })
+
             test.skip('uses device Id %s', () => { })
             test.skip('uses VIN %s', () => { })
             test.skip('uses user Id %s', () => { })
