@@ -516,7 +516,7 @@ describe('JLR Electric Vehicle Remote Control', () => {
                 const mockVehicleStatusMapper = createMock<VehicleStatusMapper>()
 
                 mappedStatus.vehicleStatus.ev.EV_CHARGING_STATUS = ev_charging_status
-                mockVehicleStatusMapper.map = jest.fn((received) => mappedStatus)
+                mockVehicleStatusMapper.map = jest.fn(() => mappedStatus)
 
                 const mockQueryVehicleInformationService = createMock<QueryVehicleInformationService>()
                 mockQueryVehicleInformationService.getVehicleStatusV3 = jest.fn(() => Promise.resolve(serviceStatus))
@@ -539,7 +539,31 @@ describe('JLR Electric Vehicle Remote Control', () => {
             ['CONNECTED', true],
             ['NOT_CONNECTED', false],
             ['UNKNOWN', undefined]])
-            ('returns expected cable state %s %s', async (ev_is_plugged_in, expectedIsConnected) => { })
+            ('returns expected cable state %s %s', async (ev_is_plugged_in, expectedIsConnected) => {
+                // Arrange
+                const serviceStatus = createMock<CurrentVehicleStatusV3>()
+                const mappedStatus = createMock<CurrentVehicleStatus>()
+                const mockVehicleStatusMapper = createMock<VehicleStatusMapper>()
+
+                mappedStatus.vehicleStatus.ev.EV_IS_PLUGGED_IN = ev_is_plugged_in
+                mockVehicleStatusMapper.map = jest.fn(() => mappedStatus)
+
+                const mockQueryVehicleInformationService = createMock<QueryVehicleInformationService>()
+                mockQueryVehicleInformationService.getVehicleStatusV3 = jest.fn(() => Promise.resolve(serviceStatus))
+
+                const builder = new JlrElectricVehicleRemoteControlBuilder()
+
+                builder.queryVehicleInformationService = mockQueryVehicleInformationService
+                builder.vehicleStatusMapper = mockVehicleStatusMapper
+
+                const remote = builder.build()
+
+                // Act
+                const chargeState = await remote.getChargeState()
+
+                // Assert
+                expect(chargeState.isConnected).toBe(expectedIsConnected)
+            })
 
         test.each([
             ['100', 100],

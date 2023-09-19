@@ -58,6 +58,9 @@ class JlrElectricVehicleRemoteControl implements ElectricVehicleRemoteControl {
             isCharging: status.vehicleStatus.ev.EV_CHARGING_STATUS === 'CHARGING'
                 ? true : status.vehicleStatus.ev.EV_CHARGING_STATUS === 'NOT_CHARGING'
                     ? false : undefined,
+            isConnected: status.vehicleStatus.ev.EV_IS_PLUGGED_IN === 'CONNECTED'
+                ? true : status.vehicleStatus.ev.EV_IS_PLUGGED_IN === 'NOT_CONNECTED'
+                    ? false : undefined,
         }
     }
 }
