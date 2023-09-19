@@ -1,10 +1,10 @@
-import { JlrElectricVehicleRemoteControl } from "c:/Users/dfier/Desktop/3. Projects/Will-Dani/jlr-remote/src/Remotes/JlrElectricVehicleRemoteControl"
 import { createMock } from 'ts-auto-mock'
-import { CommandAuthenticationService } from "../../src/Authentication/CommandAuthenticationService";
-import { QueryVehicleInformationService } from "c:/Users/dfier/Desktop/3. Projects/Will-Dani/jlr-remote/src/Services/QueryVehicleInformationService";
-import { VehicleRemoteAuthenticator } from "../../src/Remotes/Types";
-import { CommandElectricVehicleService } from "c:/Users/dfier/Desktop/3. Projects/Will-Dani/jlr-remote/src/Services/CommandElectricVehicleService"
-import { VehicleStatusMapper} from "../../src/Remotes/Mappers";
+import { JlrElectricVehicleRemoteControl } from '../../src/Remotes/JlrElectricVehicleRemoteControl'
+import { CommandAuthenticationService } from '../../src/Authentication/CommandAuthenticationService'
+import { QueryVehicleInformationService } from '../../src/Services/QueryVehicleInformationService'
+import { VehicleRemoteAuthenticator } from '../../src/Remotes/Types'
+import { CommandElectricVehicleService } from '../../src/Services/CommandElectricVehicleService'
+import { VehicleStatusMapper } from '../../src/Remotes/Mappers'
 
 class JlrElectricVehicleRemoteControlBuilder {
     public deviceId?: string
