@@ -570,7 +570,32 @@ describe('JLR Electric Vehicle Remote Control', () => {
             ['50', 50],
             ['95', 95],
             ['17', 17],
-            ['NaN', undefined]])
-            ('returns expected cable state %s %s', async (ev_state_of_charge, expectedChargeLevel) => { })
+            ['NaN', undefined],
+            ['something else', undefined]])
+            ('returns expected cable state %s %s', async (ev_state_of_charge, expectedChargeLevel) => {
+                // Arrange
+                const serviceStatus = createMock<CurrentVehicleStatusV3>()
+                const mappedStatus = createMock<CurrentVehicleStatus>()
+                const mockVehicleStatusMapper = createMock<VehicleStatusMapper>()
+
+                mappedStatus.vehicleStatus.ev.EV_STATE_OF_CHARGE = ev_state_of_charge
+                mockVehicleStatusMapper.map = jest.fn(() => mappedStatus)
+
+                const mockQueryVehicleInformationService = createMock<QueryVehicleInformationService>()
+                mockQueryVehicleInformationService.getVehicleStatusV3 = jest.fn(() => Promise.resolve(serviceStatus))
+
+                const builder = new JlrElectricVehicleRemoteControlBuilder()
+
+                builder.queryVehicleInformationService = mockQueryVehicleInformationService
+                builder.vehicleStatusMapper = mockVehicleStatusMapper
+
+                const remote = builder.build()
+
+                // Act
+                const chargeState = await remote.getChargeState()
+
+                // Assert
+                expect(chargeState.chargeLevel).toBe(expectedChargeLevel)
+            })
     })
 })

@@ -54,6 +54,8 @@ class JlrElectricVehicleRemoteControl implements ElectricVehicleRemoteControl {
         const serviceStatus = await this.queryVehicleInformationService.getVehicleStatusV3(accessToken, this.deviceId, this.vin)
         const status: CurrentVehicleStatus = this.vehicleStatusMapper.map(serviceStatus)
 
+        const chargeLevel = parseInt(status.vehicleStatus.ev.EV_STATE_OF_CHARGE)
+
         return {
             isCharging: status.vehicleStatus.ev.EV_CHARGING_STATUS === 'CHARGING'
                 ? true : status.vehicleStatus.ev.EV_CHARGING_STATUS === 'NOT_CHARGING'
@@ -61,6 +63,7 @@ class JlrElectricVehicleRemoteControl implements ElectricVehicleRemoteControl {
             isConnected: status.vehicleStatus.ev.EV_IS_PLUGGED_IN === 'CONNECTED'
                 ? true : status.vehicleStatus.ev.EV_IS_PLUGGED_IN === 'NOT_CONNECTED'
                     ? false : undefined,
+            chargeLevel: Number.isNaN(chargeLevel) ? undefined : chargeLevel
         }
     }
 }
