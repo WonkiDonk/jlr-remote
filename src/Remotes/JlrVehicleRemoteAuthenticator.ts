@@ -10,7 +10,7 @@ class JlrVehicleRemoteAuthenticator implements VehicleRemoteAuthenticator {
         const cachedAuthentication = this.authenticationCache.getCachedAuthentication();
 
         if (!cachedAuthentication.isExpired)
-            return cachedAuthentication.token
+            return cachedAuthentication.accessToken
 
         const authentication = await this.authenticate()
         this.authenticationCache.cacheAuthentication(authentication.access_token, parseInt(authentication.expires_in))

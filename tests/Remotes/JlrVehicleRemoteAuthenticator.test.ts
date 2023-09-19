@@ -119,7 +119,7 @@ describe('Vehicle Remote Authenticator', () => {
                 const authenticatorCache = createMock<VehicleRemoteAuthenticationCache>()
                 const cachedAuthentication = {
                     isExpired: false,
-                    token: cachedAccessToken
+                    accessToken: cachedAccessToken
                 }
                 authenticatorCache.getCachedAuthentication = jest.fn(() => cachedAuthentication)
 
@@ -141,7 +141,7 @@ describe('Vehicle Remote Authenticator', () => {
             const authenticatorCache = createMock<VehicleRemoteAuthenticationCache>()
             const cachedAuthentication = {
                 isExpired: false,
-                token: 'some token'
+                accessToken: 'some token'
             }
             authenticatorCache.getCachedAuthentication = jest.fn(() => cachedAuthentication)
 

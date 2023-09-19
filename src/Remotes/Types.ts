@@ -202,7 +202,7 @@ interface VehicleRemoteAuthenticator {
  * Details of a cached authentication.
  */
 type ValidAuthentication = {
-    token: string,
+    accessToken: string,
     isExpired: false
 }
 
