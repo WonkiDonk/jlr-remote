@@ -404,6 +404,7 @@ export {
     CurrentVehicleStatus,
     ElectricVehicleRemote,
     ElectricVehicleRemoteControl,
+    CachedAuthentication,
     ExpiredAuthentication,
     InternalCombustionEngineVehicleRemote,
     InternalCombustionEngineVehicleRemoteControl,
