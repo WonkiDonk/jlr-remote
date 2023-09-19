@@ -1,8 +1,9 @@
-import { JlrVehicleRemoteAuthenticator } from "../../src/Remotes/JlrVehicleRemoteAuthenticator"
 import {createMock} from 'ts-auto-mock'
-import { authenticationService, AuthenticationService } from "../../src/Authentication/AuthenticationService"
+import { JlrVehicleRemoteAuthenticator } from "../../src/Remotes/JlrVehicleRemoteAuthenticator"
+import { AuthenticationService } from "../../src/Authentication/AuthenticationService"
 import { Auth } from "../../src/JaguarLandRover/ServiceTypes"
 import { VehicleRemoteAuthenticator } from "../../src/Remotes/Types"
+import { JlrVehicleRemoteAuthenticatorBuilder } from "./JlrVehicleRemoteAuthenticator.builder"
 
 describe('Vehicle Remote Authenticator', () => {
     describe('Get Access Token', () => {
@@ -13,7 +14,13 @@ describe('Vehicle Remote Authenticator', () => {
         ('authenticates with JLR Vehicle Remote', async (expectedDeviceId, expectedUsername, expectedPassword) => {
             // Arrange
             const authenticationService = createMock<AuthenticationService>()
-            const authenticator = new JlrVehicleRemoteAuthenticator(expectedDeviceId, expectedUsername, expectedPassword, authenticationService)
+            const builder = new JlrVehicleRemoteAuthenticatorBuilder()
+            builder.authenticationService = authenticationService
+            builder.deviceId = expectedDeviceId
+            builder.username = expectedUsername
+            builder.password = expectedPassword
+
+            const authenticator = builder.build()
             
             // Act
             await authenticator.getAccessToken()
@@ -36,7 +43,12 @@ describe('Vehicle Remote Authenticator', () => {
             const authenticationService = createMock<AuthenticationService>()
             authenticationService.authenticate = jest.fn(() => Promise.resolve(authResponse))
 
-            const authenticator = new JlrVehicleRemoteAuthenticator(expectedDeviceId, expectedUsername, 'do not care', authenticationService)
+            const builder = new JlrVehicleRemoteAuthenticatorBuilder()
+            builder.authenticationService = authenticationService
+            builder.deviceId = expectedDeviceId
+            builder.username = expectedUsername
+
+            const authenticator = builder.build()
             
             // Act
             await authenticator.getAccessToken()
@@ -63,7 +75,12 @@ describe('Vehicle Remote Authenticator', () => {
             const authenticationService = createMock<AuthenticationService>()
             authenticationService.authenticate = jest.fn(() => Promise.resolve(mockAuth))
 
-            const authenticator = new JlrVehicleRemoteAuthenticator(expectedDeviceId, expectedUsername, '', authenticationService)
+            const builder = new JlrVehicleRemoteAuthenticatorBuilder()
+            builder.authenticationService = authenticationService
+            builder.deviceId = expectedDeviceId
+            builder.username = expectedUsername
+
+            const authenticator = builder.build()
             
             // Act
             await authenticator.getAccessToken()
@@ -85,7 +102,10 @@ describe('Vehicle Remote Authenticator', () => {
             const authenticationService = createMock<AuthenticationService>()
             authenticationService.authenticate = jest.fn(() => Promise.resolve(mockAuth))
 
-            const authenticator = new JlrVehicleRemoteAuthenticator('', '', '', authenticationService)
+            const builder = new JlrVehicleRemoteAuthenticatorBuilder()
+            builder.authenticationService = authenticationService
+
+            const authenticator = builder.build()
 
             // Act
             const response = await authenticator.getAccessToken()
