@@ -598,4 +598,40 @@ describe('JLR Electric Vehicle Remote Control', () => {
                 expect(chargeState.chargeLevel).toBe(expectedChargeLevel)
             })
     })
+
+    describe('Turn on climate control', () => {
+        test.skip('uses access token %s')
+        test.skip('uses deviceId %s')
+        test.skip('uses VIN %s')
+        describe('Get ECC token', () => {
+            test.skip('uses access token %s')
+            test.skip('uses device Id %s')
+            test.skip('uses VIN %s')
+            test.skip('uses user Id %s')
+            test.skip('uses last four of VIN %s')
+            test.skip('uses ecc token')
+        })
+        test.skip('uses temperature')
+    })
+
+    describe('Turn off climate control', () => {
+        test.skip('uses access token %s')
+        test.skip('uses deviceId %s')
+        test.skip('uses VIN %s')
+        describe('Get ECC token', () => {
+            test.skip('uses access token %s')
+            test.skip('uses device Id %s')
+            test.skip('uses VIN %s')
+            test.skip('uses user Id %s')
+            test.skip('uses last four of VIN %s')
+            test.skip('uses ecc token')
+        })
+    })
+
+    describe('Is climate control on?', () => {
+        test.skip('uses access token %s')
+        test.skip('uses deviceId %s')
+        test.skip('uses VIN %s')
+        test.skip('returns expected climate control state %s %s')
+    })
 })
