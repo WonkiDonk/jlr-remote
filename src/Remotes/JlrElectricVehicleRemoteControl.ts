@@ -4,7 +4,6 @@ import { CommandElectricVehicleService } from '../Services/CommandElectricVehicl
 import { CommandAuthenticationService } from '../Authentication/CommandAuthenticationService';
 import { QueryVehicleInformationService } from '../Services/QueryVehicleInformationService';
 import { VehicleStatusMapper } from './Mappers';
-import { VehicleStatus } from '../JaguarLandRover/ServiceTypes';
 
 class JlrElectricVehicleRemoteControl implements ElectricVehicleRemoteControl {
     public type: 'EV' = 'EV'
