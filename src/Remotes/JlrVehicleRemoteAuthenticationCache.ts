@@ -1,12 +1,17 @@
 import { VehicleRemoteAuthenticationCache, CachedAuthentication } from "./Types";
 
 class JlrRemoteAuthenticationCache implements VehicleRemoteAuthenticationCache {
-    cacheAuthentication = (accessToken: string, expiresIn: Number): void => {
-        throw new Error('Not implemented.')
+    private timerId?: NodeJS.Timeout
+
+    cacheAuthentication = (accessToken: string, expiresIn: number): void => {
+        clearTimeout(this.timerId)
+        this.timerId = setTimeout(() => { }, expiresIn * 1000)
     }
 
     getCachedAuthentication = (): CachedAuthentication => {
-        throw new Error('Not implemented.')
+        return {
+            isExpired: true
+        }
     }
 }
 

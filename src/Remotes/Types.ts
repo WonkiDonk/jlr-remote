@@ -222,7 +222,7 @@ type CachedAuthentication = ValidAuthentication | ExpiredAuthentication
  * Caches and returns caches access tokens.
  */
 interface VehicleRemoteAuthenticationCache {
-    cacheAuthentication: (accessToken: string, expiresIn: Number) => void
+    cacheAuthentication: (accessToken: string, expiresIn: number) => void
     getCachedAuthentication: () => CachedAuthentication
 }
 
