@@ -655,7 +655,32 @@ describe('JLR Electric Vehicle Remote Control', () => {
                 expect.any(Number))
         })
 
-        test.skip('uses VIN %s', () => { })
+        test.each([
+            ['some VIN', 1],
+            ['another VIN', 2],
+            ['not a real VIN', 3]])
+            ('uses VIN %s', async (expectedVin, targetTemperature) => {
+                // Arrange
+                const mockCommandElectricVehicleService = createMock<CommandElectricVehicleService>()
+
+                const builder = new JlrElectricVehicleRemoteControlBuilder()
+                builder.commandElectricVehicleService = mockCommandElectricVehicleService
+                builder.vin = expectedVin
+
+                const remote = builder.build()
+
+                // Act
+                await remote.turnOnClimateControl(targetTemperature)
+
+                // Assert
+                expect(mockCommandElectricVehicleService.startClimatePreconditioning).toHaveBeenCalledWith(
+                    expect.any(String),
+                    expect.any(String),
+                    expectedVin,
+                    expect.any(String),
+                    expect.any(Number))
+            })
+
         describe('Get ECC token', () => {
             test.skip('uses access token %s', () => { })
             test.skip('uses device Id %s', () => { })
