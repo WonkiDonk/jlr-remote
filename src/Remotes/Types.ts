@@ -3,7 +3,12 @@ import { VehicleAttributes, VehicleAlert } from '../JaguarLandRover/ServiceTypes
 /**
  * Allowed values for locked states.
  */
-type JlrLockState = 'LOCKED' | 'UNLOCKED' | ''
+type JlrLockState = 'LOCKED' | 'UNLOCKED' | string
+
+/**
+ * Allow values for charger states.
+ */
+type JlrChargerState = 'CHARGING' | 'NOT_CHARGING' | string
 
 /**
  * Defines the core vehicle status.
@@ -130,7 +135,7 @@ type JlrLockState = 'LOCKED' | 'UNLOCKED' | ''
  type ElectricVehicleStatus = {
     EV_NEXT_DEPARTURE_TIMER_IS_SET: string,
     EV_RANGE_ON_BATTERY_MILES: string,
-    EV_CHARGING_STATUS: string,
+    EV_CHARGING_STATUS: JlrChargerState,
     EV_RANGE_COMFORTx10: string,
     EV_IS_PLUGGED_IN: string,
     EV_CHARGING_METHOD: string,
@@ -250,17 +255,17 @@ interface VehicleRemoteControl {
     /**
      * Gets the percentage charge of the electric vehicle's high voltage battery.
      */
-    chargeLevel: number
+    chargeLevel?: number
     
     /**
      * Gets whether the electric vehicle is charging.
      */
-    isCharging: boolean
+    isCharging?: boolean
     
     /**
      * Gets whether the electric vehicle is connected to a charger.
      */
-    isConnected: boolean
+    isConnected?: boolean
 }
 
 /**

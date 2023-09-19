@@ -1,8 +1,7 @@
 import { createMock } from 'ts-auto-mock'
 import { CommandIceVehicleService } from '../../src/Services/CommandIceVehicleService'
-import { JlrInternalCombustionEngineVehicleRemoteControl } from '../../src/Remotes/JlrInternalCombustionEngineVehicleRemoteControl'
 import { VehicleRemoteAuthenticator } from '../../src/Remotes/Types'
-import { commandAuthenticationService, CommandAuthenticationService } from '../../src/Authentication/CommandAuthenticationService'
+import { CommandAuthenticationService } from '../../src/Authentication/CommandAuthenticationService'
 import { JlrInternalCombustionEngineVehicleRemoteControlBuilder } from './JlrInternalCombustionEngineVehicleRemote.builder'
 
 describe('JLR Internal Combustion Engine Vehicle Remote Control', () => {
