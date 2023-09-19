@@ -54,15 +54,11 @@ class JlrElectricVehicleRemoteControl implements ElectricVehicleRemoteControl {
         const serviceStatus = await this.queryVehicleInformationService.getVehicleStatusV3(accessToken, this.deviceId, this.vin)
         const status: CurrentVehicleStatus = this.vehicleStatusMapper.map(serviceStatus)
 
-        if (status.vehicleStatus.ev.EV_CHARGING_STATUS === 'CHARGING') {
-            return { isCharging: true}
+        return {
+            isCharging: status.vehicleStatus.ev.EV_CHARGING_STATUS === 'CHARGING'
+                ? true : status.vehicleStatus.ev.EV_CHARGING_STATUS === 'NOT_CHARGING'
+                    ? false : undefined,
         }
-
-        if (status.vehicleStatus.ev.EV_CHARGING_STATUS === 'NOT_CHARGING') {
-            return { isCharging: false }
-        }
-        
-        return { isCharging: undefined }
     }
 }
 
