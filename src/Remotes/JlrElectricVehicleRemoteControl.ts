@@ -22,9 +22,9 @@ class JlrElectricVehicleRemoteControl implements ElectricVehicleRemoteControl {
 
     turnOnClimateControl = async (targetTemperature: number): Promise<void> => {
         const accessToken = await this.vehicleRemoteAuthenticator.getAccessToken()
-        await this.commandAuthenticationService.getEccToken(accessToken, this.deviceId, this.vin, this.userId, this.lastFourOfVin)
+        const commandToken = await this.commandAuthenticationService.getEccToken(accessToken, this.deviceId, this.vin, this.userId, this.lastFourOfVin)
 
-        await this.commandElectricVehicleService.startClimatePreconditioning(accessToken, this.deviceId, this.vin, '', 0)
+        await this.commandElectricVehicleService.startClimatePreconditioning(accessToken, this.deviceId, this.vin, commandToken.token, 0)
     }
 
     turnOffClimateControl = (): Promise<void> => {
@@ -38,17 +38,15 @@ class JlrElectricVehicleRemoteControl implements ElectricVehicleRemoteControl {
     startCharging = async (): Promise<void> => {
         const accessToken = await this.vehicleRemoteAuthenticator.getAccessToken()
         const commandToken = await this.commandAuthenticationService.getCpToken(accessToken, this.deviceId, this.vin, this.userId, this.lastFourOfVin)
-        const cpToken = commandToken.token
 
-        await this.commandElectricVehicleService.startCharging(accessToken, this.deviceId, this.vin, cpToken)
+        await this.commandElectricVehicleService.startCharging(accessToken, this.deviceId, this.vin, commandToken.token)
     }
 
     stopCharging = async (): Promise<void> => {
         const accessToken = await this.vehicleRemoteAuthenticator.getAccessToken()
         const commandToken = await this.commandAuthenticationService.getCpToken(accessToken, this.deviceId, this.vin, this.userId, this.lastFourOfVin)
-        const cpToken = commandToken.token
 
-        await this.commandElectricVehicleService.stopCharging(accessToken, this.deviceId, this.vin, cpToken)
+        await this.commandElectricVehicleService.stopCharging(accessToken, this.deviceId, this.vin, commandToken.token)
     }
 
     getChargeState = async (): Promise<ChargeState> => {

@@ -817,9 +817,38 @@ describe('JLR Electric Vehicle Remote Control', () => {
                         expect.any(String),
                         expectedLastFourOfVin)
                 })
-
-            test.skip('uses ecc token', () => { })
         })
+
+        test.each([
+            ['real ECC token', 1],
+            ['fake ECC token', 2],
+            ['unimportant ECC token', 3]
+        ])
+            ('uses ECC token %s', async (expectedEccToken, targetTemperature) => {
+                // Arrange
+                const mockCommandAuthenticationService = createMock<CommandAuthenticationService>()
+                mockCommandAuthenticationService.getEccToken = jest.fn(() => Promise.resolve({ token: expectedEccToken }))
+
+                const mockCommandElectricVehicleService = createMock<CommandElectricVehicleService>()
+
+                const builder = new JlrElectricVehicleRemoteControlBuilder()
+                builder.commandAuthenticationService = mockCommandAuthenticationService
+                builder.commandElectricVehicleService = mockCommandElectricVehicleService
+
+                const remote = builder.build()
+
+                // Act
+                await remote.turnOnClimateControl(targetTemperature)
+
+                // Assert
+                expect(mockCommandElectricVehicleService.startClimatePreconditioning).toHaveBeenCalledWith(
+                    expect.any(String),
+                    expect.any(String),
+                    expect.any(String),
+                    expectedEccToken,
+                    expect.any(Number))
+            })
+
         test.skip('uses temperature', () => { })
     })
 
