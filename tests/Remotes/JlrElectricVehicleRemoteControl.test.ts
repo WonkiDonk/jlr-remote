@@ -710,7 +710,32 @@ describe('JLR Electric Vehicle Remote Control', () => {
                         expect.any(String))
                 })
 
-            test.skip('uses device Id %s', () => { })
+            test.each([
+                ['device id', 1],
+                ['fake device id', 2],
+                ['another device id', 3]
+            ])
+            ('uses device Id %s', async (expectedDeviceId, targetTemperature) => {
+                // Arrange
+                const mockCommandAuthenticationService = createMock<CommandAuthenticationService>()
+
+                const builder = new JlrElectricVehicleRemoteControlBuilder()
+                builder.deviceId = expectedDeviceId
+                builder.commandAuthenticationService = mockCommandAuthenticationService
+
+                const remote = builder.build()
+
+                // Act
+                await remote.turnOnClimateControl(targetTemperature)
+
+                // Assert
+                expect(mockCommandAuthenticationService.getEccToken).toHaveBeenCalledWith(
+                    expect.any(String),
+                    expectedDeviceId,
+                    expect.any(String),
+                    expect.any(String),
+                    expect.any(String))
+            })
             test.skip('uses VIN %s', () => { })
             test.skip('uses user Id %s', () => { })
             test.skip('uses last four of VIN %s', () => { })
