@@ -13,5 +13,4 @@ class JlrVehicleRemoteAuthenticator implements VehicleRemoteAuthenticator {
         return authResponse.access_token
     }
 }
-
 export { JlrVehicleRemoteAuthenticator }

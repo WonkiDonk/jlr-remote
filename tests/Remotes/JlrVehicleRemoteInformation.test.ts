@@ -1,46 +1,49 @@
 import { createMock } from 'ts-auto-mock'
 import { QueryVehicleInformationService } from '../../src/Services/QueryVehicleInformationService'
-import { CurrentVehicleStatusV3, VehicleAttributes } from '../../src/JaguarLandRover/ServiceTypes'
-import { JlrVehicleRemoteInformation } from '../../src/Remotes/JlrVehicleRemoteInformation'
-import { VehicleRemoteAuthenticator } from '../../src/Remotes/Types'
+import { CurrentVehicleStatusV3, VehicleAttributes, VehicleStatus } from '../../src/JaguarLandRover/ServiceTypes'
+import { CurrentVehicleStatus, VehicleRemoteAuthenticator } from '../../src/Remotes/Types'
+import { JlrVehicleRemoteInformationBuilder } from './JlrVehicleRemoteInformation.builder'
+import { VehicleStatusMapper } from '../../src/Remotes/Mappers'
 
 describe('JLR Vehicle Remote Information', () => {
     describe('Get vehicle attributes', () => {
         test('returns vehicle attributes', async () => {
             // Arrange
-            const attributes = createMock<VehicleAttributes>()
-            const mockGetVehicleAttributes = jest.fn()
-            mockGetVehicleAttributes.mockImplementation(() => Promise.resolve(attributes))
+            const expectedAttributes = createMock<VehicleAttributes>()          
+            const mockQueryVehicleInformationService = createMock<QueryVehicleInformationService>()
+            mockQueryVehicleInformationService.getVehicleAttributes = jest.fn(() => Promise.resolve(expectedAttributes))
+
+            const builder = new JlrVehicleRemoteInformationBuilder()
+            builder.queryVehicleInformationService = mockQueryVehicleInformationService
             
-            const mockService = createMock<QueryVehicleInformationService>()
-            mockService.getVehicleAttributes = mockGetVehicleAttributes
-            
-            const remote = new JlrVehicleRemoteInformation('', '', createMock<VehicleRemoteAuthenticator>(), mockService)
+            const remote = builder.build()
 
             // Act
             const response = await remote.getVehicleAttributes()
     
             // Assert
-            expect(response).toBe(attributes)
+            expect(response).toBe(expectedAttributes)
         })
 
         test.each(['hello world', 'example token', 'this token is not even real'])
             ('uses the access token `%s`', async (expectedAccessToken: string) => {
             // Arrange
             const mockVehicleRemoteAuthentication = createMock<VehicleRemoteAuthenticator>()
-            const mockGetAccessToken = jest.fn()
-            mockGetAccessToken.mockImplementation(() => Promise.resolve(expectedAccessToken))
+            mockVehicleRemoteAuthentication.getAccessToken = jest.fn(() => Promise.resolve(expectedAccessToken))
 
-            mockVehicleRemoteAuthentication.getAccessToken = mockGetAccessToken
+            const mockQueryVehicleInformationService = createMock<QueryVehicleInformationService>()
 
-            const mockService = createMock<QueryVehicleInformationService>()
-            const remote = new JlrVehicleRemoteInformation('', '', mockVehicleRemoteAuthentication, mockService)
+            const builder = new JlrVehicleRemoteInformationBuilder()
+            builder.vehicleRemoteAuthenticator = mockVehicleRemoteAuthentication
+            builder.queryVehicleInformationService = mockQueryVehicleInformationService
+
+            const remote = builder.build()
 
             // Act
             await remote.getVehicleAttributes()
 
             // Assert
-            expect(mockService.getVehicleAttributes).toHaveBeenCalledWith(
+            expect(mockQueryVehicleInformationService.getVehicleAttributes).toHaveBeenCalledWith(
                 expectedAccessToken,
                 expect.any(String),
                 expect.any(String))
@@ -49,14 +52,18 @@ describe('JLR Vehicle Remote Information', () => {
         test.each(['hello world', 'cat', 'dog'])
             ('uses the device ID `%s`', async (expectedDeviceId) => {
             // Arrange
-            const mockService = createMock<QueryVehicleInformationService>()
-            const remote = new JlrVehicleRemoteInformation(expectedDeviceId, '', createMock<VehicleRemoteAuthenticator>(), mockService)
+            const mockQueryVehicleInformationService = createMock<QueryVehicleInformationService>()
+            const builder = new JlrVehicleRemoteInformationBuilder()
+            builder.deviceId = expectedDeviceId
+            builder.queryVehicleInformationService = mockQueryVehicleInformationService
+
+            const remote = builder.build()
 
             // Act
             await remote.getVehicleAttributes()
 
             // Assert
-            expect(mockService.getVehicleAttributes).toHaveBeenCalledWith(
+            expect(mockQueryVehicleInformationService.getVehicleAttributes).toHaveBeenCalledWith(
                 expect.any(String),
                 expectedDeviceId,
                 expect.any(String))
@@ -65,14 +72,18 @@ describe('JLR Vehicle Remote Information', () => {
         test.each(['hello world', 'dog', 'cat'])
             ('uses the VIN `%s`', async (expectedVin) => {
             // Arrange
-            const mockService = createMock<QueryVehicleInformationService>()
-            const remote = new JlrVehicleRemoteInformation('', expectedVin, createMock<VehicleRemoteAuthenticator>(), mockService)
+            const mockQueryVehicleInformationService = createMock<QueryVehicleInformationService>()
+            const builder = new JlrVehicleRemoteInformationBuilder()
+            builder.vin = expectedVin
+            builder.queryVehicleInformationService = mockQueryVehicleInformationService
+
+            const remote = builder.build()
 
             // Act
             await remote.getVehicleAttributes()
 
             // Assert
-            expect(mockService.getVehicleAttributes).toHaveBeenCalledWith(
+            expect(mockQueryVehicleInformationService.getVehicleAttributes).toHaveBeenCalledWith(
                 expect.any(String),
                 expect.any(String),
                 expectedVin)
@@ -82,38 +93,48 @@ describe('JLR Vehicle Remote Information', () => {
     describe('Get vehicle status', () => {
         test('returns vehicle status', async () => {
             // Arrange
-            const status = createMock<CurrentVehicleStatusV3>()
-            const mockService = createMock<QueryVehicleInformationService>()
-            const mockGetVehicleStatusV3 = jest.fn()
-            mockService.getVehicleStatusV3 = mockGetVehicleStatusV3
-            mockGetVehicleStatusV3.mockImplementation( () => Promise.resolve(status))
+            const currentVehicleStatusV3 = createMock<CurrentVehicleStatusV3>()
+            const mockQueryVehicleInformationService = createMock<QueryVehicleInformationService>()
+            mockQueryVehicleInformationService.getVehicleStatusV3 = jest.fn(() => Promise.resolve(currentVehicleStatusV3))
 
-            const remote = new JlrVehicleRemoteInformation('', '', createMock<VehicleRemoteAuthenticator>(), mockService)
+            const expectedVehicleStatus = createMock<CurrentVehicleStatus>()
+            const mockVehicleStatusMapper = createMock<VehicleStatusMapper>()
+            mockVehicleStatusMapper.map = jest.fn((received) =>
+                received === currentVehicleStatusV3
+                    ? expectedVehicleStatus
+                    : createMock<CurrentVehicleStatus>())
+
+            const builder = new JlrVehicleRemoteInformationBuilder()
+            builder.queryVehicleInformationService = mockQueryVehicleInformationService
+            builder.vehicleStatusMapper = mockVehicleStatusMapper
+
+            const remote = builder.build()
 
             // Act
             const response = await remote.getVehicleStatus()
 
             // Assert
-            expect(response).toBe(status)
+            expect(response).toBe(expectedVehicleStatus)
         })  
 
         test.each(['hello world', 'fake access token', 'real access token, honest, gov!'])
             ('uses the access token `%s`', async (expectedAccessToken: string) => {
             // Arrange
-            const mockGetAccessToken = jest.fn()
-            mockGetAccessToken.mockImplementation(() => Promise.resolve(expectedAccessToken))
-
             const mockAuthenticator = createMock<VehicleRemoteAuthenticator>()
-            mockAuthenticator.getAccessToken = mockGetAccessToken
+            mockAuthenticator.getAccessToken = jest.fn(() => Promise.resolve(expectedAccessToken))
 
-            const mockService = createMock<QueryVehicleInformationService>()
-            const remote = new JlrVehicleRemoteInformation('', '', mockAuthenticator, mockService)
+            const mockQueryVehicleInformationService = createMock<QueryVehicleInformationService>()
+            const builder = new JlrVehicleRemoteInformationBuilder()
+            builder.vehicleRemoteAuthenticator = mockAuthenticator
+            builder.queryVehicleInformationService = mockQueryVehicleInformationService
+
+            const remote = builder.build()
 
             // Act
             await remote.getVehicleStatus()
 
             // Assert
-            expect(mockService.getVehicleStatusV3).toHaveBeenCalledWith(
+            expect(mockQueryVehicleInformationService.getVehicleStatusV3).toHaveBeenCalledWith(
                 expectedAccessToken,
                 expect.any(String),
                 expect.any(String))
@@ -122,35 +143,41 @@ describe('JLR Vehicle Remote Information', () => {
         test.each(['Hello World', 'Fake Id', 'exampleId'])
             ('uses the device ID `%s`', async (expectedDeviceId: string) => {   
             // Arrange
-            const mockService = createMock<QueryVehicleInformationService>()
-            const remote = new JlrVehicleRemoteInformation(expectedDeviceId, '', createMock<VehicleRemoteAuthenticator>(), mockService)
+            const mockQueryVehicleInformationService = createMock<QueryVehicleInformationService>()
+            const builder = new JlrVehicleRemoteInformationBuilder()
+            builder.deviceId = expectedDeviceId
+            builder.queryVehicleInformationService = mockQueryVehicleInformationService
+
+            const remote = builder.build()
 
             // Act
             await remote.getVehicleStatus()
 
             // Assert
-            expect(mockService.getVehicleStatusV3).toHaveBeenCalledWith(
+            expect(mockQueryVehicleInformationService.getVehicleStatusV3).toHaveBeenCalledWith(
                 expect.any(String),
                 expectedDeviceId,
-                expect.any(String)
-            )
+                expect.any(String))
         })
 
         test.each(['some vin', 'another vin', 'this is not a VIN!'])
             ('uses the VIN `%s`', async (expectedVin: string) => {
             // Arrange
-            const mockService = createMock<QueryVehicleInformationService>()
-            const remote = new JlrVehicleRemoteInformation('', expectedVin, createMock<VehicleRemoteAuthenticator>(), mockService)
-            
+            const mockQueryVehicleInformationService = createMock<QueryVehicleInformationService>()
+            const builder = new JlrVehicleRemoteInformationBuilder()
+            builder.vin = expectedVin
+            builder.queryVehicleInformationService = mockQueryVehicleInformationService
+
+            const remote = builder.build()
+
             // Act
             await remote.getVehicleStatus()
-            
+
             // Assert
-            expect(mockService.getVehicleStatusV3).toHaveBeenCalledWith(
+            expect(mockQueryVehicleInformationService.getVehicleStatusV3).toHaveBeenCalledWith(
                 expect.any(String),
                 expect.any(String),
-                expectedVin
-            )
+                expectedVin)
         })
     })
 })

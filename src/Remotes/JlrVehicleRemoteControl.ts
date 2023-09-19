@@ -1,14 +1,21 @@
 import { LockState, VehicleRemoteAuthenticator, VehicleRemoteControl } from './Types'
-import { CommandVehicleService } from '../Services/CommandVehicleService'
 import { CommandAuthenticationService } from '../Authentication/CommandAuthenticationService'
+import { CommandVehicleService } from '../Services/CommandVehicleService'
+import { QueryVehicleInformationService } from '../Services/QueryVehicleInformationService'
+import { VehicleStatusMapper } from './Mappers'
 
 class JlrVehicleRemoteControl implements VehicleRemoteControl {
-    constructor(private readonly deviceId: string, private readonly vin: string,
-        private readonly userId: string, private readonly lastFourOfVin: string,
+    constructor(
+        private readonly deviceId: string,
+        private readonly vin: string,
+        private readonly userId: string,
+        private readonly lastFourOfVin: string,
         private readonly userPin: string,
         private readonly vehicleRemoteAuthenticator: VehicleRemoteAuthenticator,
         private readonly commandAuthenticationService: CommandAuthenticationService,
-        private readonly commandVehicleService: CommandVehicleService) { }
+        private readonly commandVehicleService: CommandVehicleService,
+        private readonly queryVehicleInformationService: QueryVehicleInformationService,
+        private readonly vehicleStatusMapper: VehicleStatusMapper) { }
         
     beepAndFlash = async (): Promise<void> => {
         const accessToken = await this.vehicleRemoteAuthenticator.getAccessToken()
@@ -34,8 +41,12 @@ class JlrVehicleRemoteControl implements VehicleRemoteControl {
         await this.commandVehicleService.unlockVehicle(accessToken, this.deviceId, this.vin, rduToken)
     }
     
-    getLockState = (): Promise<LockState> => {
-        throw new Error('Not implemented.')
+    getLockState = async (): Promise<LockState> => {
+        const accessToken = await this.vehicleRemoteAuthenticator.getAccessToken()
+        const serviceStatus = await this.queryVehicleInformationService.getVehicleStatusV3(accessToken, this.deviceId, this.vin)
+        const currentStatus = this.vehicleStatusMapper.map(serviceStatus)
+
+        return { isLocked: currentStatus.vehicleStatus.core.DOOR_IS_ALL_DOORS_LOCKED === 'LOCKED' }
     }
 }
 
