@@ -36,9 +36,10 @@ class JlrElectricVehicleRemoteControl implements ElectricVehicleRemoteControl {
 
     isClimateControlOn = async (): Promise<boolean> => {
         const accessToken = await this.vehicleRemoteAuthenticator.getAccessToken()
-        await this.queryVehicleInformationService.getVehicleStatusV3(accessToken, this.deviceId, this.vin)
+        const serviceStatus = await this.queryVehicleInformationService.getVehicleStatusV3(accessToken, this.deviceId, this.vin)
+        const status = this.vehicleStatusMapper.map(serviceStatus)
 
-        return false
+        return status.vehicleStatus.core.CLIMATE_STATUS_OPERATING_STATUS === 'HEATING'
     }
 
     startCharging = async (): Promise<void> => {

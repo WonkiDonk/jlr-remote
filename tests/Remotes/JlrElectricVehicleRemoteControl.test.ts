@@ -1153,6 +1153,33 @@ describe('JLR Electric Vehicle Remote Control', () => {
                     expectedVin)
             })
 
-        test.skip('returns expected climate control state %s %s', () => { })
+        test.each([
+            ['HEATING', true],
+            ['OFF', false]])
+            ('returns expected climate control state %s %s', async (climate_status_operating_status, expectedIsClimateControlOn) => {
+                // Arrange
+                const serviceStatus = createMock<CurrentVehicleStatusV3>()
+                const mappedStatus = createMock<CurrentVehicleStatus>()
+                const mockVehicleStatusMapper = createMock<VehicleStatusMapper>()
+
+                mappedStatus.vehicleStatus.core.CLIMATE_STATUS_OPERATING_STATUS = climate_status_operating_status
+                mockVehicleStatusMapper.map = jest.fn(() => mappedStatus)
+
+                const mockQueryVehicleInformationService = createMock<QueryVehicleInformationService>()
+                mockQueryVehicleInformationService.getVehicleStatusV3 = jest.fn(() => Promise.resolve(serviceStatus))
+
+                const builder = new JlrElectricVehicleRemoteControlBuilder()
+
+                builder.queryVehicleInformationService = mockQueryVehicleInformationService
+                builder.vehicleStatusMapper = mockVehicleStatusMapper
+
+                const remote = builder.build()
+
+                // Act
+                const isClimateControlOn = await remote.isClimateControlOn()
+
+                // Assert
+                expect(isClimateControlOn).toBe(expectedIsClimateControlOn)
+            })
     })
 })
