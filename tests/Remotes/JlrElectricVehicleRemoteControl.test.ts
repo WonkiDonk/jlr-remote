@@ -873,17 +873,218 @@ describe('JLR Electric Vehicle Remote Control', () => {
     })
 
     describe('Turn off climate control', () => {
-        test.skip('uses access token %s', () => { })
-        test.skip('uses deviceId %s', () => { })
-        test.skip('uses VIN %s', () => { })
+        test.each(['lorem', 'ipsum', 'dolar sit'])
+            ('uses access token %s', async (expectedAccessToken) => {
+                // Arrange
+                const mockVehicleRemoteAuthenticator = createMock<VehicleRemoteAuthenticator>()
+                mockVehicleRemoteAuthenticator.getAccessToken = jest.fn(() => Promise.resolve(expectedAccessToken))
+
+                const mockCommandElectricVehicleService = createMock<CommandElectricVehicleService>()
+
+                const builder = new JlrElectricVehicleRemoteControlBuilder()
+                builder.vehicleRemoteAuthenticator = mockVehicleRemoteAuthenticator
+                builder.commandElectricVehicleService = mockCommandElectricVehicleService
+
+                const remote = builder.build()
+
+                // Act
+                await remote.turnOffClimateControl()
+
+                // Assert
+                expect(mockCommandElectricVehicleService.stopClimatePreconditioning).toHaveBeenCalledWith(
+                    expectedAccessToken,
+                    expect.any(String),
+                    expect.any(String),
+                    expect.any(String))
+            })
+
+        test.each(['lorem', 'ipsum', 'dolar sit'])
+            ('uses deviceId %s', async (expectedDeviceId) => {
+                // Arrange
+                const mockCommandElectricVehicleService = createMock<CommandElectricVehicleService>()
+
+                const builder = new JlrElectricVehicleRemoteControlBuilder()
+                builder.commandElectricVehicleService = mockCommandElectricVehicleService
+                builder.deviceId = expectedDeviceId
+
+                const remote = builder.build()
+
+                // Act
+                await remote.turnOffClimateControl()
+
+                // Assert
+                expect(mockCommandElectricVehicleService.stopClimatePreconditioning).toHaveBeenCalledWith(
+                    expect.any(String),
+                    expectedDeviceId,
+                    expect.any(String),
+                    expect.any(String))
+            })
+
+        test.each(['lorem', 'ipsum', 'dolar sit'])
+            ('uses VIN %s', async (expectedVin) => {
+                // Arrange
+                const mockCommandElectricVehicleService = createMock<CommandElectricVehicleService>()
+
+                const builder = new JlrElectricVehicleRemoteControlBuilder()
+                builder.commandElectricVehicleService = mockCommandElectricVehicleService
+                builder.vin = expectedVin
+
+                const remote = builder.build()
+
+                // Act
+                await remote.turnOffClimateControl()
+
+                // Assert
+                expect(mockCommandElectricVehicleService.stopClimatePreconditioning).toHaveBeenCalledWith(
+                    expect.any(String),
+                    expect.any(String),
+                    expectedVin,
+                    expect.any(String))
+            })
+
         describe('Get ECC token', () => {
-            test.skip('uses access token %s', () => { })
-            test.skip('uses device Id %s', () => { })
-            test.skip('uses VIN %s', () => { })
-            test.skip('uses user Id %s', () => { })
-            test.skip('uses last four of VIN %s', () => { })
-            test.skip('uses ecc token', () => { })
+            test.each(['lorem', 'ipsum', 'dolar sit'])
+                ('uses access token %s', async (expectedAccessToken) => {
+                    // Arrange
+                    const mockCommandAuthenticationService = createMock<CommandAuthenticationService>()
+                    const mockVehicleRemoteAuthenticator = createMock<VehicleRemoteAuthenticator>()
+                    mockVehicleRemoteAuthenticator.getAccessToken = jest.fn(() => Promise.resolve(expectedAccessToken))
+
+                    const builder = new JlrElectricVehicleRemoteControlBuilder()
+                    builder.vehicleRemoteAuthenticator = mockVehicleRemoteAuthenticator
+                    builder.commandAuthenticationService = mockCommandAuthenticationService
+
+                    const remote = builder.build()
+
+                    // Act
+                    await remote.turnOffClimateControl()
+
+                    // Assert
+                    expect(mockCommandAuthenticationService.getEccToken).toHaveBeenCalledWith(
+                        expectedAccessToken,
+                        expect.any(String),
+                        expect.any(String),
+                        expect.any(String),
+                        expect.any(String))
+                })
+
+            test.each(['lorem', 'ipsum', 'dolar sit'])
+                ('uses device Id %s', async (expectedDeviceId) => {
+                    // Arrange
+                    const mockCommandAuthenticationService = createMock<CommandAuthenticationService>()
+
+                    const builder = new JlrElectricVehicleRemoteControlBuilder()
+                    builder.deviceId = expectedDeviceId
+                    builder.commandAuthenticationService = mockCommandAuthenticationService
+
+                    const remote = builder.build()
+
+                    // Act
+                    await remote.turnOffClimateControl()
+
+                    // Assert
+                    expect(mockCommandAuthenticationService.getEccToken).toHaveBeenCalledWith(
+                        expect.any(String),
+                        expectedDeviceId,
+                        expect.any(String),
+                        expect.any(String),
+                        expect.any(String))
+                })
+
+            test.each(['lorem', 'ipsum', 'dolar sit'])
+                ('uses VIN %s', async (expectedVin) => {
+                    // Arrange
+                    const mockCommandAuthenticationService = createMock<CommandAuthenticationService>()
+
+                    const builder = new JlrElectricVehicleRemoteControlBuilder()
+                    builder.vin = expectedVin
+                    builder.commandAuthenticationService = mockCommandAuthenticationService
+
+                    const remote = builder.build()
+
+                    // Act
+                    await remote.turnOffClimateControl()
+
+                    // Assert
+                    expect(mockCommandAuthenticationService.getEccToken).toHaveBeenCalledWith(
+                        expect.any(String),
+                        expect.any(String),
+                        expectedVin,
+                        expect.any(String),
+                        expect.any(String))
+                })
+
+            test.each(['lorem', 'ipsum', 'dolar sit'])
+                ('uses user ID %s', async (expectedUserId) => {
+                    // Arrange
+                    const mockCommandAuthenticationService = createMock<CommandAuthenticationService>()
+
+                    const builder = new JlrElectricVehicleRemoteControlBuilder()
+                    builder.userId = expectedUserId
+                    builder.commandAuthenticationService = mockCommandAuthenticationService
+
+                    const remote = builder.build()
+
+                    // Act
+                    await remote.turnOffClimateControl()
+
+                    // Assert
+                    expect(mockCommandAuthenticationService.getEccToken).toHaveBeenCalledWith(
+                        expect.any(String),
+                        expect.any(String),
+                        expect.any(String),
+                        expectedUserId,
+                        expect.any(String))
+                })
+
+            test.each(['lorem', 'ipsum', 'dolar sit'])
+                ('uses last four of VIN %s', async (expectedLastFourOfVin) => {
+                    // Arrange
+                    const mockCommandAuthenticationService = createMock<CommandAuthenticationService>()
+
+                    const builder = new JlrElectricVehicleRemoteControlBuilder()
+                    builder.lastFourOfVin = expectedLastFourOfVin
+                    builder.commandAuthenticationService = mockCommandAuthenticationService
+
+                    const remote = builder.build()
+
+                    // Act
+                    await remote.turnOffClimateControl()
+
+                    // Assert
+                    expect(mockCommandAuthenticationService.getEccToken).toHaveBeenCalledWith(
+                        expect.any(String),
+                        expect.any(String),
+                        expect.any(String),
+                        expect.any(String),
+                        expectedLastFourOfVin)
+                })
         })
+
+        test.each(['lorem', 'ipsum', 'dolar sit'])
+            ('uses ECC token %s', async (expectedEccToken) => {
+                // Arrange
+                const mockCommandAuthenticationService = createMock<CommandAuthenticationService>()
+                mockCommandAuthenticationService.getEccToken = jest.fn(() => Promise.resolve({ token: expectedEccToken }))
+
+                const mockCommandElectricVehicleService = createMock<CommandElectricVehicleService>()
+
+                const builder = new JlrElectricVehicleRemoteControlBuilder()
+                builder.commandAuthenticationService = mockCommandAuthenticationService
+                builder.commandElectricVehicleService = mockCommandElectricVehicleService
+
+                const remote = builder.build()
+
+                // Act
+                await remote.turnOffClimateControl()
+
+                // Assert
+                expect(mockCommandElectricVehicleService.stopClimatePreconditioning).toHaveBeenCalledWith(
+                    expect.any(String),
+                    expect.any(String),
+                    expect.any(String),
+                    expectedEccToken)
+            })
     })
 
     describe('Is climate control on?', () => {
