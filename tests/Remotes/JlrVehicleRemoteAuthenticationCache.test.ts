@@ -19,7 +19,7 @@ describe('JLR Remote Authentication Cache', () => {
             ['important?', 0],
             ['some token', -1],
             ['another token', Number.NaN]])
-            ('does not cache when expiresIn is negative or NaN (token: %s, expiresIs: %s)', (accessToken, expiresIn) => {
+            ('does not cache when expiresIn is negative or NaN (token: `%s`, expiresIs: `%s`)', (accessToken, expiresIn) => {
                 // Arrange.
                 const authenticationCache = new JlrRemoteAuthenticationCache()
 

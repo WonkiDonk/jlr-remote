@@ -508,7 +508,7 @@ describe('JLR Electric Vehicle Remote Control', () => {
             ['CHARGING', true],
             ['NOT_CHARGING', false],
             ['UNKNOWN', undefined]])
-            ('returns expected charging state %s %s', async (ev_charging_status, expectedIsCharging) => {
+            ('returns expected charging state `%s` `%s`', async (ev_charging_status, expectedIsCharging) => {
                 // Arrange
                 const serviceStatus = createMock<CurrentVehicleStatusV3>()
                 const mappedStatus = createMock<CurrentVehicleStatus>()
@@ -538,7 +538,7 @@ describe('JLR Electric Vehicle Remote Control', () => {
             ['CONNECTED', true],
             ['NOT_CONNECTED', false],
             ['UNKNOWN', undefined]])
-            ('returns expected cable state %s %s', async (ev_is_plugged_in, expectedIsConnected) => {
+            ('returns expected cable state `%s` `%s`', async (ev_is_plugged_in, expectedIsConnected) => {
                 // Arrange
                 const serviceStatus = createMock<CurrentVehicleStatusV3>()
                 const mappedStatus = createMock<CurrentVehicleStatus>()
@@ -571,7 +571,7 @@ describe('JLR Electric Vehicle Remote Control', () => {
             ['17', 17],
             ['NaN', undefined],
             ['something else', undefined]])
-            ('returns expected cable state %s %s', async (ev_state_of_charge, expectedChargeLevel) => {
+            ('returns expected cable state `%s` `%s`', async (ev_state_of_charge, expectedChargeLevel) => {
                 // Arrange
                 const serviceStatus = createMock<CurrentVehicleStatusV3>()
                 const mappedStatus = createMock<CurrentVehicleStatus>()
@@ -603,7 +603,7 @@ describe('JLR Electric Vehicle Remote Control', () => {
             ['some token', 1],
             ['another token', 2],
             ['not a real token', 3]])
-            ('uses access token %s', async (expectedAccessToken, targetTemperature) => {
+            ('uses access token `%s`', async (expectedAccessToken, targetTemperature) => {
                 // Arrange
                 const mockVehicleRemoteAuthenticator = createMock<VehicleRemoteAuthenticator>()
                 mockVehicleRemoteAuthenticator.getAccessToken = jest.fn(() => Promise.resolve(expectedAccessToken))
@@ -632,7 +632,7 @@ describe('JLR Electric Vehicle Remote Control', () => {
             ['some device ID', 1],
             ['another device ID', 2],
             ['not a real device ID', 3]])
-            ('uses deviceId %s', async (expectedDeviceId, targetTemperature) => {
+            ('uses deviceId `%s`', async (expectedDeviceId, targetTemperature) => {
                 // Arrange
                 const mockCommandElectricVehicleService = createMock<CommandElectricVehicleService>()
 
@@ -658,7 +658,7 @@ describe('JLR Electric Vehicle Remote Control', () => {
             ['some VIN', 1],
             ['another VIN', 2],
             ['not a real VIN', 3]])
-            ('uses VIN %s', async (expectedVin, targetTemperature) => {
+            ('uses VIN `%s`', async (expectedVin, targetTemperature) => {
                 // Arrange
                 const mockCommandElectricVehicleService = createMock<CommandElectricVehicleService>()
 
@@ -686,7 +686,7 @@ describe('JLR Electric Vehicle Remote Control', () => {
                 ['fake token', 2],
                 ['unimportant token', 3]
             ])
-                ('uses access token %s', async (expectedAccessToken, targetTemperature) => {
+                ('uses access token `%s`', async (expectedAccessToken, targetTemperature) => {
                     // Arrange
                     const mockCommandAuthenticationService = createMock<CommandAuthenticationService>()
                     const mockVehicleRemoteAuthenticator = createMock<VehicleRemoteAuthenticator>()
@@ -715,7 +715,7 @@ describe('JLR Electric Vehicle Remote Control', () => {
                 ['fake device id', 2],
                 ['another device id', 3]
             ])
-                ('uses device Id %s', async (expectedDeviceId, targetTemperature) => {
+                ('uses device Id `%s`', async (expectedDeviceId, targetTemperature) => {
                     // Arrange
                     const mockCommandAuthenticationService = createMock<CommandAuthenticationService>()
 
@@ -742,7 +742,7 @@ describe('JLR Electric Vehicle Remote Control', () => {
                 ['fake VIN', 2],
                 ['another VIN', 3]
             ])
-                ('uses VIN %s', async (expectedVin, targetTemperature) => {
+                ('uses VIN `%s`', async (expectedVin, targetTemperature) => {
                     // Arrange
                     const mockCommandAuthenticationService = createMock<CommandAuthenticationService>()
 
@@ -769,7 +769,7 @@ describe('JLR Electric Vehicle Remote Control', () => {
                 ['fake user ID', 2],
                 ['another user ID', 3]
             ])
-                ('uses user ID %s', async (expectedUserId, targetTemperature) => {
+                ('uses user ID `%s`', async (expectedUserId, targetTemperature) => {
                     // Arrange
                     const mockCommandAuthenticationService = createMock<CommandAuthenticationService>()
 
@@ -796,7 +796,7 @@ describe('JLR Electric Vehicle Remote Control', () => {
                 ['a new last four of VIN', 2],
                 ['not even a last four of VIN', 3]
             ])
-                ('uses last four of VIN %s', async (expectedLastFourOfVin, targetTemperature) => {
+                ('uses last four of VIN `%s`', async (expectedLastFourOfVin, targetTemperature) => {
                     // Arrange
                     const mockCommandAuthenticationService = createMock<CommandAuthenticationService>()
 
@@ -824,7 +824,7 @@ describe('JLR Electric Vehicle Remote Control', () => {
             ['fake ECC token', 2],
             ['unimportant ECC token', 3]
         ])
-            ('uses ECC token %s', async (expectedEccToken, targetTemperature) => {
+            ('uses ECC token `%s`', async (expectedEccToken, targetTemperature) => {
                 // Arrange
                 const mockCommandAuthenticationService = createMock<CommandAuthenticationService>()
                 mockCommandAuthenticationService.getEccToken = jest.fn(() => Promise.resolve({ token: expectedEccToken }))
@@ -850,7 +850,7 @@ describe('JLR Electric Vehicle Remote Control', () => {
             })
 
         test.each([[1, 10], [2, 20], [1.5, 15]])
-            ('uses target temperature %s x 10', async (targetTemperature, expectedTargetTemperature) => {
+            ('uses target temperature `%s` x 10', async (targetTemperature, expectedTargetTemperature) => {
                 // Arrange
                 const mockCommandElectricVehicleService = createMock<CommandElectricVehicleService>()
 
@@ -874,7 +874,7 @@ describe('JLR Electric Vehicle Remote Control', () => {
 
     describe('Turn off climate control', () => {
         test.each(['lorem', 'ipsum', 'dolar sit'])
-            ('uses access token %s', async (expectedAccessToken) => {
+            ('uses access token `%s`', async (expectedAccessToken) => {
                 // Arrange
                 const mockVehicleRemoteAuthenticator = createMock<VehicleRemoteAuthenticator>()
                 mockVehicleRemoteAuthenticator.getAccessToken = jest.fn(() => Promise.resolve(expectedAccessToken))
@@ -899,7 +899,7 @@ describe('JLR Electric Vehicle Remote Control', () => {
             })
 
         test.each(['lorem', 'ipsum', 'dolar sit'])
-            ('uses deviceId %s', async (expectedDeviceId) => {
+            ('uses deviceId `%s`', async (expectedDeviceId) => {
                 // Arrange
                 const mockCommandElectricVehicleService = createMock<CommandElectricVehicleService>()
 
@@ -921,7 +921,7 @@ describe('JLR Electric Vehicle Remote Control', () => {
             })
 
         test.each(['lorem', 'ipsum', 'dolar sit'])
-            ('uses VIN %s', async (expectedVin) => {
+            ('uses VIN `%s`', async (expectedVin) => {
                 // Arrange
                 const mockCommandElectricVehicleService = createMock<CommandElectricVehicleService>()
 
@@ -944,7 +944,7 @@ describe('JLR Electric Vehicle Remote Control', () => {
 
         describe('Get ECC token', () => {
             test.each(['lorem', 'ipsum', 'dolar sit'])
-                ('uses access token %s', async (expectedAccessToken) => {
+                ('uses access token `%s`', async (expectedAccessToken) => {
                     // Arrange
                     const mockCommandAuthenticationService = createMock<CommandAuthenticationService>()
                     const mockVehicleRemoteAuthenticator = createMock<VehicleRemoteAuthenticator>()
@@ -969,7 +969,7 @@ describe('JLR Electric Vehicle Remote Control', () => {
                 })
 
             test.each(['lorem', 'ipsum', 'dolar sit'])
-                ('uses device Id %s', async (expectedDeviceId) => {
+                ('uses device Id `%s`', async (expectedDeviceId) => {
                     // Arrange
                     const mockCommandAuthenticationService = createMock<CommandAuthenticationService>()
 
@@ -992,7 +992,7 @@ describe('JLR Electric Vehicle Remote Control', () => {
                 })
 
             test.each(['lorem', 'ipsum', 'dolar sit'])
-                ('uses VIN %s', async (expectedVin) => {
+                ('uses VIN `%s`', async (expectedVin) => {
                     // Arrange
                     const mockCommandAuthenticationService = createMock<CommandAuthenticationService>()
 
@@ -1015,7 +1015,7 @@ describe('JLR Electric Vehicle Remote Control', () => {
                 })
 
             test.each(['lorem', 'ipsum', 'dolar sit'])
-                ('uses user ID %s', async (expectedUserId) => {
+                ('uses user ID `%s`', async (expectedUserId) => {
                     // Arrange
                     const mockCommandAuthenticationService = createMock<CommandAuthenticationService>()
 
@@ -1038,7 +1038,7 @@ describe('JLR Electric Vehicle Remote Control', () => {
                 })
 
             test.each(['lorem', 'ipsum', 'dolar sit'])
-                ('uses last four of VIN %s', async (expectedLastFourOfVin) => {
+                ('uses last four of VIN `%s`', async (expectedLastFourOfVin) => {
                     // Arrange
                     const mockCommandAuthenticationService = createMock<CommandAuthenticationService>()
 
@@ -1062,7 +1062,7 @@ describe('JLR Electric Vehicle Remote Control', () => {
         })
 
         test.each(['lorem', 'ipsum', 'dolar sit'])
-            ('uses ECC token %s', async (expectedEccToken) => {
+            ('uses ECC token `%s`', async (expectedEccToken) => {
                 // Arrange
                 const mockCommandAuthenticationService = createMock<CommandAuthenticationService>()
                 mockCommandAuthenticationService.getEccToken = jest.fn(() => Promise.resolve({ token: expectedEccToken }))
@@ -1156,7 +1156,7 @@ describe('JLR Electric Vehicle Remote Control', () => {
         test.each([
             ['HEATING', true],
             ['OFF', false]])
-            ('returns expected climate control state %s %s', async (climate_status_operating_status, expectedIsClimateControlOn) => {
+            ('returns expected climate control state `%s` `%s`', async (climate_status_operating_status, expectedIsClimateControlOn) => {
                 // Arrange
                 const serviceStatus = createMock<CurrentVehicleStatusV3>()
                 const mappedStatus = createMock<CurrentVehicleStatus>()
