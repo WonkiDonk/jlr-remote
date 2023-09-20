@@ -309,7 +309,7 @@ export interface VehicleAlert {
 
 export interface VehicleStatus {
     key:   string;
-    value: null | string;
+    value: string;
 }
 
 /**

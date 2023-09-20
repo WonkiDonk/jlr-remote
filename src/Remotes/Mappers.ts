@@ -169,8 +169,16 @@ interface VehicleStatusMapper {
 }
 
 const vehicleStatusMapper: VehicleStatusMapper = {
-    map: (data: CurrentVehicleStatusV3): CurrentVehicleStatus => {
-        throw new Error('Function not implemented.')
+    map: (data: CurrentVehicleStatusV3): CurrentVehicleStatus => {        
+        let mapped = { ...emptyVehicleStatus }
+
+        type CoreStatusKey = keyof typeof mapped.vehicleStatus.core
+        data.vehicleStatus.coreStatus.map(element => (mapped.vehicleStatus.core[element.key as CoreStatusKey] = element.value))
+
+        type EvStatusKey = keyof typeof mapped.vehicleStatus.ev
+        data.vehicleStatus.evStatus.map(element => (mapped.vehicleStatus.ev[element.key as EvStatusKey] = element.value))
+
+        return mapped
     }
 }
 
