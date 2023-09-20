@@ -1,117 +1,79 @@
-import * as jlr_remote from '../index'
+import { Vehicle, JlrVehicleGarage } from '../index'
 
-type Car = {
-    nickname: string,
-    registrationNumber: string,
-    vin: string
+const getElectricVehicles = async (deviceId: string, userName: string, password: string): Promise<Vehicle[]> => {
+    const garage = new JlrVehicleGarage({
+        deviceId,
+        userName,
+        password,
+        userId: '',
+        userPin: ''
+    })
+    
+    const vehicles = await garage.getVehicles()
+
+    return vehicles.filter(vehicle => vehicle.type === 'EV')
 }
 
-const getElectricVehicles = async (deviceId: string, username: string, password: string): Promise<Car[]> => {
-    // Authenticate
-    const { access_token, authorization_token, expires_in } = await jlr_remote.authenticationService.authenticate(deviceId, username, password)
+const getBatteryChargeLevel = async (deviceId: string, userName: string, password: string, vin: string): Promise<number | undefined> => {
+    const garage = new JlrVehicleGarage({
+        deviceId,
+        userName,
+        password,
+        userId: '',
+        userPin: ''
+    })
 
-    // Register the application as a device
-    await jlr_remote.authenticationService.registerDevice(access_token, deviceId, authorization_token, expires_in, username)
+    const remote = await garage.getRemoteForVehicle(vin)
+    if (remote.type === 'EV')
+    {
+        const chargeState = await remote.getChargeState()
 
-    // Login the user
-    const { userId } = await jlr_remote.authenticationService.loginUser(access_token, deviceId, username)
-
-    // Get a list of vehicles on the account
-    const userVehicles = await jlr_remote.queryUserInformationService.getVehiclesForUser(access_token, deviceId, userId)
-
-    let electricCars: Car[] = []
-
-    for (const vehicle of userVehicles.vehicles) {
-        const vehicleAttributes = await jlr_remote.queryVehicleInformationService.getVehicleAttributes(access_token, deviceId, vehicle.vin)
-
-        if (vehicleAttributes.fuelType === 'Electric') {
-            electricCars = [...electricCars, {
-                nickname: vehicleAttributes.nickname,
-                registrationNumber: vehicleAttributes.registrationNumber,
-                vin: vehicle.vin
-            }]
-        }
+        return chargeState.chargeLevel
     }
 
-    return electricCars
+    return undefined
 }
 
-const getBatteryChargeLevel = async (deviceId: string, username: string, password: string, vin: string): Promise<number | null> => {
-    // Authenticate
-    const { access_token, authorization_token, expires_in } = await jlr_remote.authenticationService.authenticate(deviceId, username, password)
+const preconditionEV = async (deviceId: string, userName: string, password: string, vin: string, targetTemperature: number): Promise<void> => {
+    const garage = new JlrVehicleGarage({
+        deviceId,
+        userName,
+        password,
+        userId: '',
+        userPin: ''
+    })
 
-    // Register the application as a device
-    await jlr_remote.authenticationService.registerDevice(access_token, deviceId, authorization_token, expires_in, username)
+    const remote = await garage.getRemoteForVehicle(vin)
 
-    // Login the user
-    await jlr_remote.authenticationService.loginUser(access_token, deviceId, username)
-
-    const currentVehicleStatus = await jlr_remote.queryVehicleInformationService.getVehicleStatusV3(access_token, deviceId, vin)
-    const stateOfCharge = currentVehicleStatus.vehicleStatus?.evStatus.find(status => status.key === 'EV_STATE_OF_CHARGE')
-
-    return stateOfCharge?.value
-        ? +(stateOfCharge.value)
-        : null
+    await remote.turnOnClimateControl(targetTemperature)
 }
 
-const preconditionEV = async (deviceId: string, username: string, password: string, vin: string): Promise<void> => {
-    // Authenticate
-    const { access_token, authorization_token, expires_in } = await jlr_remote.authenticationService.authenticate(deviceId, username, password)
+const lockCar = async (deviceId: string, userName: string, password: string, vin: string, userPin: string): Promise<void> => {
+    const garage = new JlrVehicleGarage({
+        deviceId,
+        userName,
+        password,
+        userId: '',
+        userPin
+    })
 
-    // Register the application as a device
-    await jlr_remote.authenticationService.registerDevice(access_token, deviceId, authorization_token, expires_in, username)
-
-    // Login the user
-    const { userId } = await jlr_remote.authenticationService.loginUser(access_token, deviceId, username)
-
-    // Get command token (startClimatePreconditioning requires ECC token)
-    const { token } = await jlr_remote.commandAuthenticationService.getEccToken(access_token, deviceId, vin, userId, vin.slice(vin.length - 4))
-
-    // Send the command to start the preconditioning at 21.0 degrees C
-    await jlr_remote.commandElectricVehicleService.startClimatePreconditioning(access_token, deviceId, vin, token, 210)
-}
-
-const lockCar = async (deviceId: string, username: string, password: string, vin: string, userPin: string): Promise<void> => {
-    // Authenticate
-    const { access_token, authorization_token, expires_in } = await jlr_remote.authenticationService.authenticate(deviceId, username, password)
-
-    // Register the application as a device
-    await jlr_remote.authenticationService.registerDevice(access_token, deviceId, authorization_token, expires_in, username)
-
-    // Login the user
-    const { userId } = await jlr_remote.authenticationService.loginUser(access_token, deviceId, username)
-
-    // Get command token (lock requires RDL token)
-    const { token } = await jlr_remote.commandAuthenticationService.getRdlToken(access_token, deviceId, vin, userId, userPin)
-
-    // Send the command to lock the car.
-    await jlr_remote.commandVehicleService.lockVehicle(access_token, deviceId, vin, token)
-}
-
-const preconditionIceCar = async (deviceId: string, username: string, password: string, vin: string, userPin: string): Promise<void> => {
-    // Authenticate
-    const { access_token, authorization_token, expires_in } = await jlr_remote.authenticationService.authenticate(deviceId, username, password)
-
-    // Register the application as a device
-    await jlr_remote.authenticationService.registerDevice(access_token, deviceId, authorization_token, expires_in, username)
-
-    // Login the user
-    const { userId } = await jlr_remote.authenticationService.loginUser(access_token, deviceId, username)
-
-    // Get command token (remote engine start requires REON token)
-    const reon = await jlr_remote.commandAuthenticationService.getReonToken(access_token, deviceId, vin, userId, userPin)
-
-    // Send the command to turn on the engine.
-    await jlr_remote.commandIceVehicleService.remoteEngineStart(access_token, deviceId, vin, reon.token)
-
-    // Get the command token (Provisioning Mode requires PROV token)
-    const prov = await jlr_remote.commandAuthenticationService.getProvToken(access_token, deviceId, vin, userId, userPin)
+    const remote = await garage.getRemoteForVehicle(vin)
     
-    // Send the command to put the vehicle into Provisioning Mode
-    await jlr_remote.commandIceVehicleService.enableProvisioningMode(access_token, deviceId, vin, prov.token)
-
-    // Set the target temperature
-    await jlr_remote.commandIceVehicleService.setRemoteClimateControlTargetTemperature(access_token, deviceId, vin, 21)
+    await remote.lock()
 }
 
-export default { getElectricVehicles, getBatteryChargeLevel, preconditionCar: preconditionEV, lockCar, preconditionIceCar }
+const preconditionIceCar = async (deviceId: string, userName: string, password: string, vin: string, userPin: string, targetTemperature: number): Promise<void> => {
+    const garage = new JlrVehicleGarage({
+        deviceId,
+        userName,
+        password,
+        userId: '',
+        userPin
+    })
+
+    const remote = await garage.getRemoteForVehicle(vin)
+
+    await remote.turnOnClimateControl(targetTemperature)
+}
+
+export default { getElectricVehicles, getBatteryChargeLevel, preconditionEV, lockCar, preconditionIceCar }
