@@ -469,7 +469,7 @@ describe('JLR Internal Combustion Engine Vehicle Remote Control', () => {
             ['access token', 'device id', 'vin', 'user id', 'user PIN', 'prov token'],
             ['another token', 'a new device id', 'vin diesel', 'user identity', 'user brooche', 'different prov token'],
             ['not even a token', 'identifier', 'vehicle identification number', 'user identifier', 'user safety pin', 'provisioning token']])
-            ('puts the vehicle into provisioning mode %s %s %s %s %s %s', async (expectedAccessToken, expectedDeviceId, expectedVin, expectedUserId, expectedUserPin, expectedProvToken) => {
+            ('puts the vehicle into provisioning mode `%s` `%s` `%s` `%s` `%s` `%s`', async (expectedAccessToken, expectedDeviceId, expectedVin, expectedUserId, expectedUserPin, expectedProvToken) => {
                 // Arrange.
                 const mockCommandIceVehicleService = createMock<CommandIceVehicleService>()
 
@@ -511,7 +511,7 @@ describe('JLR Internal Combustion Engine Vehicle Remote Control', () => {
             ['access token', 'device id', 'vin', 78],
             ['lorem', 'ipsum', 'dolar sit', 98.5]
         ])
-            ('sets that target temperature %s %s %s %s', async (expectedAccessToken, expectedDeviceId, expectedVin, expectedTargetTemperature) => {
+            ('sets that target temperature `%s` `%s` `%s` `%s`', async (expectedAccessToken, expectedDeviceId, expectedVin, expectedTargetTemperature) => {
                 // Arrange.
                 const mockCommandIceVehicleService = createMock<CommandIceVehicleService>()
 
@@ -561,7 +561,7 @@ describe('JLR Internal Combustion Engine Vehicle Remote Control', () => {
             ['access token', 'device Id', 'VIN'],
             ['fake access token', 'fake device Id', 'fake VIN'],
             ['proper, innit', 'proper device Id', 'Vin Diesel']])
-            ('uses expected credentials to get vehicle information %s %s %s %s', async (expectedAccessToken, expectedDeviceId, expectedVin) => {
+            ('uses expected credentials to get vehicle information `%s` `%s` `%s` `%s`', async (expectedAccessToken, expectedDeviceId, expectedVin) => {
                 // Arrange.
                 const mockQueryVehicleInformationService = createMock<QueryVehicleInformationService>()
 
