@@ -441,5 +441,21 @@ describe('JLR Internal Combustion Engine Vehicle Remote Control', () => {
         })
     })
 
-    describe('Get engine state', () => { })
+    describe('Get engine state', () => {
+        test.skip('returns expected engine state', () => { })
+    })
+
+    describe('Turn on climate control', () => {
+        test.skip('turns on the engine', () => { })
+        test.skip('puts the vehicle into provisioning mode', () => { })
+        test.skip('sets that target temperature', () => { })
+    })
+
+    describe('Turn off climate control', () => {
+        test.skip('turns off the engine', () => { })
+    })
+
+    describe('Is climate control on', () => {
+        test.skip('returns expected climate status', () => { })
+    })
 })
