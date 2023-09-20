@@ -45,17 +45,15 @@ class JlrInternalCombustionEngineVehicleRemoteControl implements InternalCombust
     turnOnEngine = async (): Promise<void> => {
         const accessToken = await this.vehicleRemoteAuthenticator.getAccessToken()
         const commandToken = await this.commandAuthenticationService.getReonToken(accessToken, this.deviceId, this.vin, this.userId, this.userPin)
-        const reonToken = commandToken.token
 
-        await this.commandIceVehicleService.remoteEngineStart(accessToken, this.deviceId, this.vin, reonToken)
+        await this.commandIceVehicleService.remoteEngineStart(accessToken, this.deviceId, this.vin, commandToken.token)
     }
 
     turnOffEngine = async (): Promise<void> => {
         const accessToken = await this.vehicleRemoteAuthenticator.getAccessToken()
         const commandToken = await this.commandAuthenticationService.getReoffToken(accessToken, this.deviceId, this.vin, this.userId, this.userPin)
-        const reoffToken = commandToken.token
 
-        await this.commandIceVehicleService.remoteEngineStop(accessToken, this.deviceId, this.vin, reoffToken)
+        await this.commandIceVehicleService.remoteEngineStop(accessToken, this.deviceId, this.vin, commandToken.token)
     }
 
     isEngineOn = (): Promise<boolean> => {
