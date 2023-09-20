@@ -1111,7 +1111,27 @@ describe('JLR Electric Vehicle Remote Control', () => {
                     expect.any(String))
             })
 
-        test.skip('uses deviceId %s', () => { })
+        test.each(['device id', 'another device id', 'not a real device id'])
+            ('uses the device Id `%s`', async (expectedDeviceId) => {
+                // Arrange
+                const mockQueryVehicleInformationService = createMock<QueryVehicleInformationService>()
+
+                const builder = new JlrElectricVehicleRemoteControlBuilder()
+                builder.deviceId = expectedDeviceId
+                builder.queryVehicleInformationService = mockQueryVehicleInformationService
+
+                const remote = builder.build()
+
+                // Act
+                await remote.isClimateControlOn()
+
+                // Assert
+                expect(mockQueryVehicleInformationService.getVehicleStatusV3).toHaveBeenCalledWith(
+                    expect.any(String),
+                    expectedDeviceId,
+                    expect.any(String))
+            })
+
         test.skip('uses VIN %s', () => { })
         test.skip('returns expected climate control state %s %s', () => { })
     })
