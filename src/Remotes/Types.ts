@@ -64,7 +64,7 @@ type CoreVehicleStatus = {
     PAS_SEAT_SECOND_ROW_STATUS: string,
     TU_STATUS_BUTTONS: string,
     PAS_SEAT_THIRD_ROW_STATUS: string,
-    VEHICLE_STATE_TYPE: string,
+    VEHICLE_STATE_TYPE: 'KEY_REMOVED' | 'KEY_ON_ENGINE_OFF' | 'KEY_ON_ENGINE_ON' | string,
     DOOR_ENGINE_HOOD_LOCK_STATUS: JlrLockState,
     TYRE_STATUS_FRONT_RIGHT: string,
     PRIVACY_SWITCH: string,

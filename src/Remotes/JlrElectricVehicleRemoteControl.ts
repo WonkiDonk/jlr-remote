@@ -20,6 +20,13 @@ class JlrElectricVehicleRemoteControl implements ElectricVehicleRemoteControl {
         private readonly vehicleStatusMapper: VehicleStatusMapper) { }
 
 
+    private async getCurrentVehicleStatus() {
+        const accessToken = await this.vehicleRemoteAuthenticator.getAccessToken();
+        const serviceStatus = await this.queryVehicleInformationService.getVehicleStatusV3(accessToken, this.deviceId, this.vin);
+
+        return this.vehicleStatusMapper.map(serviceStatus);
+    }
+
     turnOnClimateControl = async (targetTemperature: number): Promise<void> => {
         const accessToken = await this.vehicleRemoteAuthenticator.getAccessToken()
         const commandToken = await this.commandAuthenticationService.getEccToken(accessToken, this.deviceId, this.vin, this.userId, this.lastFourOfVin)
@@ -35,9 +42,7 @@ class JlrElectricVehicleRemoteControl implements ElectricVehicleRemoteControl {
     }
 
     isClimateControlOn = async (): Promise<boolean> => {
-        const accessToken = await this.vehicleRemoteAuthenticator.getAccessToken()
-        const serviceStatus = await this.queryVehicleInformationService.getVehicleStatusV3(accessToken, this.deviceId, this.vin)
-        const status = this.vehicleStatusMapper.map(serviceStatus)
+        const status = await this.getCurrentVehicleStatus();
 
         return status.vehicleStatus.core.CLIMATE_STATUS_OPERATING_STATUS === 'HEATING'
     }
@@ -57,10 +62,7 @@ class JlrElectricVehicleRemoteControl implements ElectricVehicleRemoteControl {
     }
 
     getChargeState = async (): Promise<ChargeState> => {
-        const accessToken = await this.vehicleRemoteAuthenticator.getAccessToken()
-        const serviceStatus = await this.queryVehicleInformationService.getVehicleStatusV3(accessToken, this.deviceId, this.vin)
-        const status: CurrentVehicleStatus = this.vehicleStatusMapper.map(serviceStatus)
-
+        const status = await this.getCurrentVehicleStatus()
         const chargeLevel = parseInt(status.vehicleStatus.ev.EV_STATE_OF_CHARGE)
 
         return {
