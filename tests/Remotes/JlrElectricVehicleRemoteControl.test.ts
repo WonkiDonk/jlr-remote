@@ -849,7 +849,27 @@ describe('JLR Electric Vehicle Remote Control', () => {
                     expect.any(Number))
             })
 
-        test.skip('uses temperature', () => { })
+        test.each([[1, 10], [2, 20], [1.5, 15]])
+            ('uses target temperature %s x 10', async (targetTemperature, expectedTargetTemperature) => {
+                // Arrange
+                const mockCommandElectricVehicleService = createMock<CommandElectricVehicleService>()
+
+                const builder = new JlrElectricVehicleRemoteControlBuilder()
+                builder.commandElectricVehicleService = mockCommandElectricVehicleService
+
+                const remote = builder.build()
+
+                // Act
+                await remote.turnOnClimateControl(targetTemperature)
+
+                // Assert
+                expect(mockCommandElectricVehicleService.startClimatePreconditioning).toHaveBeenCalledWith(
+                    expect.any(String),
+                    expect.any(String),
+                    expect.any(String),
+                    expect.any(String),
+                    expectedTargetTemperature)
+            })
     })
 
     describe('Turn off climate control', () => {

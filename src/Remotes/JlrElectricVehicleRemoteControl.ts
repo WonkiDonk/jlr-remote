@@ -24,7 +24,7 @@ class JlrElectricVehicleRemoteControl implements ElectricVehicleRemoteControl {
         const accessToken = await this.vehicleRemoteAuthenticator.getAccessToken()
         const commandToken = await this.commandAuthenticationService.getEccToken(accessToken, this.deviceId, this.vin, this.userId, this.lastFourOfVin)
 
-        await this.commandElectricVehicleService.startClimatePreconditioning(accessToken, this.deviceId, this.vin, commandToken.token, 0)
+        await this.commandElectricVehicleService.startClimatePreconditioning(accessToken, this.deviceId, this.vin, commandToken.token, targetTemperature * 10)
     }
 
     turnOffClimateControl = (): Promise<void> => {
