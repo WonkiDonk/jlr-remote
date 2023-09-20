@@ -1088,7 +1088,29 @@ describe('JLR Electric Vehicle Remote Control', () => {
     })
 
     describe('Is climate control on?', () => {
-        test.skip('uses access token %s', () => { })
+        test.each(['some token', 'another token', 'not a real token'])
+            ('uses access token `%s`', async (expectedAccessToken) => {
+                // Arrange
+                const mockQueryVehicleInformationService = createMock<QueryVehicleInformationService>()
+                const mockVehicleRemoteAuthenticator = createMock<VehicleRemoteAuthenticator>()
+                mockVehicleRemoteAuthenticator.getAccessToken = jest.fn(() => Promise.resolve(expectedAccessToken))
+
+                const builder = new JlrElectricVehicleRemoteControlBuilder()
+                builder.vehicleRemoteAuthenticator = mockVehicleRemoteAuthenticator
+                builder.queryVehicleInformationService = mockQueryVehicleInformationService
+
+                const remote = builder.build()
+
+                // Act
+                await remote.isClimateControlOn()
+
+                // Assert
+                expect(mockQueryVehicleInformationService.getVehicleStatusV3).toHaveBeenCalledWith(
+                    expectedAccessToken,
+                    expect.any(String),
+                    expect.any(String))
+            })
+
         test.skip('uses deviceId %s', () => { })
         test.skip('uses VIN %s', () => { })
         test.skip('returns expected climate control state %s %s', () => { })

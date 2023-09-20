@@ -34,8 +34,11 @@ class JlrElectricVehicleRemoteControl implements ElectricVehicleRemoteControl {
         await this.commandElectricVehicleService.stopClimatePreconditioning(accessToken, this.deviceId, this.vin, commandToken.token)
     }
 
-    isClimateControlOn = (): Promise<boolean> => {
-        throw new Error('Not implemented.')
+    isClimateControlOn = async (): Promise<boolean> => {
+        const accessToken = await this.vehicleRemoteAuthenticator.getAccessToken()
+        await this.queryVehicleInformationService.getVehicleStatusV3(accessToken, '', '')
+
+        return false
     }
 
     startCharging = async (): Promise<void> => {
