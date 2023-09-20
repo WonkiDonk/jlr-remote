@@ -2,7 +2,7 @@ import { CommandAuthenticationService } from '../Authentication/CommandAuthentic
 import { CommandIceVehicleService } from '../Services/CommandIceVehicleService'
 import { QueryVehicleInformationService } from '../Services/QueryVehicleInformationService'
 import { VehicleStatusMapper } from './Mappers'
-import { InternalCombustionEngineVehicleRemoteControl } from './Types'
+import { CurrentVehicleStatus, InternalCombustionEngineVehicleRemoteControl } from './Types'
 import { VehicleRemoteAuthenticator } from './Types'
 
 class JlrInternalCombustionEngineVehicleRemoteControl implements InternalCombustionEngineVehicleRemoteControl {
@@ -20,6 +20,13 @@ class JlrInternalCombustionEngineVehicleRemoteControl implements InternalCombust
         private readonly vehicleStatusMapper: VehicleStatusMapper,
         ) { }
 
+    private getCurrentVehicleStatus = async () => {
+        const accessToken = await this.vehicleRemoteAuthenticator.getAccessToken()
+        const serviceStatus = await this.queryVehicleInformationService.getVehicleStatusV3(accessToken, this.deviceId, this.vin)
+        
+        return this.vehicleStatusMapper.map(serviceStatus)
+    }
+
     turnOnClimateControl = async (targetTemperature: number): Promise<void> => {
         await this.turnOnEngine()
 
@@ -35,9 +42,7 @@ class JlrInternalCombustionEngineVehicleRemoteControl implements InternalCombust
     }
 
     isClimateControlOn = async (): Promise<boolean> => {
-        const accessToken = await this.vehicleRemoteAuthenticator.getAccessToken()
-        const serviceStatus = await this.queryVehicleInformationService.getVehicleStatusV3(accessToken, this.deviceId, this.vin)
-        const status = this.vehicleStatusMapper.map(serviceStatus)
+        const status = await this.getCurrentVehicleStatus()
 
         return status.vehicleStatus.core.CLIMATE_STATUS_OPERATING_STATUS === 'HEATING'
     }
@@ -56,8 +61,10 @@ class JlrInternalCombustionEngineVehicleRemoteControl implements InternalCombust
         await this.commandIceVehicleService.remoteEngineStop(accessToken, this.deviceId, this.vin, commandToken.token)
     }
 
-    isEngineOn = (): Promise<boolean> => {
-        throw new Error('Not implemented.')
+    isEngineOn = async (): Promise<boolean> => {
+        const status = await this.getCurrentVehicleStatus()
+
+        return status.vehicleStatus.core.VEHICLE_STATE_TYPE === 'KEY_ON_ENGINE_ON'
     }
 }
 

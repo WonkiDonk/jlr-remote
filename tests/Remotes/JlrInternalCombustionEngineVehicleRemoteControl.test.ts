@@ -445,7 +445,63 @@ describe('JLR Internal Combustion Engine Vehicle Remote Control', () => {
     })
 
     describe('Get engine state', () => {
-        test.skip('returns expected engine state', () => { })
+        test.each([
+            ['access token', 'device Id', 'VIN'],
+            ['fake access token', 'fake device Id', 'fake VIN'],
+            ['proper, innit', 'proper device Id', 'Vin Diesel']])
+            ('uses expected credentials to get vehicle information `%s` `%s` `%s` `%s`', async (expectedAccessToken, expectedDeviceId, expectedVin) => {
+                // Arrange.
+                const mockQueryVehicleInformationService = createMock<QueryVehicleInformationService>()
+
+                const mockVehicleRemoteAuthenticator = createMock<VehicleRemoteAuthenticator>()
+                mockVehicleRemoteAuthenticator.getAccessToken = jest.fn(() => Promise.resolve(expectedAccessToken))
+
+                const builder = new JlrInternalCombustionEngineVehicleRemoteControlBuilder()
+                builder.vehicleRemoteAuthenticator = mockVehicleRemoteAuthenticator
+                builder.queryVehicleInformationService = mockQueryVehicleInformationService
+                builder.deviceId = expectedDeviceId
+                builder.vin = expectedVin
+
+                const remote = builder.build()
+
+                // Act.
+                await remote.isEngineOn()
+
+                // Assert.
+                expect(mockQueryVehicleInformationService.getVehicleStatusV3).toHaveBeenCalledWith(
+                    expectedAccessToken,
+                    expectedDeviceId,
+                    expectedVin)
+            })
+
+        test.each([
+            ['KEY_ON_ENGINE_ON', true],
+            ['KEY_REMOVED', false],
+            ['KEY_ON_ENGINE_OFF', false]
+        ])('returns expected engine status', async (vehicle_state_type, expectIsEngineOn) => {
+            // Arrange
+            const serviceStatus = createMock<CurrentVehicleStatusV3>()
+            const mappedStatus = createMock<CurrentVehicleStatus>()
+            const mockVehicleStatusMapper = createMock<VehicleStatusMapper>()
+
+            mappedStatus.vehicleStatus.core.VEHICLE_STATE_TYPE = vehicle_state_type
+            mockVehicleStatusMapper.map = jest.fn(() => mappedStatus)
+
+            const mockQueryVehicleInformationService = createMock<QueryVehicleInformationService>()
+            mockQueryVehicleInformationService.getVehicleStatusV3 = jest.fn(() => Promise.resolve(serviceStatus))
+
+            const builder = new JlrInternalCombustionEngineVehicleRemoteControlBuilder()
+            builder.queryVehicleInformationService = mockQueryVehicleInformationService
+            builder.vehicleStatusMapper = mockVehicleStatusMapper
+
+            const remote = builder.build()
+
+            // Act
+            const isEngineOn = await remote.isEngineOn()
+
+            // Assert
+            expect(isEngineOn).toBe(expectIsEngineOn)
+        })
     })
 
     describe('Turn on climate control', () => {
