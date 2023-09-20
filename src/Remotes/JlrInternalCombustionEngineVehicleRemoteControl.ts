@@ -1,5 +1,7 @@
 import { CommandAuthenticationService } from '../Authentication/CommandAuthenticationService'
 import { CommandIceVehicleService } from '../Services/CommandIceVehicleService'
+import { QueryVehicleInformationService } from '../Services/QueryVehicleInformationService'
+import { VehicleStatusMapper } from './Mappers'
 import { InternalCombustionEngineVehicleRemoteControl } from './Types'
 import { VehicleRemoteAuthenticator } from './Types'
 
@@ -13,18 +15,31 @@ class JlrInternalCombustionEngineVehicleRemoteControl implements InternalCombust
         private readonly userPin: string,
         private readonly vehicleRemoteAuthenticator: VehicleRemoteAuthenticator,
         private readonly commandIceVehicleService: CommandIceVehicleService,
-        private readonly commandAuthenticationService: CommandAuthenticationService) { }
+        private readonly commandAuthenticationService: CommandAuthenticationService,
+        private readonly queryVehicleInformationService: QueryVehicleInformationService,
+        private readonly vehicleStatusMapper: VehicleStatusMapper,
+        ) { }
 
-    turnOnClimateControl = (targetTemperature: number): Promise<void> => {
-        throw new Error('Not implemented.')
+    turnOnClimateControl = async (targetTemperature: number): Promise<void> => {
+        await this.turnOnEngine()
+
+        const accessToken = await this.vehicleRemoteAuthenticator.getAccessToken()
+        const commandToken = await this.commandAuthenticationService.getProvToken(accessToken, this.deviceId, this.vin, this.userId, this.userPin)
+
+        await this.commandIceVehicleService.enableProvisioningMode(accessToken, this.deviceId, this.vin, commandToken.token)
+        await this.commandIceVehicleService.setRemoteClimateControlTargetTemperature(accessToken, this.deviceId, this.vin, targetTemperature)
     }
 
-    turnOffClimateControl = (): Promise<void> => {
-        throw new Error('Not implemented.')
+    turnOffClimateControl = async (): Promise<void> => {
+        await this.turnOffEngine()
     }
 
-    isClimateControlOn = (): Promise<boolean> => {
-        throw new Error('Not implemented.')
+    isClimateControlOn = async (): Promise<boolean> => {
+        const accessToken = await this.vehicleRemoteAuthenticator.getAccessToken()
+        const serviceStatus = await this.queryVehicleInformationService.getVehicleStatusV3(accessToken, this.deviceId, this.vin)
+        const status = this.vehicleStatusMapper.map(serviceStatus)
+
+        return status.vehicleStatus.core.CLIMATE_STATUS_OPERATING_STATUS === 'HEATING'
     }
 
     turnOnEngine = async (): Promise<void> => {

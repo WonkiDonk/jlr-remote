@@ -1,8 +1,11 @@
 import { createMock } from 'ts-auto-mock'
 import { CommandIceVehicleService } from '../../src/Services/CommandIceVehicleService'
-import { VehicleRemoteAuthenticator } from '../../src/Remotes/Types'
+import { VehicleRemoteAuthenticator, CurrentVehicleStatus } from '../../src/Remotes/Types'
 import { CommandAuthenticationService } from '../../src/Authentication/CommandAuthenticationService'
 import { JlrInternalCombustionEngineVehicleRemoteControlBuilder } from './JlrInternalCombustionEngineVehicleRemote.builder'
+import { CurrentVehicleStatusV3 } from '../../src/JaguarLandRover/ServiceTypes'
+import { VehicleStatusMapper } from '../../src/Remotes/Mappers'
+import { QueryVehicleInformationService } from '../../src/Services/QueryVehicleInformationService'
 
 describe('JLR Internal Combustion Engine Vehicle Remote Control', () => {
     describe('Turn on engine', () => {
@@ -446,16 +449,169 @@ describe('JLR Internal Combustion Engine Vehicle Remote Control', () => {
     })
 
     describe('Turn on climate control', () => {
-        test.skip('turns on the engine', () => { })
-        test.skip('puts the vehicle into provisioning mode', () => { })
-        test.skip('sets that target temperature', () => { })
+        test('turns on the engine', async () => {
+            // Arrange.
+            const mockCommandIceVehicleService = createMock<CommandIceVehicleService>()
+
+            const builder = new JlrInternalCombustionEngineVehicleRemoteControlBuilder()
+            builder.commandIceVehicleService = mockCommandIceVehicleService
+
+            const remote = builder.build()
+
+            // Act.
+            await remote.turnOnClimateControl(0)
+
+            // Assert.
+            expect(mockCommandIceVehicleService.remoteEngineStart).toHaveBeenCalledTimes(1)
+        })
+
+        test.each([
+            ['access token', 'device id', 'vin', 'user id', 'user PIN', 'prov token'],
+            ['another token', 'a new device id', 'vin diesel', 'user identity', 'user brooche', 'different prov token'],
+            ['not even a token', 'identifier', 'vehicle identification number', 'user identifier', 'user safety pin', 'provisioning token']])
+            ('puts the vehicle into provisioning mode %s %s %s %s %s %s', async (expectedAccessToken, expectedDeviceId, expectedVin, expectedUserId, expectedUserPin, expectedProvToken) => {
+                // Arrange.
+                const mockCommandIceVehicleService = createMock<CommandIceVehicleService>()
+
+                const mockAuthenticationService = createMock<VehicleRemoteAuthenticator>()
+                mockAuthenticationService.getAccessToken = jest.fn(() => Promise.resolve(expectedAccessToken))
+
+                const mockCommandAuthenticationService = createMock<CommandAuthenticationService>()
+                mockCommandAuthenticationService.getProvToken = jest.fn((accessToken, deviceId, vin, userId, userPin) => {
+                    const token = (accessToken === expectedAccessToken && deviceId === expectedDeviceId && vin === expectedVin && userId === expectedUserId && userPin === expectedUserPin)
+                        ? expectedProvToken
+                        : 'invalid token'
+                    return Promise.resolve({ token })
+                })
+
+                const builder = new JlrInternalCombustionEngineVehicleRemoteControlBuilder()
+                builder.vehicleRemoteAuthenticator = mockAuthenticationService
+                builder.commandAuthenticationService = mockCommandAuthenticationService
+                builder.commandIceVehicleService = mockCommandIceVehicleService
+                builder.deviceId = expectedDeviceId
+                builder.vin = expectedVin
+                builder.userId = expectedUserId
+                builder.userPin = expectedUserPin
+
+                const remote = builder.build()
+
+                // Act.
+                await remote.turnOnClimateControl(1)
+
+                // Assert.
+                expect(mockCommandIceVehicleService.enableProvisioningMode).toHaveBeenCalledWith(
+                    expectedAccessToken,
+                    expectedDeviceId,
+                    expectedVin,
+                    expectedProvToken)
+            })
+
+        test.each([
+            ['expected access token', 'expected device id', 'expected vin', 32],
+            ['access token', 'device id', 'vin', 78],
+            ['lorem', 'ipsum', 'dolar sit', 98.5]
+        ])
+            ('sets that target temperature %s %s %s %s', async (expectedAccessToken, expectedDeviceId, expectedVin, expectedTargetTemperature) => {
+                // Arrange.
+                const mockCommandIceVehicleService = createMock<CommandIceVehicleService>()
+
+                const mockAuthenticationService = createMock<VehicleRemoteAuthenticator>()
+                mockAuthenticationService.getAccessToken = jest.fn(() => Promise.resolve(expectedAccessToken))
+
+                const builder = new JlrInternalCombustionEngineVehicleRemoteControlBuilder()
+                builder.vehicleRemoteAuthenticator = mockAuthenticationService
+                builder.commandIceVehicleService = mockCommandIceVehicleService
+                builder.deviceId = expectedDeviceId
+                builder.vin = expectedVin
+
+                const remote = builder.build()
+
+                // Act.
+                await remote.turnOnClimateControl(expectedTargetTemperature)
+
+                // Assert.
+                expect(mockCommandIceVehicleService.setRemoteClimateControlTargetTemperature).toBeCalledWith(
+                    expectedAccessToken,
+                    expectedDeviceId,
+                    expectedVin,
+                    expectedTargetTemperature)
+            })
     })
 
     describe('Turn off climate control', () => {
-        test.skip('turns off the engine', () => { })
+        test('turns off the engine', async () => {
+            // Arrange.
+            const mockCommandIceVehicleService = createMock<CommandIceVehicleService>()
+
+            const builder = new JlrInternalCombustionEngineVehicleRemoteControlBuilder()
+            builder.commandIceVehicleService = mockCommandIceVehicleService
+
+            const remote = builder.build()
+
+            // Act.
+            await remote.turnOffClimateControl()
+
+            // Assert.
+            expect(mockCommandIceVehicleService.remoteEngineStop).toHaveBeenCalledTimes(1)
+        })
     })
 
     describe('Is climate control on', () => {
-        test.skip('returns expected climate status', () => { })
+        test.each([
+            ['access token', 'device Id', 'VIN'],
+            ['fake access token', 'fake device Id', 'fake VIN'],
+            ['proper, innit', 'proper device Id', 'Vin Diesel']])
+            ('uses expected credentials to get vehicle information %s %s %s %s', async (expectedAccessToken, expectedDeviceId, expectedVin) => {
+                // Arrange.
+                const mockQueryVehicleInformationService = createMock<QueryVehicleInformationService>()
+
+                const mockVehicleRemoteAuthenticator = createMock<VehicleRemoteAuthenticator>()
+                mockVehicleRemoteAuthenticator.getAccessToken = jest.fn(() => Promise.resolve(expectedAccessToken))
+
+                const builder = new JlrInternalCombustionEngineVehicleRemoteControlBuilder()
+                builder.vehicleRemoteAuthenticator = mockVehicleRemoteAuthenticator
+                builder.queryVehicleInformationService = mockQueryVehicleInformationService
+                builder.deviceId = expectedDeviceId
+                builder.vin = expectedVin
+
+                const remote = builder.build()
+
+                // Act.
+                await remote.isClimateControlOn()
+
+                // Assert.
+                expect(mockQueryVehicleInformationService.getVehicleStatusV3).toHaveBeenCalledWith(
+                    expectedAccessToken,
+                    expectedDeviceId,
+                    expectedVin)
+            })
+
+        test.each([
+            ['HEATING', true],
+            ['OFF', false]
+        ])('returns expected climate status', async (climate_status_operating_status, expectedIsClimateControlOn) => {
+            // Arrange
+            const serviceStatus = createMock<CurrentVehicleStatusV3>()
+            const mappedStatus = createMock<CurrentVehicleStatus>()
+            const mockVehicleStatusMapper = createMock<VehicleStatusMapper>()
+
+            mappedStatus.vehicleStatus.core.CLIMATE_STATUS_OPERATING_STATUS = climate_status_operating_status
+            mockVehicleStatusMapper.map = jest.fn(() => mappedStatus)
+
+            const mockQueryVehicleInformationService = createMock<QueryVehicleInformationService>()
+            mockQueryVehicleInformationService.getVehicleStatusV3 = jest.fn(() => Promise.resolve(serviceStatus))
+
+            const builder = new JlrInternalCombustionEngineVehicleRemoteControlBuilder()
+            builder.queryVehicleInformationService = mockQueryVehicleInformationService
+            builder.vehicleStatusMapper = mockVehicleStatusMapper
+
+            const remote = builder.build()
+
+            // Act
+            const isClimateControlOn = await remote.isClimateControlOn()
+
+            // Assert
+            expect(isClimateControlOn).toBe(expectedIsClimateControlOn)
+        })
     })
 })
