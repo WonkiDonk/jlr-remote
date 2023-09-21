@@ -28,7 +28,6 @@ class JlrVehicleRemoteBuilder implements VehicleRemoteBuilder {
         private readonly deviceId: string,
         private readonly userId: string,
         private readonly userPin: string,
-        private readonly lastFourOfVin: string,
         private readonly vehicleRemoteAuthenticator: VehicleRemoteAuthenticator,
         private readonly commandVehicleService: CommandVehicleService,
         private readonly commandElectricVehicleService: CommandElectricVehicleService,
@@ -38,12 +37,14 @@ class JlrVehicleRemoteBuilder implements VehicleRemoteBuilder {
         private readonly vehicleStatusMapper: VehicleStatusMapper
     ) { }
 
+    private getLastFourOfVin = (vin: string): string => vin.slice(vin.length - 4)
+
     private buildElectricVehicleRemoteControl = (vin: string): ElectricVehicleRemoteControl =>
         new JlrElectricVehicleRemoteControl(
             this.deviceId,
             vin,
             this.userId,
-            this.lastFourOfVin,
+            this.getLastFourOfVin(vin),
             this.vehicleRemoteAuthenticator,
             this.commandElectricVehicleService,
             this.commandAuthenticationService,
@@ -69,7 +70,7 @@ class JlrVehicleRemoteBuilder implements VehicleRemoteBuilder {
             this.deviceId,
             vin,
             this.userId,
-            this.lastFourOfVin,
+            this.getLastFourOfVin(vin),
             this.userPin,
             this.vehicleRemoteAuthenticator,
             this.commandAuthenticationService,
@@ -89,7 +90,7 @@ class JlrVehicleRemoteBuilder implements VehicleRemoteBuilder {
 
     private buildFrom<T>(vin: string, ...builders: Builder[]): T {
         let construct = {}
-        
+
         builders.forEach(builder => {
             const remote = builder(vin)
             construct = { ...construct, remote }
@@ -98,7 +99,7 @@ class JlrVehicleRemoteBuilder implements VehicleRemoteBuilder {
         return construct as T
     }
 
-    private buildElectricVehicleRemote = (vin: string): ElectricVehicleRemote => 
+    private buildElectricVehicleRemote = (vin: string): ElectricVehicleRemote =>
         this.buildFrom(
             vin,
             this.buildVehicleRemoteInformation,
@@ -118,7 +119,7 @@ class JlrVehicleRemoteBuilder implements VehicleRemoteBuilder {
         type === 'EV'
             ? this.buildElectricVehicleRemote(vin)
             : this.buildInternalCombustionEngineVehicleRemote(vin)
-    
+
 }
 
 export { JlrVehicleRemoteBuilder }

@@ -17,7 +17,6 @@ type JlrVehicleGarageConfig = {
     userId: string,
     userName: string,
     userPin: string,
-    vin: string,
 }
 
 class JlrVehicleGarage implements VehicleGarage {
@@ -38,7 +37,6 @@ class JlrVehicleGarage implements VehicleGarage {
             config.deviceId,
             config.userId,
             config.userPin,
-            this.getLastFourOfVin(config.vin),
             this.vehicleRemoteAuthenticator,
             commandVehicleService,
             commandElectricVehicleService,
@@ -48,8 +46,6 @@ class JlrVehicleGarage implements VehicleGarage {
             vehicleStatusMapper
         )
     }
-
-    private getLastFourOfVin = (vin: string): string => vin
 
     getVehicles = async (): Promise<Vehicle[]> => {
         this.vehicles.clear()
