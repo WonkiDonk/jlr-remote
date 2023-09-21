@@ -1,10 +1,15 @@
 import { authenticationService } from '../Authentication/AuthenticationService'
+import { commandAuthenticationService } from '../Authentication/CommandAuthenticationService'
+import { commandElectricVehicleService } from '../Services/CommandElectricVehicleService'
+import { commandIceVehicleService } from '../Services/CommandIceVehicleService'
+import { commandVehicleService } from '../Services/CommandVehicleService'
 import { queryUserInformationService } from '../Services/QueryUserInformationService'
 import { queryVehicleInformationService } from '../Services/QueryVehicleInformationService'
-import { JlrRemoteAuthenticationCache } from './JlrVehicleRemoteAuthenticationCache'
+import { JlrVehicleRemoteAuthenticationCache } from './JlrVehicleRemoteAuthenticationCache'
 import { JlrVehicleRemoteAuthenticator } from './JlrVehicleRemoteAuthenticator'
 import { JlrVehicleRemoteBuilder } from './JlrVehicleRemoteBuilder'
-import { Vehicle, VehicleGarage, VehicleRemote, VehicleRemoteAuthenticator, VehicleRemoteBuilder} from './Types'
+import { vehicleStatusMapper } from './Mappers'
+import { Vehicle, VehicleGarage, VehicleRemote, VehicleRemoteAuthenticator, VehicleRemoteBuilder } from './Types'
 
 type JlrVehicleGarageConfig = {
     deviceId: string,
@@ -12,22 +17,39 @@ type JlrVehicleGarageConfig = {
     userId: string,
     userName: string,
     userPin: string,
+    vin: string,
 }
 
 class JlrVehicleGarage implements VehicleGarage {
-    private readonly vehicleRemoteAuthenticator: VehicleRemoteAuthenticator 
+    private readonly vehicleRemoteAuthenticator: VehicleRemoteAuthenticator
     private readonly vehicleRemoteBuilder: VehicleRemoteBuilder
     private readonly vehicles: Map<string, Vehicle> = new Map<string, Vehicle>()
-    
+
     constructor(private readonly config: JlrVehicleGarageConfig) {
         this.vehicleRemoteAuthenticator = new JlrVehicleRemoteAuthenticator(
             config.deviceId,
             config.userName,
             config.password,
             authenticationService,
-            new JlrRemoteAuthenticationCache())
-        this.vehicleRemoteBuilder = new JlrVehicleRemoteBuilder()
+            new JlrVehicleRemoteAuthenticationCache()
+        )
+
+        this.vehicleRemoteBuilder = new JlrVehicleRemoteBuilder(
+            config.deviceId,
+            config.userId,
+            config.userPin,
+            this.getLastFourOfVin(config.vin),
+            this.vehicleRemoteAuthenticator,
+            commandVehicleService,
+            commandElectricVehicleService,
+            commandIceVehicleService,
+            commandAuthenticationService,
+            queryVehicleInformationService,
+            vehicleStatusMapper
+        )
     }
+
+    private getLastFourOfVin = (vin: string): string => vin
 
     getVehicles = async (): Promise<Vehicle[]> => {
         this.vehicles.clear()

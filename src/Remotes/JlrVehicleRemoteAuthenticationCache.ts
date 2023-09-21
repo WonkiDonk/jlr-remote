@@ -1,6 +1,6 @@
 import { VehicleRemoteAuthenticationCache, CachedAuthentication } from "./Types";
 
-class JlrRemoteAuthenticationCache implements VehicleRemoteAuthenticationCache {
+class JlrVehicleRemoteAuthenticationCache implements VehicleRemoteAuthenticationCache {
     private timerId?: NodeJS.Timeout
     private accessToken?: string
 
@@ -25,4 +25,4 @@ class JlrRemoteAuthenticationCache implements VehicleRemoteAuthenticationCache {
     }
 }
 
-export { JlrRemoteAuthenticationCache }
+export { JlrVehicleRemoteAuthenticationCache }
