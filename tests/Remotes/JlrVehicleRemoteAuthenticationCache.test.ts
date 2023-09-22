@@ -1,4 +1,4 @@
-import { JlrRemoteAuthenticationCache } from '../../src/Remotes/JlrVehicleRemoteAuthenticationCache'
+import { JlrVehicleRemoteAuthenticationCache } from '../../src/Remotes/JlrVehicleRemoteAuthenticationCache'
 
 const testCases: [string, number][] = [
     ['a', 1],
@@ -21,7 +21,7 @@ describe('JLR Remote Authentication Cache', () => {
             ['another token', Number.NaN]])
             ('does not cache when expiresIn is negative or NaN (token: `%s`, expiresIs: `%s`)', (accessToken, expiresIn) => {
                 // Arrange.
-                const authenticationCache = new JlrRemoteAuthenticationCache()
+                const authenticationCache = new JlrVehicleRemoteAuthenticationCache()
 
                 // Act.
                 authenticationCache.cacheAuthentication(accessToken, expiresIn)
@@ -29,11 +29,11 @@ describe('JLR Remote Authentication Cache', () => {
                 // Assert.
                 expect(setTimeout).toBeCalledTimes(0)
             })
-        
+
         test.each(testCases)
             ('sets timeout to clear cache', (accessToken, expiresIn) => {
                 // Arrange.
-                const authenticationCache = new JlrRemoteAuthenticationCache()
+                const authenticationCache = new JlrVehicleRemoteAuthenticationCache()
 
                 // Act.
                 authenticationCache.cacheAuthentication(accessToken, expiresIn)
@@ -41,11 +41,11 @@ describe('JLR Remote Authentication Cache', () => {
                 // Assert.
                 expect(setTimeout).toHaveBeenCalledWith(expect.any(Function), expiresIn * 1000)
             })
-        
+
         test.each(testCases)
             ('clears last timeout', (accessToken, expiresIn) => {
                 // Arrange.
-                const authenticationCache = new JlrRemoteAuthenticationCache()
+                const authenticationCache = new JlrVehicleRemoteAuthenticationCache()
 
                 // Act.
                 authenticationCache.cacheAuthentication(accessToken, expiresIn)
@@ -58,7 +58,7 @@ describe('JLR Remote Authentication Cache', () => {
     describe('Get Cached Authentication', () => {
         test('returns expired cache when nothing cached', () => {
             // Arrange.
-            const authenticatorCache = new JlrRemoteAuthenticationCache()
+            const authenticatorCache = new JlrVehicleRemoteAuthenticationCache()
 
             // Act.
             const response = authenticatorCache.getCachedAuthentication()
@@ -70,7 +70,7 @@ describe('JLR Remote Authentication Cache', () => {
         test.each(testCases)
             ('returns cached authentication when cached has not expired', (accessToken, expiresIn) => {
                 // Arrange.
-                const authenticatorCache = new JlrRemoteAuthenticationCache()
+                const authenticatorCache = new JlrVehicleRemoteAuthenticationCache()
                 authenticatorCache.cacheAuthentication(accessToken, expiresIn)
 
                 // Act.
@@ -83,7 +83,7 @@ describe('JLR Remote Authentication Cache', () => {
         test.each(testCases)
             ('returns expired cached when cached item has expired', (accessToken, expiresIn) => {
                 // Arrange.
-                const authenticatorCache = new JlrRemoteAuthenticationCache()
+                const authenticatorCache = new JlrVehicleRemoteAuthenticationCache()
                 authenticatorCache.cacheAuthentication(accessToken, expiresIn)
 
                 // Act.

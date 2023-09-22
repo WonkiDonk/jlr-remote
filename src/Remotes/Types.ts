@@ -296,6 +296,8 @@ type ChargeState = {
     isConnected?: boolean
 }
 
+type VehicleType = 'EV' | 'ICE'
+
 /**
  * Performs remote operations on electric vehicles (EVs).
  */
@@ -399,6 +401,38 @@ type InternalCombustionEngineVehicleRemote = VehicleRemoteInformation
  */
 type VehicleRemote = ElectricVehicleRemote | InternalCombustionEngineVehicleRemote
 
+/**
+ * Vehicle.
+ */
+type Vehicle = {
+    nickname: string,
+    registrationNumber: string,
+    type: 'EV' | 'ICE',
+    vin: string,
+}
+
+/**
+ * Garage for interacting with your vehicles.
+ */
+interface VehicleGarage {
+    /**
+     * Gets the vehicles in your garage.
+     * @returns Promise to return array of Vehicles.
+     */
+    getVehicles: () => Promise<Vehicle[]>,
+
+    /**
+     * Gets a remote for controlling the vehicle with the specific VIN.
+     * @param vin Vehicle Identification Number.
+     * @returns Remote for controlling the vehicle.
+     */
+    getRemoteForVehicle: (vin: string) => Promise<VehicleRemote>
+}
+
+interface VehicleRemoteBuilder {
+    build: (vin: string, type: VehicleType) => VehicleRemote
+}
+
 export {
     ChargeState,
     CurrentVehicleStatus,
@@ -409,9 +443,13 @@ export {
     InternalCombustionEngineVehicleRemote,
     InternalCombustionEngineVehicleRemoteControl,
     LockState,
+    Vehicle,
+    VehicleGarage,
     VehicleRemote,
+    VehicleRemoteBuilder,
     VehicleRemoteAuthenticator,
     VehicleRemoteAuthenticationCache,
     VehicleRemoteControl,
-    VehicleRemoteInformation
+    VehicleRemoteInformation,
+    VehicleType
 }
