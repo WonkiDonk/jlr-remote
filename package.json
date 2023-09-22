@@ -3,12 +3,29 @@
   "version": "0.0.1",
   "description": "Module for interacting with the Jaguar Land Rover Remote API",
   "main": "./dist/index.js",
-  "repository": "https://github.com/WonkiDonk/jlr-remote",
+  "types": "./dist/index.d.ts",
+  "repository": {
+    "url": "https://github.com/WonkiDonk/jlr-remote",
+    "type": "github"
+  },
+  "bugs": {
+    "url": "https://github.com/WonkiDonk/jlr-remote/issues"
+  },
   "author": "William Cowell",
   "license": "MIT",
+  "keywords": [
+    "jaguar",
+    "land rover",
+    "incontrol",
+    "remote",
+    "i-pace",
+    "i pace",
+    "ipace"
+  ],
   "scripts": {
     "test": "jest",
     "build": "tsc",
+    "prepublish": "tsc",
     "auto-test": "jest --watch"
   },
   "devDependencies": {
