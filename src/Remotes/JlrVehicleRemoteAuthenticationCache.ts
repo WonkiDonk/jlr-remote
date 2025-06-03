@@ -1,27 +1,27 @@
-import { VehicleRemoteAuthenticationCache, CachedAuthentication } from "./Types";
+import { AuthenticationResult, CachedAuthentication, ValidAuthentication, VehicleRemoteAuthenticationCache } from "./Types";
 
 class JlrVehicleRemoteAuthenticationCache implements VehicleRemoteAuthenticationCache {
     private timerId?: NodeJS.Timeout
-    private accessToken?: string
+    private authenticationResult?: AuthenticationResult
 
-    private clearCache = () => this.accessToken = undefined
+    private clearCache = () => this.authenticationResult = undefined
     private isValidExpiration = (expiresIn: number) => !Number.isNaN(expiresIn) && expiresIn > 0
 
-    cacheAuthentication = (accessToken: string, expiresIn: number): void => {
+    cacheAuthentication = (details: AuthenticationResult, expiresIn: number): void => {
         if (this.isValidExpiration(expiresIn)) {
             clearTimeout(this.timerId)
             
-            this.accessToken = accessToken
+            this.authenticationResult = details
             this.timerId = setTimeout(this.clearCache, expiresIn * 1000)
         }
     }
 
     getCachedAuthentication = (): CachedAuthentication => {
-        const isExpired = this.accessToken === undefined
+        const isExpired = this.authenticationResult === undefined
 
         return isExpired
             ? { isExpired: true }
-            : { isExpired: false, accessToken: this.accessToken! }
+            : { isExpired: false, details: this.authenticationResult! }
     }
 }
 

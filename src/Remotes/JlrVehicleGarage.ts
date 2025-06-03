@@ -14,14 +14,13 @@ import { Vehicle, VehicleGarage, VehicleRemote, VehicleRemoteAuthenticator, Vehi
 type JlrVehicleGarageConfig = {
     deviceId: string,
     password: string,
-    userId: string,
     userName: string,
     userPin: string,
 }
 
 class JlrVehicleGarage implements VehicleGarage {
     private readonly vehicleRemoteAuthenticator: VehicleRemoteAuthenticator
-    private readonly vehicleRemoteBuilder: VehicleRemoteBuilder
+    private vehicleRemoteBuilder?: VehicleRemoteBuilder
     private readonly vehicles: Map<string, Vehicle> = new Map<string, Vehicle>()
 
     constructor(private readonly config: JlrVehicleGarageConfig) {
@@ -32,11 +31,19 @@ class JlrVehicleGarage implements VehicleGarage {
             authenticationService,
             new JlrVehicleRemoteAuthenticationCache()
         )
+    }
+
+    private getOrCreateVehicleRemoteBuilder = async (): Promise<VehicleRemoteBuilder> => {
+        if (this.vehicleRemoteBuilder) {
+            return this.vehicleRemoteBuilder;
+        }
+
+        const authDetails = await this.vehicleRemoteAuthenticator.authenticateAndGetDetails();
 
         this.vehicleRemoteBuilder = new JlrVehicleRemoteBuilder(
-            config.deviceId,
-            config.userId,
-            config.userPin,
+            this.config.deviceId,
+            authDetails.userId,
+            this.config.userPin,
             this.vehicleRemoteAuthenticator,
             commandVehicleService,
             commandElectricVehicleService,
@@ -44,17 +51,18 @@ class JlrVehicleGarage implements VehicleGarage {
             commandAuthenticationService,
             queryVehicleInformationService,
             vehicleStatusMapper
-        )
+        );
+        return this.vehicleRemoteBuilder;
     }
 
     getVehicles = async (): Promise<Vehicle[]> => {
         this.vehicles.clear()
 
-        const accessToken = await this.vehicleRemoteAuthenticator.getAccessToken()
-        const userVehicles = await queryUserInformationService.getVehiclesForUser(accessToken, this.config.deviceId, this.config.userId)
+        const authDetails = await this.vehicleRemoteAuthenticator.authenticateAndGetDetails();
+        const userVehicles = await queryUserInformationService.getVehiclesForUser(authDetails.accessToken, this.config.deviceId, authDetails.userId);
 
         for (const vehicle of userVehicles.vehicles) {
-            const vehicleAttributes = await queryVehicleInformationService.getVehicleAttributes(accessToken, this.config.deviceId, vehicle.vin)
+            const vehicleAttributes = await queryVehicleInformationService.getVehicleAttributes(authDetails.accessToken, this.config.deviceId, vehicle.vin);
 
             this.vehicles.set(vehicle.vin, {
                 nickname: vehicleAttributes.nickname,
@@ -73,10 +81,11 @@ class JlrVehicleGarage implements VehicleGarage {
         if (this.vehicles.size === 0)
             await this.getVehicles()
 
-        if (this.vehicles.has(vin))
+        if (!this.vehicles.has(vin)) // Corrected logic: throw if vehicle NOT found
             throw new Error(`Vehicle with VIN ${vin} is not found.`)
 
-        return this.vehicleRemoteBuilder.build(vin, this.vehicles.get(vin)!.type)
+        const builder = await this.getOrCreateVehicleRemoteBuilder();
+        return builder.build(vin, this.vehicles.get(vin)!.type)
     }
 }
 

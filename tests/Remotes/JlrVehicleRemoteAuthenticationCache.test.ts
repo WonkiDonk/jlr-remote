@@ -1,5 +1,7 @@
 import { JlrVehicleRemoteAuthenticationCache } from '../../src/Remotes/JlrVehicleRemoteAuthenticationCache'
 
+const defaultTestUserId = "test-user-id";
+
 const testCases: [string, number][] = [
     ['a', 1],
     ['z', 2],
@@ -24,7 +26,7 @@ describe('JLR Remote Authentication Cache', () => {
                 const authenticationCache = new JlrVehicleRemoteAuthenticationCache()
 
                 // Act.
-                authenticationCache.cacheAuthentication(accessToken, expiresIn)
+                authenticationCache.cacheAuthentication({ accessToken, userId: defaultTestUserId }, expiresIn)
 
                 // Assert.
                 expect(setTimeout).toBeCalledTimes(0)
@@ -36,7 +38,7 @@ describe('JLR Remote Authentication Cache', () => {
                 const authenticationCache = new JlrVehicleRemoteAuthenticationCache()
 
                 // Act.
-                authenticationCache.cacheAuthentication(accessToken, expiresIn)
+                authenticationCache.cacheAuthentication({ accessToken, userId: defaultTestUserId }, expiresIn)
 
                 // Assert.
                 expect(setTimeout).toHaveBeenCalledWith(expect.any(Function), expiresIn * 1000)
@@ -48,7 +50,7 @@ describe('JLR Remote Authentication Cache', () => {
                 const authenticationCache = new JlrVehicleRemoteAuthenticationCache()
 
                 // Act.
-                authenticationCache.cacheAuthentication(accessToken, expiresIn)
+                authenticationCache.cacheAuthentication({ accessToken, userId: defaultTestUserId }, expiresIn)
 
                 // Assert.
                 expect(clearTimeout).toHaveBeenCalled()
@@ -71,20 +73,20 @@ describe('JLR Remote Authentication Cache', () => {
             ('returns cached authentication when cached has not expired', (accessToken, expiresIn) => {
                 // Arrange.
                 const authenticatorCache = new JlrVehicleRemoteAuthenticationCache()
-                authenticatorCache.cacheAuthentication(accessToken, expiresIn)
+                authenticatorCache.cacheAuthentication({ accessToken, userId: defaultTestUserId }, expiresIn)
 
                 // Act.
                 const response = authenticatorCache.getCachedAuthentication()
 
                 // Assert.
-                expect(response).toEqual({ isExpired: false, accessToken })
+                expect(response).toEqual({ isExpired: false, details: { accessToken: accessToken, userId: defaultTestUserId } })
             })
 
         test.each(testCases)
             ('returns expired cached when cached item has expired', (accessToken, expiresIn) => {
                 // Arrange.
                 const authenticatorCache = new JlrVehicleRemoteAuthenticationCache()
-                authenticatorCache.cacheAuthentication(accessToken, expiresIn)
+                authenticatorCache.cacheAuthentication({ accessToken, userId: defaultTestUserId }, expiresIn)
 
                 // Act.
                 jest.runAllTimers()
