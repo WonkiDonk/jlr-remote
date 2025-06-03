@@ -193,16 +193,16 @@ type CurrentVehicleStatus = {
  */
 interface VehicleRemoteAuthenticator {
     /**
-     * Gets access tokens required to remotely interact with a vehicle.
+     * Authenticates and retrieves details including access token and user ID.
      */
-    getAccessToken: () => Promise<string>
+    authenticateAndGetDetails: () => Promise<AuthenticationResult>
 }
 
 /**
  * Details of a cached authentication.
  */
 type ValidAuthentication = {
-    accessToken: string,
+    details: AuthenticationResult,
     isExpired: false
 }
 
@@ -219,10 +219,18 @@ type ExpiredAuthentication = {
 type CachedAuthentication = ValidAuthentication | ExpiredAuthentication
 
 /**
+ * Result of an authentication request.
+ */
+export type AuthenticationResult = {
+    accessToken: string;
+    userId: string;
+};
+
+/**
  * Caches and returns caches access tokens.
  */
 interface VehicleRemoteAuthenticationCache {
-    cacheAuthentication: (accessToken: string, expiresIn: number) => void
+    cacheAuthentication: (details: AuthenticationResult, expiresIn: number) => void
     getCachedAuthentication: () => CachedAuthentication
 }
 
@@ -434,11 +442,12 @@ interface VehicleRemoteBuilder {
 }
 
 export {
+    AuthenticationResult,
+    CachedAuthentication,
     ChargeState,
     CurrentVehicleStatus,
     ElectricVehicleRemote,
     ElectricVehicleRemoteControl,
-    CachedAuthentication,
     ExpiredAuthentication,
     InternalCombustionEngineVehicleRemote,
     InternalCombustionEngineVehicleRemoteControl,
@@ -446,10 +455,10 @@ export {
     Vehicle,
     VehicleGarage,
     VehicleRemote,
-    VehicleRemoteBuilder,
     VehicleRemoteAuthenticator,
     VehicleRemoteAuthenticationCache,
+    VehicleRemoteBuilder,
     VehicleRemoteControl,
     VehicleRemoteInformation,
-    VehicleType
+    VehicleType,
 }

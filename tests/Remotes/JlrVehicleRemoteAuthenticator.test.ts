@@ -1,11 +1,13 @@
 import { createMock } from 'ts-auto-mock'
 import { AuthenticationService } from "../../src/Authentication/AuthenticationService"
-import { Auth } from "../../src/JaguarLandRover/ServiceTypes"
+import { Auth, LoginUserResponse } from "../../src/JaguarLandRover/ServiceTypes"
 import { ExpiredAuthentication, VehicleRemoteAuthenticationCache } from "../../src/Remotes/Types"
 import { JlrVehicleRemoteAuthenticatorBuilder } from "./JlrVehicleRemoteAuthenticator.builder"
 
+const mockUserId = "mock-user-id";
+
 describe('Vehicle Remote Authenticator', () => {
-    describe('Get Access Token', () => {
+    describe('authenticateAndGetDetails', () => {
         test.each([
             ['expectedDeviceId', 'expectedUserName', 'expectedPassword'],
             ['another Device', 'another user name', 'secret password'],
@@ -22,7 +24,7 @@ describe('Vehicle Remote Authenticator', () => {
                 const authenticator = builder.build()
 
                 // Act
-                await authenticator.getAccessToken()
+                await authenticator.authenticateAndGetDetails()
 
                 // Assert
                 expect(authenticationService.authenticate).toHaveBeenCalledWith(
@@ -41,6 +43,9 @@ describe('Vehicle Remote Authenticator', () => {
                 const authResponse = { access_token: expectedAccessToken, authorization_token: expectedAuthorizationToken, expires_in: expectedExpiresIn, token_type: '', refresh_token: '' }
                 const authenticationService = createMock<AuthenticationService>()
                 authenticationService.authenticate = jest.fn(() => Promise.resolve(authResponse))
+                const mockLoginResp = createMock<LoginUserResponse>()
+                mockLoginResp.userId = mockUserId
+                authenticationService.loginUser = jest.fn(() => Promise.resolve(mockLoginResp))
 
                 const builder = new JlrVehicleRemoteAuthenticatorBuilder()
                 builder.authenticationService = authenticationService
@@ -50,7 +55,7 @@ describe('Vehicle Remote Authenticator', () => {
                 const authenticator = builder.build()
 
                 // Act
-                await authenticator.getAccessToken()
+                await authenticator.authenticateAndGetDetails()
 
                 // Assert
                 expect(authenticationService.registerDevice).toHaveBeenCalledWith(
@@ -73,6 +78,9 @@ describe('Vehicle Remote Authenticator', () => {
 
                 const authenticationService = createMock<AuthenticationService>()
                 authenticationService.authenticate = jest.fn(() => Promise.resolve(mockAuth))
+                const mockLoginResp = createMock<LoginUserResponse>()
+                mockLoginResp.userId = mockUserId
+                authenticationService.loginUser = jest.fn(() => Promise.resolve(mockLoginResp))
 
                 const builder = new JlrVehicleRemoteAuthenticatorBuilder()
                 builder.authenticationService = authenticationService
@@ -82,7 +90,7 @@ describe('Vehicle Remote Authenticator', () => {
                 const authenticator = builder.build()
 
                 // Act
-                await authenticator.getAccessToken()
+                await authenticator.authenticateAndGetDetails()
 
                 // Assert
                 expect(authenticationService.loginUser).toHaveBeenCalledWith(
@@ -93,13 +101,16 @@ describe('Vehicle Remote Authenticator', () => {
             })
 
         test.each(['good token', 'bad token', 'fake token'])
-            ('returns a new access token `%s`', async (expectedAccessToken) => {
+            ('returns new authentication details with access token `%s`', async (expectedAccessToken) => {
                 // Arrange
                 const mockAuth = createMock<Auth>()
                 mockAuth.access_token = expectedAccessToken
 
                 const authenticationService = createMock<AuthenticationService>()
                 authenticationService.authenticate = jest.fn(() => Promise.resolve(mockAuth))
+                const mockLoginResp = createMock<LoginUserResponse>()
+                mockLoginResp.userId = mockUserId
+                authenticationService.loginUser = jest.fn(() => Promise.resolve(mockLoginResp))
 
                 const builder = new JlrVehicleRemoteAuthenticatorBuilder()
                 builder.authenticationService = authenticationService
@@ -107,19 +118,19 @@ describe('Vehicle Remote Authenticator', () => {
                 const authenticator = builder.build()
 
                 // Act
-                const response = await authenticator.getAccessToken()
+                const response = await authenticator.authenticateAndGetDetails()
 
                 // Assert
-                expect(response).toBe(expectedAccessToken)
+                expect(response).toEqual({ accessToken: expectedAccessToken, userId: mockUserId })
             })
 
         test.each(['some token', 'another token', 'fake token'])
-            ('returns the same access token if the existing access token has not expired', async (cachedAccessToken) => {
+            ('returns the same authentication details if the existing token has not expired', async (cachedAccessToken) => {
                 // Arrange
                 const authenticatorCache = createMock<VehicleRemoteAuthenticationCache>()
                 const cachedAuthentication = {
                     isExpired: false,
-                    accessToken: cachedAccessToken
+                    details: { accessToken: cachedAccessToken, userId: mockUserId }
                 }
                 authenticatorCache.getCachedAuthentication = jest.fn(() => cachedAuthentication)
 
@@ -129,10 +140,10 @@ describe('Vehicle Remote Authenticator', () => {
                 const authenticator = builder.build()
 
                 // Act
-                const response = await authenticator.getAccessToken()
+                const response = await authenticator.authenticateAndGetDetails()
 
                 // Assert
-                expect(response).toBe(cachedAccessToken)
+                expect(response).toEqual({ accessToken: cachedAccessToken, userId: mockUserId })
             })
 
         test('does not re-authenticate if the existing access token has not expired', async () => {
@@ -141,7 +152,7 @@ describe('Vehicle Remote Authenticator', () => {
             const authenticatorCache = createMock<VehicleRemoteAuthenticationCache>()
             const cachedAuthentication = {
                 isExpired: false,
-                accessToken: 'some token'
+                details: { accessToken: 'some token', userId: mockUserId }
             }
             authenticatorCache.getCachedAuthentication = jest.fn(() => cachedAuthentication)
 
@@ -152,7 +163,7 @@ describe('Vehicle Remote Authenticator', () => {
             const authenticator = builder.build()
 
             // Act
-            const response = await authenticator.getAccessToken()
+            const response = await authenticator.authenticateAndGetDetails()
 
             // Assert
             expect(authenticationService.authenticate).toHaveBeenCalledTimes(0)
@@ -162,7 +173,7 @@ describe('Vehicle Remote Authenticator', () => {
             ['some token', 123],
             ['another token', 456],
             ['fake token', 789]])
-            ('caches a new access token after an access token has expired', async (expectedAccessToken, expectedExpiresIn) => {
+            ('caches new authentication details after an access token has expired', async (expectedAccessToken, expectedExpiresIn) => {
                 // Arrange
                 const mockAuth = createMock<Auth>()
                 mockAuth.access_token = expectedAccessToken
@@ -170,6 +181,9 @@ describe('Vehicle Remote Authenticator', () => {
 
                 const authenticationService = createMock<AuthenticationService>()
                 authenticationService.authenticate = jest.fn(() => Promise.resolve(mockAuth))
+                const mockLoginResp = createMock<LoginUserResponse>()
+                mockLoginResp.userId = mockUserId
+                authenticationService.loginUser = jest.fn(() => Promise.resolve(mockLoginResp))
 
                 const authenticatorCache = createMock<VehicleRemoteAuthenticationCache>()
                 const cachedAuthentication: ExpiredAuthentication = {
@@ -184,11 +198,11 @@ describe('Vehicle Remote Authenticator', () => {
                 const authenticator = builder.build()
 
                 // Act
-                const response = await authenticator.getAccessToken()
+                const response = await authenticator.authenticateAndGetDetails()
 
                 // Assert
                 expect(authenticatorCache.cacheAuthentication).toBeCalledWith(
-                    expectedAccessToken,
+                    { accessToken: expectedAccessToken, userId: mockUserId },
                     expectedExpiresIn
                 )
             })
